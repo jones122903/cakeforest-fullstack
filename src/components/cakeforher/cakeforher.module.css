@@ -1,0 +1,6 @@
+.cakeImageher{
+    object-fit: cover;
+    height: 279px;
+    border-top-left-radius: 16px !important;
+    border-bottom-left-radius: 16px !important ;
+}

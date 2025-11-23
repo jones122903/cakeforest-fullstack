@@ -1,0 +1,82 @@
+import React from 'react';
+import 'bootstrap/dist/css/bootstrap.min.css';
+
+export default function AllCake() {
+  const cakeCategories = [
+    {
+      id: 1,
+      title: 'Cakes Combos',
+      image: 'https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=400&h=300&fit=crop'
+    },
+    {
+      id: 2,
+      title: 'Kids Cakes',
+      image: 'https://images.unsplash.com/photo-1588195538326-c5b1e5b80c87?w=400&h=300&fit=crop'
+    },
+    {
+      id: 3,
+      title: 'Pinata Cakes',
+      image: 'https://images.unsplash.com/photo-1614707267537-b85aaf00c4b7?w=400&h=300&fit=crop'
+    },
+    {
+      id: 4,
+      title: 'Pull Me Up Cakes',
+      image: 'https://images.unsplash.com/photo-1558636508-e0db3814bd1d?w=400&h=300&fit=crop'
+    },
+    {
+      id: 5,
+      title: 'Bento Cakes',
+      image: 'https://images.unsplash.com/photo-1562440499-64c9a4c7abcf?w=400&h=300&fit=crop'
+    },
+    {
+      id: 6,
+      title: 'Desserts',
+      image: 'https://images.unsplash.com/photo-1563805042-7684c019e1cb?w=400&h=300&fit=crop'
+    }
+  ];
+
+  const herOptions = ['Girls', 'Wife', 'Girlfriend', 'Mother'];
+  const himOptions = ['Boys', 'Husband', 'Boyfriend', 'Father'];
+
+  return (
+    
+      <div className="">
+        {/* Top Section - Birthday and Anniversary */}
+        <div className="row g-4 mb-5">
+          <div className="col-md-6">
+            <div className="card  rounded-4  overflow-hidden">
+              <img 
+                src="https://imgcdn.floweraura.com/birthday_cake_rectangle_card_3.jpg" 
+                className="card-img-top" 
+                alt="Birthday Cakes"
+                style={{ height: '250px', objectFit: 'cover' }}
+              />
+              <div className="card-body d-flex justify-content-between align-items-center">
+                <h4 className="mb-0 " style={{fontWeight:"550"}}>Birthday Cakes</h4>
+                <button className="btn btn-dark px-4">VIEW ALL</button>
+              </div>
+            </div>
+          </div>
+          <div className="col-md-6">
+            <div className="card rounded-4 overflow-hidden">
+              <img 
+                src="https://imgcdn.floweraura.com/anniversary_cake_rectangle_card_1_0.jpg" 
+                className="card-img-top" 
+                alt="Anniversary Cakes"
+                style={{ height: '250px', objectFit: 'cover' }}
+              />
+              <div className="card-body d-flex justify-content-between align-items-center">
+                <h4 className="mb-0" style={{fontWeight:"550"}}>Anniversary Cakes</h4>
+                <button className="btn btn-dark px-4">VIEW ALL</button>
+              </div>
+            </div>
+          </div>
+        </div>
+ 
+ 
+
+        
+      </div>
+    
+  );
+}

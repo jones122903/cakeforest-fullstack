@@ -32,7 +32,7 @@ const Category = () => {
         <p className={styles.subtitle}>Baked Fresh, Delivered Fresh</p>
       </div>
 
-      <div className="container-fuild">
+      <div className="">
         <div className="row g-8 justify-content-center">
           {cakeCategories.map((cake, index) => (
             <div key={cake.id} className="col-lg-2 col-md-4 col-sm-6 col-6">
