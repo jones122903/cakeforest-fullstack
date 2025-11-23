@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
-import 'bootstrap/dist/css/bootstrap.min.css';
-import styles from './category.module.css';
+import React, { useState } from "react";
+import "bootstrap/dist/css/bootstrap.min.css";
+import styles from "./category.module.css";
 
 // 🔹 Import Local Images
 
@@ -10,7 +10,6 @@ import cake3 from "../../assets/category/cake3.avif";
 import cake4 from "../../assets/category/cake4.avif";
 import cake5 from "../../assets/category/cake5.avif";
 import cake6 from "../../assets/category/cake6.avif";
-
 
 const Category = () => {
   const [hoveredIndex, setHoveredIndex] = useState(null);
@@ -36,24 +35,19 @@ const Category = () => {
         <div className="row g-8 justify-content-center">
           {cakeCategories.map((cake, index) => (
             <div key={cake.id} className="col-lg-2 col-md-4 col-sm-6 col-6">
-              <div 
+              <div
                 className={styles.cakeCard}
                 onMouseEnter={() => setHoveredIndex(index)}
                 onMouseLeave={() => setHoveredIndex(null)}
               >
                 <div className={styles.imageWrapper}>
-                  <img 
-                    src={cake.image} 
+                  <img
+                    src={cake.image}
                     alt={cake.name}
-                    className={`${styles.cakeImage} ${hoveredIndex === index ? styles.zoomed : ''}`}
+                    className={`${styles.cakeImage} ${
+                      hoveredIndex === index ? styles.zoomed : ""
+                    }`}
                   />
-                 
-  {hoveredIndex === index && (
-    <div className={styles.tooltip}>
-      {cake.name}
-    </div>
-  )} 
-                 
                 </div>
 
                 <h5 className={styles.cakeTitle}>{cake.name}</h5>
