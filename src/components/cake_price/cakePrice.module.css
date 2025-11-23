@@ -138,17 +138,19 @@
 }
 
 .cakeName {
-  font-size: 1.1rem;
-  font-weight: 600;
-  color: #333;
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: #666;
   margin-bottom: 0.5rem;
+  
 }
 
 .cakePrice {
   font-size: 1.25rem;
-  font-weight: 700;
+  
   color: #333;
   margin-bottom: 0.5rem;
+  min-height: 1.8rem;
 }
 
 .ratingSection {
@@ -156,19 +158,20 @@
   align-items: center;
   gap: 0.5rem;
   margin-bottom: 0.5rem;
+  min-height: 1.75rem;
 }
 
 .ratingBadge {
   background: #22c55e;
   color: white;
-  padding: 4px 10px;
+  padding: 2px 5px;
   border-radius: 4px;
   font-size: 0.875rem;
   font-weight: 600;
 }
 
 .reviewsText {
-  color: #666;
+  color: #6EC1E4;
   font-size: 0.875rem;
 }
 
@@ -176,27 +179,37 @@
   color: #666;
   font-size: 0.875rem;
   margin: 0;
+  min-height: 1.5rem;
 }
+
 
 .deliveryLabel {
   font-weight: 600;
+ color: #666; 
+ font-size: 0.775rem; 
+}
+
+.deliveryTime {
+  color: #1D7FA8;  /* Darker Blue */
+  font-weight: 500;
+  font-size: 0.750rem; 
 }
 
 @media (max-width: 1024px) {
   .cakesGrid {
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(4, 1fr);
   }
 }
 
 @media (max-width: 768px) {
   .headerSection {
-    flex-direction: column;
+    flex-direction: row;
     align-items: flex-start;
     gap: 1rem;
   }
 
   .viewAllBtn {
-    width: 100%;
+    width: 20%;
   }
 
   .cakesGrid {
