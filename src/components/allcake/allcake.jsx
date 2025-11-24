@@ -1,5 +1,6 @@
 import React from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import style from './allcake.module.css';
 
 export default function AllCake() {
   const cakeCategories = [
@@ -35,48 +36,43 @@ export default function AllCake() {
     }
   ];
 
-  const herOptions = ['Girls', 'Wife', 'Girlfriend', 'Mother'];
-  const himOptions = ['Boys', 'Husband', 'Boyfriend', 'Father'];
-
   return (
-    
-      <div className="">
-        {/* Top Section - Birthday and Anniversary */}
-        <div className="row g-4 mb-5">
-          <div className="col-md-6">
-            <div className="card  rounded-4  overflow-hidden">
-              <img 
-                src="https://imgcdn.floweraura.com/birthday_cake_rectangle_card_3.jpg" 
-                className="card-img-top" 
-                alt="Birthday Cakes"
-                style={{ height: '250px', objectFit: 'cover' }}
-              />
-              <div className="card-body d-flex justify-content-between align-items-center">
-                <h4 className="mb-0 " style={{fontWeight:"550"}}>Birthday Cakes</h4>
-                <button className="btn-viewall">VIEW ALL</button>
-              </div>
-            </div>
-          </div>
-          <div className="col-md-6">
-            <div className="card rounded-4 overflow-hidden">
-              <img 
-                src="https://imgcdn.floweraura.com/anniversary_cake_rectangle_card_1_0.jpg" 
-                className="card-img-top" 
-                alt="Anniversary Cakes"
-                style={{ height: '250px', objectFit: 'cover' }}
-              />
-              <div className="card-body d-flex justify-content-between align-items-center">
-                <h4 className="mb-0" style={{fontWeight:"550"}}>Anniversary Cakes</h4>
-                <button className="btn-viewall">VIEW ALL</button>
-              </div>
+
+    <div className="">
+      {/* Top Section - Birthday and Anniversary */}
+      <div className="row g-3 g-md-4 mb-4 mb-md-5">
+        <div className="col-12 col-sm-6 col-md-6">
+          <div className={`card rounded-4 overflow-hidden ${style.cakeCard}`}>
+            <img
+              src="https://imgcdn.floweraura.com/birthday_cake_rectangle_card_3.jpg"
+              className={`card-img-top ${style.cardImage}`}
+              alt="Birthday Cakes"
+            />
+            <div className={`card-body d-flex justify-content-between align-items-center ${style.cardBody}`}>
+              <h4 className={style.cardTitle}>Birthday Cakes</h4>
+              <button className="btn-viewall">VIEW ALL</button>
             </div>
           </div>
         </div>
- 
- 
-
-        
+        <div className="col-12 col-sm-6 col-md-6">
+          <div className={`card rounded-4 overflow-hidden ${style.cakeCard}`}>
+            <img
+              src="https://imgcdn.floweraura.com/anniversary_cake_rectangle_card_1_0.jpg"
+              className={`card-img-top ${style.cardImage}`}
+              alt="Anniversary Cakes"
+            />
+            <div className={`card-body d-flex justify-content-between align-items-center ${style.cardBody}`}>
+              <h4 className={style.cardTitle}>Anniversary Cakes</h4>
+              <button className="btn-viewall">VIEW ALL</button>
+            </div>
+          </div>
+        </div>
       </div>
-    
+
+
+
+
+    </div>
+
   );
 }

@@ -1,0 +1,78 @@
+/* Card container */
+.cakeCard {
+    height: 210px;
+    transition: all 0.3s ease;
+}
+
+/* Card image */
+.cardImage {
+    height: 150px;
+    object-fit: cover;
+    width: 100%;
+}
+
+/* Card body */
+.cardBody {
+    padding: 0.75rem !important;
+}
+
+/* Card title */
+.cardTitle {
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 0;
+}
+ 
+ 
+
+/* Tablet and above (≥576px) */
+@media (min-width: 576px) {
+    .cakeCard {
+        height: 230px;
+    }
+
+    .cardImage {
+        height: 165px;
+    }
+
+    .cardBody {
+        padding: 1rem !important;
+    }
+
+    .cardTitle {
+        font-size: 1.1rem;
+    }
+
+     
+}
+
+/* Desktop and above (≥768px) */
+@media (min-width: 768px) {
+    .cakeCard {
+        height: 330px;
+    }
+
+    .cardImage {
+        height: 220px;
+    }
+
+    .cardBody {
+        padding: 1.25rem !important;
+    }
+
+    .cardTitle {
+        font-size: 1.25rem;
+    }
+
+    .btnViewAll {
+        font-size: 0.85rem;
+        padding: 0.5rem 1.25rem;
+    }
+}
+
+/* Large desktop (≥992px) */
+@media (min-width: 992px) {
+    .cardImage {
+        height: 250px;
+    }
+}

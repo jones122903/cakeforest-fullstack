@@ -49,12 +49,7 @@ const Cakeflovor = () => {
                     alt={cake.name}
                     className={`${styles.cakeImage} ${hoveredIndex === index ? styles.zoomed : ''}`}
                   />
-                 
-  {hoveredIndex === index && (
-    <div className={styles.tooltip}>
-      {cake.name}
-    </div>
-  )} 
+   
                  
                 </div>
 

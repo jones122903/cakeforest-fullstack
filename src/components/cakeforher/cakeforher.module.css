@@ -1,6 +1,84 @@
-.cakeImageher{
+/* Card container */
+.cakeCard {
+    height: 200px;
+    transition: all 0.3s ease;
+}
+
+/* Image styling */
+.cakeImageher {
     object-fit: cover;
-    height: 279px;
+    height: 199px;
     border-top-left-radius: 16px !important;
-    border-bottom-left-radius: 16px !important ;
+    border-bottom-left-radius: 16px !important;
+    width: 100%;
+}
+
+/* Card content padding adjustments */
+.cardContent {
+    padding: 0.75rem !important;
+}
+
+/* Card title */
+.cardTitle {
+    font-size: 1rem;
+    font-weight: 600;
+}
+
+/* List items */
+.listItem {
+    font-size: 0.85rem;
+}
+
+.listItem a {
+    transition: color 0.2s ease;
+}
+
+.listItem a:hover {
+    color: #ff6b9d !important;
+}
+
+/* Tablet and above (≥576px) */
+@media (min-width: 576px) {
+    .cakeCard {
+        height: 220px;
+    }
+    
+    .cakeImageher {
+        height: 219px;
+    }
+    
+    .cardContent {
+        padding: 1rem !important;
+    }
+    
+    .cardTitle {
+        font-size: 1.1rem;
+    }
+    
+    .listItem {
+        font-size: 0.9rem;
+    }
+}
+
+/* Desktop and above (≥768px) */
+@media (min-width: 768px) {
+    .cakeCard {
+        height: 280px;
+    }
+    
+    .cakeImageher {
+        height: 279px;
+    }
+    
+    .cardContent {
+        padding: 1.25rem !important;
+    }
+    
+    .cardTitle {
+        font-size: 1.25rem;
+    }
+    
+    .listItem {
+        font-size: 1rem;
+    }
 }
