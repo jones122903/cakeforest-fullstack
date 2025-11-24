@@ -40,7 +40,7 @@ p{
     color:#fffaf2 !important;
 }
 .beige-color-bg{
-    color:#fffaf2 !important;
+    background-color:#fffaf2 !important;
 }
 
 .star-yellow{
@@ -62,6 +62,7 @@ p{
     min-width:100px;
     max-width: 150px;
     border: 1px solid #0E4D65;
+    padding: 10px 0px;
     border-radius: 8px;
     font-weight: 500 !important;
     width: 150px;

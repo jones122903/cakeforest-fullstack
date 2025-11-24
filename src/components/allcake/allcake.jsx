@@ -53,7 +53,7 @@ export default function AllCake() {
               />
               <div className="card-body d-flex justify-content-between align-items-center">
                 <h4 className="mb-0 " style={{fontWeight:"550"}}>Birthday Cakes</h4>
-                <button className="btn btn-dark px-4">VIEW ALL</button>
+                <button className="btn-viewall">VIEW ALL</button>
               </div>
             </div>
           </div>
@@ -67,7 +67,7 @@ export default function AllCake() {
               />
               <div className="card-body d-flex justify-content-between align-items-center">
                 <h4 className="mb-0" style={{fontWeight:"550"}}>Anniversary Cakes</h4>
-                <button className="btn btn-dark px-4">VIEW ALL</button>
+                <button className="btn-viewall">VIEW ALL</button>
               </div>
             </div>
           </div>
