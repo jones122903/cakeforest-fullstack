@@ -37,7 +37,7 @@ const Cakeflovor = () => {
       <div className="">
         <div className="row g-8 justify-content-center">
           {cakeCategories.map((cake, index) => (
-            <div key={cake.id} className="col-lg-3 col-md-4 col-sm-6 col-6 my-3">
+            <div key={cake.id} className="col-lg-3 col-md-4 col-sm-6 col-6 my-2">
               <div 
                 className={styles.cakeCard}
                 onMouseEnter={() => setHoveredIndex(index)}
