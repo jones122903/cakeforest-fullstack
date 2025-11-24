@@ -5,7 +5,8 @@ const Cakeforher = () => {
   const herOptions = ["Girls", "Wife", "Girlfriend", "Mother"];
   const himOptions = ["Boys", "Husband", "Boyfriend", "Father"];
   return (
-    <div className=" p-5 rounded-5" style={{ backgroundColor: "#E7EDEF" }}>
+
+    <div className=" p-5 grey-color-bg  rounded-5">
       <div className="row g-4">
         <div className="col-md-6">
           <div className="card rounded-4 shadow-sm" style={{ height: "280px" }}>
@@ -34,7 +35,7 @@ const Cakeforher = () => {
             </div>
           </div>
         </div>
-        <div className="col-md-6">
+        <div className="col-md-6 col-12">
           <div className="card rounded-4 shadow-sm" style={{ height: "280px" }}>
             <div className="row g-0">
               <div className="col-7">

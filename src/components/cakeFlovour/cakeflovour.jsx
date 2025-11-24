@@ -28,7 +28,7 @@ const Cakeflovor = () => {
   ];
 
   return (
-    <div className={`${styles.cakeDeliveryContainer}`}>
+    <div className={`${styles.cakeDeliveryContainer} beige-color-bg`}>
       <div className={styles.headerSection}>
         <h1 className={styles.mainTitle}>Cakes by Flavour </h1>
         <p className={styles.subtitle}>Order Your Favourite Cake Online</p>
