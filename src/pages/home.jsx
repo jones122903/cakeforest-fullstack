@@ -9,6 +9,8 @@ import "../app/App.css"
 import AllCake from "../components/allcake/allcake.jsx";
 import Cakeforher from "../components/cakeforher/cakeforher.jsx";
 
+import FlowerAuraNavbar from "../components/topbar/topbar.jsx";
+
 function Home() {
   return (
     <div  className="homeContainer" >
@@ -36,6 +38,11 @@ function Home() {
         </motion.h1>
       </div>
       <div>
+
+         <div className="my-5">
+          <FlowerAuraNavbar/>
+        </div>
+        
         <div className="my-5">
           <Category />
         </div>
@@ -58,6 +65,7 @@ function Home() {
       <div className="my-5">
          <Cakeforher/>
       </div>
+      
     </div>
   );
 }
