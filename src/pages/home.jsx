@@ -8,6 +8,7 @@ import CakeCategory from "../components/Cake_Choices/Cake_Choices.jsx";
 import "../app/App.css"
 import AllCake from "../components/allcake/allcake.jsx";
 import Cakeforher from "../components/cakeforher/cakeforher.jsx";
+import ReviewsSection from "../components/reviewsection/reviewsection.jsx";
 
 function Home() {
   return (
@@ -57,6 +58,9 @@ function Home() {
       </div>
       <div className="my-5">
          <Cakeforher/>
+      </div>
+      <div className="my-5">
+         <ReviewsSection/>
       </div>
     </div>
   );
