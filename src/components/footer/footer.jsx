@@ -68,12 +68,12 @@ const Footer = () => {
                 <h6 className='fw-semibold text-center mb-2'>Spread the Love On Social Media</h6>
                 {/* social media icons */}
                 <div className='d-flex justify-content-center gap-4 mt-4'>
-                  <FaFacebook size={20} color='blue'/>
-                  <FaSquareXTwitter size={20} color='black'/>
-                  <FaYoutube size={20} color='red'/>
-                  <FaPinterest size={20} color='red'/>
-                  <FaInstagram size={20}/>
-                  <FaLinkedin size={20}/>
+                  <FaFacebook size={40} color='blue'/>
+                  <FaSquareXTwitter size={40} color='black'/>
+                  <FaYoutube size={40} color='red'/>
+                  <FaPinterest size={40} color='red'/>
+                  <FaInstagram size={40}/>
+                  <FaLinkedin size={40} color='blue'/>
                 </div>
 
             </div>
