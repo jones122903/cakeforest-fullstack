@@ -70,6 +70,7 @@ function Home() {
       <div className="my-5">
          <ReviewsSection/>
       </div>
+     
       <div className="my-5">
          <Footer/>
       </div>
