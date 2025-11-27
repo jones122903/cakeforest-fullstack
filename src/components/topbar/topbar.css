@@ -1,53 +1,45 @@
 .navbar-wrapper {
   width: 100%;
   background: #ffffff;
-  border-bottom: 1px solid #eee;
+  border-bottom: 1px solid #ececec;
   font-family: Arial, sans-serif;
 }
 
-/* --------------------- TOP BAR --------------------- */
+/* ---------- Top Bar ---------- */
 .topbar {
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 14px 30px;
-  border-bottom: 1px solid #e5e5e5;
 }
 
-/* LOGO */
-.logo-area {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-.logo-circle {
-  width: 45px;
-  height: 45px;
-  background: teal;
-  border-radius: 50%;
-}
-.logo-text {
-  font-size: 22px;
-  font-weight: bold;
-  color: teal;
+/* Logo */
+.logo-area .logo-text {
+  font-size: 24px;
+  font-weight: 800;
+  color: #16c1d4;
   letter-spacing: 1px;
 }
 
-/* DELIVERY BOX */
+/* Delivery Box */
 .delivery-box {
   display: flex;
   align-items: center;
   gap: 8px;
   padding: 8px 14px;
-  border: 1px solid #d4f4ef;
+  border: 1px solid #ffdede;
   border-radius: 8px;
-  background: #f0fffd;
+  background: #fff7f7;
   cursor: pointer;
+  transition: 0.3s;
+}
+.delivery-box:hover {
+  background: #ffecec;
 }
 .delivery-box img {
-  width: 30px;
-  height: 20px;
-  border-radius: 4px;
+  width: 28px;
+  height: 18px;
+  border-radius: 3px;
 }
 
 /* SEARCH BAR */
@@ -68,40 +60,42 @@
   position: absolute;
   right: 8px;
   top: 6px;
-  /* background: white;
-  padding: 6px;
-  border-radius: 6px;
-  border: 1px solid #ddd; */
-  cursor: pointer;
 }
 
-/* ACTION ICONS */
+
+/* ---------- Action Buttons ---------- */
 .action-area {
   display: flex;
   align-items: center;
   gap: 25px;
 }
-.action-box {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+
+.action-btn {
+  text-align: center;
   cursor: pointer;
+  position: relative;
+  transition: 0.3s;
+  padding: 6px 10px;
+  border-radius: 10px;
 }
-.action-box span {
-  font-size: 11px;
-  margin-top: 4px;
+.action-btn:hover {
+  background: #f7f7f7;
+  transform: translateY(-2px);
 }
 
-/* CART BADGE */
-.cart {
-  position: relative;
+.action-btn p {
+  font-size: 11px;
+  margin-top: 3px;
+  color: #333;
 }
+
+/* Cart Badge */
 .cart-badge {
   position: absolute;
-  top: -6px;
-  right: -8px;
-  background: red;
-  color: white;
+  top: -5px;
+  right: -5px;
+  background: #ff3b30;
+  color: #fff;
   font-size: 10px;
   width: 16px;
   height: 16px;
@@ -109,26 +103,4 @@
   display: flex;
   align-items: center;
   justify-content: center;
-}
-
-/* ---------------- CATEGORY BAR ---------------- */
-.category-nav {
-  display: flex;
-  justify-content: center;
-  gap: 35px;
-  padding: 12px 0;
-  border-top: 1px solid #eee;
-}
-.category-item {
-  font-size: 14px;
-  font-weight: 600;
-  border: none;
-  background: none;
-  cursor: pointer;
-  color: #444;
-}
-.category-item:hover {
-  color: teal;
-  border-bottom: 2px solid teal;
-  padding-bottom: 2px;
 }
