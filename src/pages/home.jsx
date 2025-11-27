@@ -11,6 +11,7 @@ import Cakeforher from "../components/cakeforher/cakeforher.jsx";
 import ReviewsSection from "../components/reviewsection/reviewsection.jsx";
 
 import FlowerAuraNavbar from "../components/topbar/topbar.jsx";
+import Footer from "../components/footer/footer.jsx";
 
 function Home() {
   return (
@@ -70,6 +71,10 @@ function Home() {
          <ReviewsSection/>
       </div>
      
+      <div className="my-5">
+         <Footer/>
+      </div>
+
       
     </div>
   );
