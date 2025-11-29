@@ -2,12 +2,13 @@ import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 import Home from "../pages/home.jsx";
 import Topbar from "../components/topbar/topbar.jsx"
 import Footer from "../components/footer/footer.jsx"
-import Category from "../components/categories/category.jsx"
+
 import "./App.css";
-import Carousel from "../components/carousel/carousel.jsx";
-import CakeCategory from "../components/Cake_Choices/Cake_Choices.jsx";
-import Cakeflovour from "../components/cakeFlovour/cakeflovour.jsx";
+
 import PWAInstallPrompt from "../components/PWAInstallPrompt/PWAInstallPrompt.jsx";
+
+// import CartUI from "../components/Cart All Pages/CartUI.jsx";
+import OrderSummary from "../components/Cart All Pages/CartUI.jsx";
 
 function App() {
   return (
@@ -20,6 +21,8 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/topbar" element={<Topbar />} />
         <Route path="/footer" element={<Footer />} />
+        <Route path="/cart" element={<OrderSummary/>} />
+        {/* <Route path="/blog" element={<BlogSection/>} /> */}
         {/* <Route path="/category" element={<Category />} />
         <Route path="/cake_category" element={<CakeCategory/>} />
 
