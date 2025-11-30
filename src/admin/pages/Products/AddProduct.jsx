@@ -31,7 +31,7 @@ const AddProduct = () => {
     { name: "Chocolates", price: "150", selected: false },
   ]);
 
-  const [imagePreview, setImagePreview] = useState(null);
+  const [imagePreview, setImagePreview] = useState([]);
 
   const categories = [
     "Birthday",
@@ -53,41 +53,20 @@ const AddProduct = () => {
     setVariants(newVariants);
   };
 
-  const handleImageChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      setFormData((prev) => ({
-        ...prev,
-        image: file,
-      }));
+ const handleImageUpload = (e) => {
+  const files = Array.from(e.target.files);
 
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setImagePreview(reader.result);
-      };
-      reader.readAsDataURL(file);
-    }
-  };
+  const newImages = files.map((file) => ({
+    file,
+    preview: URL.createObjectURL(file),
+  }));
 
-  const handleAddOnChange = (index, field, value) => {
-    const newAddOns = [...addOns];
-    if (field === "selected") {
-      newAddOns[index][field] = !newAddOns[index][field];
-    } else {
-      newAddOns[index][field] = value;
-    }
-    setAddOns(newAddOns);
-  };
+  setFormData((prev) => ({
+    ...prev,
+    images: [...prev.images, ...newImages],
+  }));
+};
 
-  const addNewAddOn = () => {
-    setAddOns([...addOns, { name: "", price: "", selected: false }]);
-  };
-
-  const handleImageUpload = (e) => {
-    const files = Array.from(e.target.files);
-    const imageUrls = files.map((file) => URL.createObjectURL(file));
-    setFormData({ ...formData, images: [...formData.images, ...imageUrls] });
-  };
 
   const removeImage = (index) => {
     const newImages = formData.images.filter((_, i) => i !== index);
@@ -126,37 +105,42 @@ const AddProduct = () => {
           {/* LEFT: IMAGE UPLOAD */}
           <div className="col-12 col-md-12 mb-3">
             <div className="image-upload-section">
-              <label htmlFor="images" className="upload-area">
-                <Upload size={32} />
-                <p>Click to upload images</p>
-                <span>PNG, JPG up to 5MB</span>
-                <input
-                  type="file"
-                  id="images"
-                  accept="image/*"
-                  multiple
-                  onChange={handleImageUpload}
-                  style={{ display: "none" }}
-                />
-              </label>
 
-              {formData.images.length > 0 && (
-                <div className="image-preview-grid">
-                  {formData.images.map((img, index) => (
-                    <div key={index} className="image-preview">
-                      <img src={img} alt={`Preview ${index + 1}`} />
-                      <button
-                        type="button"
-                        className="remove-image"
-                        onClick={() => removeImage(index)}
-                      >
-                        <X size={16} />
-                      </button>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
+  <label htmlFor="images" className="upload-area">
+    <Upload size={32} />
+    <p>Click to upload images</p>
+    <span>PNG, JPG up to 5MB</span>
+
+    <input
+      type="file"
+      id="images"
+      accept="image/*"
+      multiple
+      onChange={handleImageUpload}
+      style={{ display: "none" }}
+    />
+  </label>
+
+  {formData.images.length > 0 && (
+    <div className="image-preview-grid">
+      {formData.images.map((img, index) => (
+        <div key={index} className="image-preview">
+          <img src={img.preview} alt={`Preview ${index + 1}`} />
+
+          <button
+            type="button"
+            className="remove-image"
+            onClick={() => removeImage(index)}
+          >
+            <X size={16} />
+          </button>
+        </div>
+      ))}
+    </div>
+  )}
+
+</div>
+
           </div>
 
           {/* RIGHT: MAIN FORM (6 FIELDS) */}
