@@ -12,7 +12,10 @@ export const useApp = () => {
 
 export const AppProvider = ({ children }) => {
     const [darkMode, setDarkMode] = useState(false);
-    const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+    const [sidebarCollapsed, setSidebarCollapsed] = useState(() => {
+        // Initialize as collapsed on mobile/tablet
+        return window.innerWidth <= 768;
+    });
 
     useEffect(() => {
         const savedDarkMode = localStorage.getItem('darkMode') === 'true';
@@ -20,6 +23,16 @@ export const AppProvider = ({ children }) => {
         if (savedDarkMode) {
             document.documentElement.classList.add('dark');
         }
+
+        // Handle window resize to auto-collapse sidebar on mobile/tablet
+        const handleResize = () => {
+            if (window.innerWidth <= 768) {
+                setSidebarCollapsed(true);
+            }
+        };
+
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
     }, []);
 
     const toggleDarkMode = () => {

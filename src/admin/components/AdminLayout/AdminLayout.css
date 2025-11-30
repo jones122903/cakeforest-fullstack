@@ -21,6 +21,14 @@
 
 @media (max-width: 768px) {
     .admin-main {
-        margin-left: 70px;
+        margin-left: 0px;
     }
+    .admin-main {
+    flex: 1;
+    margin-left: 0px;
+    transition: margin-left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.admin-main.sidebar-collapsed {
+    margin-left: 0px;
+}
 }

@@ -4,14 +4,16 @@ import { useApp } from '../../context/AppContext';
 import { useAuth } from '../../context/AuthContext';
 import './Navbar.css';
 
-const Navbar = () => {
+const Navbar = ({sideWidth}) => {
     const { darkMode, toggleDarkMode, toggleSidebar } = useApp();
     const { user } = useAuth();
+    console.log("ture",sideWidth)
 
     return (
-        <div className="admin-navbar">
+        <div className={`${sideWidth ===true ? "admin-navbar-1" : "admin-navbar"}`}>
             <div className="navbar-left">
-                <button className="menu-btn" onClick={toggleSidebar}>
+                <button className="navbar-menu-btn ms-3"
+                 onClick={toggleSidebar}>
                     <Menu size={20} />
                 </button>
                 <div className="search-bar">

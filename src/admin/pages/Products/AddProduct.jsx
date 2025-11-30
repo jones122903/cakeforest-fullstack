@@ -1,356 +1,363 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { Save, X, Upload, Plus, Minus } from 'lucide-react';
-import './AddProduct.css';
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { Save, X, Upload, Plus, Minus } from "lucide-react";
+import "./AddProduct.css";
+import styles from "./AddProduct.module.css";
 
 const AddProduct = () => {
-    const navigate = useNavigate();
-    const [formData, setFormData] = useState({
-        name: '',
-        category: '',
-        description: '',
-        ingredients: '',
-        eggType: 'egg',
-        stockQuantity: '',
-        basePrice: '',
-        status: 'active',
-        images: [],
-    });
+  const navigate = useNavigate();
+  const [formData, setFormData] = useState({
+    name: "",
+    category: "",
+    description: "",
+    ingredients: "",
+    eggType: "egg",
+    stockQuantity: "",
+    basePrice: "",
+    status: "active",
+    images: [],
+  });
 
-    const [variants, setVariants] = useState([
-        { weight: '0.5', price: '' },
-        { weight: '1', price: '' },
-        { weight: '1.5', price: '' },
-        { weight: '2', price: '' },
-    ]);
+  const [variants, setVariants] = useState([
+    { weight: "0.5", price: "" },
+    { weight: "1", price: "" },
+    { weight: "1.5", price: "" },
+    { weight: "2", price: "" },
+  ]);
 
-    const [addOns, setAddOns] = useState([
-        { name: 'Rose', price: '50', selected: false },
-        { name: 'Teddy Bear', price: '200', selected: false },
-        { name: 'Chocolates', price: '150', selected: false },
-    ]);
+  const [addOns, setAddOns] = useState([
+    { name: "Rose", price: "50", selected: false },
+    { name: "Teddy Bear", price: "200", selected: false },
+    { name: "Chocolates", price: "150", selected: false },
+  ]);
 
-    const categories = ['Birthday', 'Anniversary', 'Kids', 'Love', 'Wedding', 'Corporate'];
+  const [imagePreview, setImagePreview] = useState([]);
 
-    const handleInputChange = (e) => {
-        const { name, value } = e.target;
-        setFormData({ ...formData, [name]: value });
-    };
+  const categories = [
+    "Birthday",
+    "Anniversary",
+    "Kids",
+    "Love",
+    "Wedding",
+    "Corporate",
+  ];
 
-    const handleVariantChange = (index, field, value) => {
-        const newVariants = [...variants];
-        newVariants[index][field] = value;
-        setVariants(newVariants);
-    };
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+  };
 
-    const handleAddOnChange = (index, field, value) => {
-        const newAddOns = [...addOns];
-        if (field === 'selected') {
-            newAddOns[index][field] = !newAddOns[index][field];
-        } else {
-            newAddOns[index][field] = value;
-        }
-        setAddOns(newAddOns);
-    };
+  const handleVariantChange = (index, field, value) => {
+    const newVariants = [...variants];
+    newVariants[index][field] = value;
+    setVariants(newVariants);
+  };
 
-    const addNewAddOn = () => {
-        setAddOns([...addOns, { name: '', price: '', selected: false }]);
-    };
+ const handleImageUpload = (e) => {
+  const files = Array.from(e.target.files);
 
-    const removeAddOn = (index) => {
-        const newAddOns = addOns.filter((_, i) => i !== index);
-        setAddOns(newAddOns);
-    };
+  const newImages = files.map((file) => ({
+    file,
+    preview: URL.createObjectURL(file),
+  }));
 
-    const handleImageUpload = (e) => {
-        const files = Array.from(e.target.files);
-        const imageUrls = files.map(file => URL.createObjectURL(file));
-        setFormData({ ...formData, images: [...formData.images, ...imageUrls] });
-    };
+  setFormData((prev) => ({
+    ...prev,
+    images: [...prev.images, ...newImages],
+  }));
+};
 
-    const removeImage = (index) => {
-        const newImages = formData.images.filter((_, i) => i !== index);
-        setFormData({ ...formData, images: newImages });
-    };
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        console.log('Product Data:', { ...formData, variants, addOns });
-        // Here you would typically send data to backend
-        alert('Product added successfully!');
-        navigate('/admin/products');
-    };
+  const removeImage = (index) => {
+    const newImages = formData.images.filter((_, i) => i !== index);
+    setFormData({ ...formData, images: newImages });
+  };
 
-    return (
-        <div className="add-product">
-            <div className="page-header">
-                <h1>Add New Cake</h1>
-                <div className="header-actions">
-                    <button className="btn-secondary" onClick={() => navigate('/admin/products')}>
-                        <X size={18} />
-                        Cancel
-                    </button>
-                    <button className="btn-primary" onClick={handleSubmit}>
-                        <Save size={18} />
-                        Save Product
-                    </button>
-                </div>
-            </div>
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    console.log("Product Data:", { ...formData, variants, addOns });
+    // Here you would typically send data to backend
+    alert("Product added successfully!");
+    navigate("/admin/products");
+  };
 
-            <form className="product-form" onSubmit={handleSubmit}>
-                <div className="form-grid">
-                    {/* Basic Information */}
-                    <div className="form-section">
-                        <h3 className="section-title">Basic Information</h3>
-
-                        <div className="form-group">
-                            <label htmlFor="name">Cake Name *</label>
-                            <input
-                                type="text"
-                                id="name"
-                                name="name"
-                                value={formData.name}
-                                onChange={handleInputChange}
-                                placeholder="e.g., Red Velvet Dream"
-                                required
-                            />
-                        </div>
-
-                        <div className="form-group">
-                            <label htmlFor="category">Category *</label>
-                            <select
-                                id="category"
-                                name="category"
-                                value={formData.category}
-                                onChange={handleInputChange}
-                                required
-                            >
-                                <option value="">Select Category</option>
-                                {categories.map((cat) => (
-                                    <option key={cat} value={cat.toLowerCase()}>
-                                        {cat}
-                                    </option>
-                                ))}
-                            </select>
-                        </div>
-
-                        <div className="form-group">
-                            <label htmlFor="description">Cake Description *</label>
-                            <textarea
-                                id="description"
-                                name="description"
-                                value={formData.description}
-                                onChange={handleInputChange}
-                                placeholder="Describe your delicious cake..."
-                                rows="4"
-                                required
-                            />
-                        </div>
-
-                        <div className="form-group">
-                            <label htmlFor="ingredients">Ingredients</label>
-                            <textarea
-                                id="ingredients"
-                                name="ingredients"
-                                value={formData.ingredients}
-                                onChange={handleInputChange}
-                                placeholder="List all ingredients..."
-                                rows="3"
-                            />
-                        </div>
-
-                        <div className="form-group">
-                            <label>Egg Type</label>
-                            <div className="radio-group">
-                                <label className="radio-label">
-                                    <input
-                                        type="radio"
-                                        name="eggType"
-                                        value="egg"
-                                        checked={formData.eggType === 'egg'}
-                                        onChange={handleInputChange}
-                                    />
-                                    <span>With Egg</span>
-                                </label>
-                                <label className="radio-label">
-                                    <input
-                                        type="radio"
-                                        name="eggType"
-                                        value="eggless"
-                                        checked={formData.eggType === 'eggless'}
-                                        onChange={handleInputChange}
-                                    />
-                                    <span>Eggless</span>
-                                </label>
-                            </div>
-                        </div>
-                    </div>
-
-                    {/* Pricing & Variants */}
-                    <div className="form-section">
-                        <h3 className="section-title">Pricing & Variants</h3>
-
-                        <div className="form-group">
-                            <label htmlFor="basePrice">Base Price (0.5 Kg) *</label>
-                            <input
-                                type="number"
-                                id="basePrice"
-                                name="basePrice"
-                                value={formData.basePrice}
-                                onChange={handleInputChange}
-                                placeholder="₹"
-                                required
-                            />
-                        </div>
-
-                        <div className="variants-section">
-                            <label>Weight Variants & Prices *</label>
-                            <div className="variants-grid">
-                                {variants.map((variant, index) => (
-                                    <div key={index} className="variant-item">
-                                        <span className="variant-weight">{variant.weight} Kg</span>
-                                        <input
-                                            type="number"
-                                            value={variant.price}
-                                            onChange={(e) => handleVariantChange(index, 'price', e.target.value)}
-                                            placeholder="₹ Price"
-                                            required
-                                        />
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
-
-                        <div className="form-group">
-                            <label htmlFor="stockQuantity">Stock Quantity *</label>
-                            <input
-                                type="number"
-                                id="stockQuantity"
-                                name="stockQuantity"
-                                value={formData.stockQuantity}
-                                onChange={handleInputChange}
-                                placeholder="Available units"
-                                required
-                            />
-                        </div>
-
-                        <div className="form-group">
-                            <label>Status</label>
-                            <div className="radio-group">
-                                <label className="radio-label">
-                                    <input
-                                        type="radio"
-                                        name="status"
-                                        value="active"
-                                        checked={formData.status === 'active'}
-                                        onChange={handleInputChange}
-                                    />
-                                    <span className="status-badge active">Active</span>
-                                </label>
-                                <label className="radio-label">
-                                    <input
-                                        type="radio"
-                                        name="status"
-                                        value="inactive"
-                                        checked={formData.status === 'inactive'}
-                                        onChange={handleInputChange}
-                                    />
-                                    <span className="status-badge inactive">Inactive</span>
-                                </label>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                {/* Add-ons Section */}
-                <div className="form-section full-width">
-                    <div className="section-header">
-                        <h3 className="section-title">Add-ons</h3>
-                        <button type="button" className="btn-add-small" onClick={addNewAddOn}>
-                            <Plus size={16} />
-                            Add New
-                        </button>
-                    </div>
-
-                    <div className="addons-grid">
-                        {addOns.map((addon, index) => (
-                            <div key={index} className="addon-item">
-                                <label className="checkbox-label">
-                                    <input
-                                        type="checkbox"
-                                        checked={addon.selected}
-                                        onChange={() => handleAddOnChange(index, 'selected', null)}
-                                    />
-                                    <span className="checkmark"></span>
-                                </label>
-                                <input
-                                    type="text"
-                                    value={addon.name}
-                                    onChange={(e) => handleAddOnChange(index, 'name', e.target.value)}
-                                    placeholder="Add-on name"
-                                    className="addon-name"
-                                />
-                                <input
-                                    type="number"
-                                    value={addon.price}
-                                    onChange={(e) => handleAddOnChange(index, 'price', e.target.value)}
-                                    placeholder="₹ Price"
-                                    className="addon-price"
-                                />
-                                {addOns.length > 1 && (
-                                    <button
-                                        type="button"
-                                        className="btn-remove"
-                                        onClick={() => removeAddOn(index)}
-                                    >
-                                        <Minus size={16} />
-                                    </button>
-                                )}
-                            </div>
-                        ))}
-                    </div>
-                </div>
-
-                {/* Image Upload */}
-                <div className="form-section full-width">
-                    <h3 className="section-title">Product Images</h3>
-
-                    <div className="image-upload-section">
-                        <label htmlFor="images" className="upload-area">
-                            <Upload size={32} />
-                            <p>Click to upload images</p>
-                            <span>PNG, JPG up to 5MB</span>
-                            <input
-                                type="file"
-                                id="images"
-                                accept="image/*"
-                                multiple
-                                onChange={handleImageUpload}
-                                style={{ display: 'none' }}
-                            />
-                        </label>
-
-                        {formData.images.length > 0 && (
-                            <div className="image-preview-grid">
-                                {formData.images.map((img, index) => (
-                                    <div key={index} className="image-preview">
-                                        <img src={img} alt={`Preview ${index + 1}`} />
-                                        <button
-                                            type="button"
-                                            className="remove-image"
-                                            onClick={() => removeImage(index)}
-                                        >
-                                            <X size={16} />
-                                        </button>
-                                    </div>
-                                ))}
-                            </div>
-                        )}
-                    </div>
-                </div>
-            </form>
+  return (
+    <div className="add-product">
+      <div className="page-header">
+        <h1>Add New Cake</h1>
+        <div className="header-actions">
+          <button
+            className="btn-secondary"
+            onClick={() => navigate("/admin/products")}
+          >
+            <X size={18} />
+            Cancel
+          </button>
+          <button className="btn-primary" onClick={handleSubmit}>
+            <Save size={18} />
+            Save Product
+          </button>
         </div>
-    );
+      </div>
+
+      <form className="product-form" onSubmit={handleSubmit}>
+        <div className="row mt-3 form-section">
+          {/* LEFT: IMAGE UPLOAD */}
+          <div className="col-12 col-md-12 mb-3">
+            <div className="image-upload-section">
+
+  <label htmlFor="images" className="upload-area">
+    <Upload size={32} />
+    <p>Click to upload images</p>
+    <span>PNG, JPG up to 5MB</span>
+
+    <input
+      type="file"
+      id="images"
+      accept="image/*"
+      multiple
+      onChange={handleImageUpload}
+      style={{ display: "none" }}
+    />
+  </label>
+
+  {formData.images.length > 0 && (
+    <div className="image-preview-grid">
+      {formData.images.map((img, index) => (
+        <div key={index} className="image-preview">
+          <img src={img.preview} alt={`Preview ${index + 1}`} />
+
+          <button
+            type="button"
+            className="remove-image"
+            onClick={() => removeImage(index)}
+          >
+            <X size={16} />
+          </button>
+        </div>
+      ))}
+    </div>
+  )}
+
+</div>
+
+          </div>
+
+          {/* RIGHT: MAIN FORM (6 FIELDS) */}
+          <div className="col-12 col-md-12">
+            <div className="row g-3">
+              {/* Cake Name */}
+              <div className="col-12 col-md-6">
+                <div className={styles.formBox}>
+                  <div className={styles.floatingGroup}>
+                    <input
+                      type="text"
+                      name="cakeName"
+                      value={formData.cakeName}
+                      onChange={handleInputChange}
+                      placeholder=" "
+                      className={styles.floatingInput}
+                      required
+                    />
+                    <label className={styles.floatingLabel}>
+                      Cake Name <span className={styles.required}>*</span>
+                    </label>
+                  </div>
+                </div>
+              </div>
+
+              {/* Flavor */}
+              <div className="col-12 col-md-6">
+                <div className={styles.formBox}>
+                  <div className={styles.floatingGroup}>
+                    <select
+                      name="flavor"
+                      value={formData.flavor}
+                      onChange={handleInputChange}
+                      className={styles.floatingInput}
+                      required
+                    >
+                      <option value="">Select Flavor</option>
+                      <option value="chocolate">🍫 Chocolate</option>
+                      <option value="vanilla">🍦 Vanilla</option>
+                      <option value="strawberry">🍓 Strawberry</option>
+                      <option value="red-velvet">❤️ Red Velvet</option>
+                      <option value="butterscotch">🍮 Butterscotch</option>
+                      <option value="black-forest">🌲 Black Forest</option>
+                      <option value="pineapple">🍍 Pineapple</option>
+                      <option value="mango">🥭 Mango</option>
+                    </select>
+                    <label className={styles.floatingLabel}>
+                      Flavor <span className={styles.required}>*</span>
+                    </label>
+                  </div>
+                </div>
+              </div>
+
+              {/* Category */}
+              <div className="col-12 col-md-6">
+                <div className={styles.formBox}>
+                  <div className={styles.floatingGroup}>
+                    <select
+                      name="category"
+                      value={formData.category}
+                      onChange={handleInputChange}
+                      className={styles.floatingInput}
+                      required
+                    >
+                      <option value="">Select Category</option>
+                      <option value="birthday">🎉 Birthday Cake</option>
+                      <option value="wedding">💍 Wedding Cake</option>
+                      <option value="anniversary">💕 Anniversary Cake</option>
+                      <option value="kids">👶 Kids Special</option>
+                      <option value="premium">✨ Premium Collection</option>
+                      <option value="celebration">🎊 Celebration</option>
+                    </select>
+                    <label className={styles.floatingLabel}>
+                      Category <span className={styles.required}>*</span>
+                    </label>
+                  </div>
+                </div>
+              </div>
+
+              {/* Weight */}
+              <div className="col-12 col-md-6">
+                <div className={styles.formBox}>
+                  <div className={styles.floatingGroup}>
+                    <select
+                      name="weight"
+                      value={formData.weight}
+                      onChange={handleInputChange}
+                      className={styles.floatingInput}
+                      required
+                    >
+                      <option value="">Select Weight</option>
+                      <option value="0.5">0.5 Kg</option>
+                      <option value="1">1 Kg</option>
+                      <option value="1.5">1.5 Kg</option>
+                      <option value="2">2 Kg</option>
+                      <option value="2.5">2.5 Kg</option>
+                      <option value="3">3 Kg</option>
+                      <option value="4">4 Kg</option>
+                      <option value="5">5 Kg</option>
+                    </select>
+                    <label className={styles.floatingLabel}>
+                      Weight <span className={styles.required}>*</span>
+                    </label>
+                  </div>
+                </div>
+              </div>
+
+              {/* Price */}
+              <div className="col-12 col-md-6">
+                <div className={styles.formBox}>
+                  <div className={styles.floatingGroup}>
+                    <input
+                      type="number"
+                      name="price"
+                      value={formData.price}
+                      onChange={handleInputChange}
+                      placeholder=" "
+                      className={styles.floatingInput}
+                      required
+                    />
+                    <label className={styles.floatingLabel}>
+                      Price (₹) <span className={styles.required}>*</span>
+                    </label>
+                  </div>
+                </div>
+              </div>
+
+              {/* Discount */}
+              <div className="col-12 col-md-6">
+                <div className={styles.formBox}>
+                  <div className={styles.floatingGroup}>
+                    <input
+                      type="number"
+                      name="discount"
+                      value={formData.discount}
+                      onChange={handleInputChange}
+                      placeholder=" "
+                      className={styles.floatingInput}
+                      min="0"
+                      max="100"
+                    />
+                    <label className={styles.floatingLabel}>Discount (%)</label>
+                  </div>
+                </div>
+              </div>
+
+              <div className="col-12 col-md-6">
+                <div className={styles.formBox}>
+                  <div className={styles.floatingGroup}>
+                    <textarea
+                      name="description"
+                      value={formData.description}
+                      onChange={handleInputChange}
+                      placeholder=" "
+                      rows="3"
+                      className={styles.floatingInput}
+                    />
+                    <label className={styles.floatingLabel}>Description</label>
+                  </div>
+                </div>
+              </div>
+
+              {/* Availability */}
+              <div className="col-12 col-md-6">
+                <div className={styles.formBox}>
+                  <label className={styles.staticLabel}>
+                    Availability Status
+                  </label>
+
+                  <div className={styles.radioGroup}>
+                    <label className={styles.radioLabel}>
+                      <input
+                        type="radio"
+                        name="availability"
+                        value="available"
+                        checked={formData.availability === "available"}
+                        onChange={handleInputChange}
+                        className={styles.radio}
+                      />
+                      <span className={styles.radioText}>
+                        <span
+                          className={styles.statusDot}
+                          data-status="available"
+                        ></span>
+                        Available
+                      </span>
+                    </label>
+
+                    <label className={styles.radioLabel}>
+                      <input
+                        type="radio"
+                        name="availability"
+                        value="out-of-stock"
+                        checked={formData.availability === "out-of-stock"}
+                        onChange={handleInputChange}
+                        className={styles.radio}
+                      />
+                      <span className={styles.radioText}>
+                        <span
+                          className={styles.statusDot}
+                          data-status="out-of-stock"
+                        ></span>
+                        Out of Stock
+                      </span>
+                    </label>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* BOTTOM ROW (Price / Description / Availability) */}
+          <div className="row mt-4 g-3">{/* Description */}</div>
+        </div>
+      </form>
+    </div>
+  );
 };
 
 export default AddProduct;
