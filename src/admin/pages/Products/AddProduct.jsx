@@ -124,7 +124,7 @@ const AddProduct = () => {
       <form className="product-form" onSubmit={handleSubmit}>
         <div className="row mt-3 form-section">
           {/* LEFT: IMAGE UPLOAD */}
-          <div className="col-12 col-md-4 mb-3">
+          <div className="col-12 col-md-12 mb-3">
             <div className="image-upload-section">
               <label htmlFor="images" className="upload-area">
                 <Upload size={32} />
@@ -160,7 +160,7 @@ const AddProduct = () => {
           </div>
 
           {/* RIGHT: MAIN FORM (6 FIELDS) */}
-          <div className="col-12 col-md-8">
+          <div className="col-12 col-md-12">
             <div className="row g-3">
               {/* Cake Name */}
               <div className="col-12 col-md-6">
@@ -303,7 +303,7 @@ const AddProduct = () => {
                 </div>
               </div>
 
-              <div className="col-12 col-md-4">
+              <div className="col-12 col-md-6">
                 <div className={styles.formBox}>
                   <div className={styles.floatingGroup}>
                     <textarea
@@ -320,7 +320,7 @@ const AddProduct = () => {
               </div>
 
               {/* Availability */}
-              <div className="col-12 col-md-4">
+              <div className="col-12 col-md-6">
                 <div className={styles.formBox}>
                   <label className={styles.staticLabel}>
                     Availability Status
