@@ -108,6 +108,7 @@ function Home() {
       <div className="my-5">
          <BlogSection/>
       </div>
+      <div>
         <ReviewsSection />
       </div>
 

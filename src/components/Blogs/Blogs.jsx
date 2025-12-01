@@ -38,18 +38,7 @@ export default function BlogSection() {
                   src={item.img}
                   style={{ height: "200px", objectFit: "cover" }}
                 />
-                {/* <Card.Body>
-                  <Card.Title className={`blog-title ${style.cardTitle}`}>{item.title}</Card.Title>
-                  <Card.Text className="blog-body">{item.desc}</Card.Text>
-                  <a
-                    href={item.link}
-                    target="_self"
-                    className="  peacock-color fs-6"
-                    style={{textDecoration:"none"}}
-                  >
-                    Read More...
-                  </a>
-                </Card.Body> */}
+                
               </Card>
               <div className="mt-2">
                  <Card.Title className={`blog-title mb-3 ${style.cardTitle}`}>{item.title}</Card.Title>
