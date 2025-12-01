@@ -23,6 +23,7 @@ import "bootstrap/dist/css/bootstrap.min.css"
 
 
 import { AuthProvider } from "../admin/context/AuthContext.jsx";
+import Login from "../components/login/login.jsx";
 
 // import CakeGallery from "../components/cake_gallery/CakeGallery.jsx";
  
@@ -58,6 +59,8 @@ function App() {
             <Route path="/" element={<Home />} />
             <Route path="/buypage" element={<Buypage />} />
             <Route path="/footer" element={<Footer />} />
+            <Route path="/login" element={<Login />} />
+
 
             {/* Admin Routes */}
             <Route path="/admin" element={<AdminLayout />}>
