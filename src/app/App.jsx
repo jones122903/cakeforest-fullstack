@@ -8,6 +8,9 @@ import Carousel from "../components/carousel/carousel.jsx";
 import CakeCategory from "../components/Cake_Choices/Cake_Choices.jsx";
 import Cakeflovour from "../components/cakeFlovour/cakeflovour.jsx";
 import PWAInstallPrompt from "../components/PWAInstallPrompt/PWAInstallPrompt.jsx";
+import { Login } from "../components/Login/login.jsx";
+import "bootstrap/dist/css/bootstrap.min.css"
+
 
 function App() {
   return (
@@ -17,7 +20,7 @@ function App() {
 
 
       <Routes>
-        <Route path="/" element={<Home />} />
+        <Route path="/" element={<Home/>} />
         <Route path="/topbar" element={<Topbar />} />
         <Route path="/footer" element={<Footer />} />
         {/* <Route path="/category" element={<Category />} />
