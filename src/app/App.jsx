@@ -1,5 +1,14 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Home from "../pages/home.jsx";
+import Topbar from "../components/topbar/topbar.jsx"
+ 
+
+import "./App.css";
+
+import PWAInstallPrompt from "../components/PWAInstallPrompt/PWAInstallPrompt.jsx";
+
+// import CartUI from "../components/Cart All Pages/CartUI.jsx";
+import OrderSummary from "../components/Cart All Pages/CartUI.jsx";
 import Buypage from "../pages/buypage.jsx";
 import Footer from "../components/footer/footer.jsx";
 import PWAInstallPrompt from "../components/PWAInstallPrompt/PWAInstallPrompt.jsx";
@@ -32,6 +41,19 @@ import Coupons from "../admin/pages/Coupons/Coupons.jsx";
 import Reports from "../admin/pages/Reports/Reports.jsx";
 import Settings from "../admin/pages/Settings/Settings.jsx";
 
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/topbar" element={<Topbar />} />
+        <Route path="/footer" element={<Footer />} />
+        <Route path="/cart" element={<OrderSummary/>} />
+        {/* <Route path="/blog" element={<BlogSection/>} /> */}
+        {/* <Route path="/category" element={<Category />} />
+        <Route path="/cake_category" element={<CakeCategory/>} />
+
+        <Route path="/carousel" element={<Carousel/>} />
+        <Route path="/cake_flovor" element={<Cakeflovour/>} /> */}
+      </Routes>
+    </Router>
 function App() {
   return (
     <AuthProvider>

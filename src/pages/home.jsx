@@ -10,6 +10,7 @@ import CakeCategory from "../components/Cake_Choices/Cake_Choices.jsx";
 import "../app/App.css"
 import AllCake from "../components/allcake/allcake.jsx";
 import Cakeforher from "../components/cakeforher/cakeforher.jsx";
+import BlogSection from "../components/Blogs/Blogs.jsx";
 import ReviewsSection from "../components/reviewsection/reviewsection.jsx";
 
 import FlowerAuraNavbar from "../components/topbar/topbar.jsx";
@@ -105,6 +106,8 @@ function Home() {
         <Cakeforher />
       </div>
       <div className="my-5">
+         <BlogSection/>
+      </div>
         <ReviewsSection />
       </div>
 

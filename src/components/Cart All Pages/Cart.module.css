@@ -1,0 +1,286 @@
+.container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 20px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+}
+
+.mainLayout {
+  display: flex;
+  gap: 20px;
+  align-items: flex-start;
+}
+
+.deliverySection {
+  flex: 1;
+  background-color: #f0f8ff;
+  border-radius: 12px;
+  padding: 30px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.deliveryHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+}
+
+.deliveryTitle {
+  font-size: 24px;
+  font-weight: 600;
+  color: #0c5273;
+  margin: 0;
+}
+
+.sameDayBadge {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: #0c7fa3;
+  font-weight: 500;
+  font-size: 14px;
+}
+
+.lightningIcon {
+  color: #0c7fa3;
+  font-size: 18px;
+}
+
+.productCard {
+  display: flex;
+  gap: 20px;
+  background-color: white;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+}
+
+.productImage {
+  width: 80px;
+  height: 80px;
+  object-fit: cover;
+  border-radius: 8px;
+  flex-shrink: 0;
+}
+
+.productDetails {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.productHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.productInfo {
+  flex: 1;
+}
+
+.productName {
+  font-size: 16px;
+  font-weight: 600;
+  color: #333;
+  margin: 0 0 6px 0;
+}
+
+.productPrice {
+  font-size: 16px;
+  font-weight: 500;
+  color: #333;
+  margin: 0 0 6px 0;
+}
+
+.productWeight {
+  font-size: 14px;
+  color: #666;
+  margin: 0;
+}
+
+.deleteButton {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  color: #666;
+  transition: color 0.2s;
+}
+
+.deleteButton:hover {
+  color: #dc3545;
+}
+
+.productFooter {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 10px;
+}
+
+.messageLink {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: #6c757d;
+  font-size: 13px;
+  text-decoration: none;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.messageLink:hover {
+  color: #0c7fa3;
+}
+
+.quantityControl {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  background-color: #0c5273;
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.quantityButton {
+  background-color: #0c5273;
+  color: white;
+  border: none;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 18px;
+  transition: background-color 0.2s;
+}
+
+.quantityButton:hover {
+  background-color: #0a4460;
+}
+
+.quantityDisplay {
+  background-color: #0c5273;
+  color: white;
+  min-width: 40px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 500;
+  font-size: 15px;
+}
+
+.billSection {
+  width: 450px;
+  background-color: white;
+  border-radius: 12px;
+  padding: 30px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  align-self: flex-start;
+}
+
+.billHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 25px;
+}
+
+.billTitle {
+  font-size: 24px;
+  font-weight: 600;
+  color: #0c5273;
+  margin: 0;
+}
+
+.itemCount {
+  font-size: 14px;
+  color: #666;
+  font-weight: 400;
+}
+
+.billDetails {
+  margin-bottom: 25px;
+}
+
+.billRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 0;
+  border-bottom: 1px solid #e9ecef;
+}
+
+.billLabel {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #333;
+  font-size: 15px;
+  font-weight: 400;
+}
+
+.billIcon {
+  color: #0c5273;
+  font-size: 16px;
+}
+
+.billAmount {
+  font-size: 15px;
+  font-weight: 500;
+  color: #333;
+}
+
+.grandTotal {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 0 25px 0;
+}
+
+.grandTotalLabel {
+  font-size: 20px;
+  font-weight: 600;
+  color: #0c5273;
+  margin: 0;
+}
+
+.grandTotalAmount {
+  font-size: 24px;
+  font-weight: 700;
+  color: #0c5273;
+}
+
+.placeOrderButton {
+  width: 100%;
+  background-color: #0c5273;
+  color: white;
+  border: none;
+  padding: 16px;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.placeOrderButton:hover {
+  background-color: #0a4460;
+}
+
+@media (max-width: 1024px) {
+  .mainLayout {
+    flex-direction: column;
+  }
+  
+  .billSection {
+    width: 100%;
+  }
+}
