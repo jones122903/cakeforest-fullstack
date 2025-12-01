@@ -1,0 +1,643 @@
+.add-product {
+    padding: 2rem;
+}
+
+.page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+}
+
+.page-header h1 {
+    font-size: 1.875rem;
+    font-weight: 700;
+    color: #111827;
+    margin: 0;
+}
+
+.header-actions {
+    display: flex;
+    gap: 1rem;
+}
+
+.btn-primary,
+.btn-secondary {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    border-radius: 10px;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s;
+    font-size: 0.9rem;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 16px rgba(102, 126, 234, 0.3);
+}
+
+.btn-secondary {
+    background: #f3f4f6;
+    color: #374151;
+}
+
+.btn-secondary:hover {
+    background: #e5e7eb;
+}
+
+.product-form {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2rem;
+}
+
+.form-section {
+    background: white;
+    border-radius: 16px;
+    padding: 2rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.form-section.full-width {
+    grid-column: 1 / -1;
+}
+
+.section-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #111827;
+    margin: 0 0 1.5rem 0;
+    padding-bottom: 0.75rem;
+    border-bottom: 2px solid #f3f4f6;
+}
+
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-group label {
+    display: block;
+    font-weight: 600;
+    color: #374151;
+    margin-bottom: 0.5rem;
+    font-size: 0.9rem;
+}
+
+.form-group input[type="text"],
+.form-group input[type="number"],
+.form-group select,
+.form-group textarea {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border: 1.5px solid #e5e7eb;
+    border-radius: 10px;
+    font-size: 0.95rem;
+    transition: all 0.3s;
+    font-family: inherit;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+    outline: none;
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.radio-group {
+    display: flex;
+    gap: 1rem;
+}
+
+.radio-label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+    padding: 0.5rem 1rem;
+    border: 2px solid #e5e7eb;
+    border-radius: 8px;
+    transition: all 0.3s;
+}
+
+.radio-label:has(input:checked) {
+    border-color: #667eea;
+    background: #ede9fe;
+}
+
+.radio-label input[type="radio"] {
+    width: 18px;
+    height: 18px;
+    accent-color: #667eea;
+    cursor: pointer;
+}
+
+.status-badge {
+    padding: 0.35rem 0.75rem;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+.status-badge.active {
+    background: #d1fae5;
+    color: #065f46;
+}
+
+.status-badge.inactive {
+    background: #fee2e2;
+    color: #991b1b;
+}
+
+.variants-section {
+    margin-bottom: 1.5rem;
+}
+
+.variants-section label {
+    display: block;
+    font-weight: 600;
+    color: #374151;
+    margin-bottom: 1rem;
+    font-size: 0.9rem;
+}
+
+.variants-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+}
+
+.variant-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    background: #f9fafb;
+    padding: 0.75rem;
+    border-radius: 8px;
+}
+
+.variant-weight {
+    font-weight: 600;
+    color: #667eea;
+    min-width: 50px;
+}
+
+.variant-item input {
+    flex: 1;
+    padding: 0.5rem;
+    border: 1.5px solid #e5e7eb;
+    border-radius: 6px;
+    font-size: 0.9rem;
+}
+
+.addons-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.addon-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    background: #f9fafb;
+    padding: 1rem;
+    border-radius: 8px;
+}
+
+.checkbox-label {
+    position: relative;
+    cursor: pointer;
+}
+
+.checkbox-label input {
+    width: 20px;
+    height: 20px;
+    accent-color: #667eea;
+    cursor: pointer;
+}
+
+.addon-name {
+    flex: 2;
+    padding: 0.5rem;
+    border: 1.5px solid #e5e7eb;
+    border-radius: 6px;
+}
+
+.addon-price {
+    flex: 1;
+    padding: 0.5rem;
+    border: 1.5px solid #e5e7eb;
+    border-radius: 6px;
+}
+
+.btn-add-small {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    background: #667eea;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.85rem;
+    font-weight: 600;
+    transition: all 0.3s;
+}
+
+.btn-add-small:hover {
+    background: #5568d3;
+    transform: scale(1.05);
+}
+
+.btn-remove {
+    background: #fee2e2;
+    color: #dc2626;
+    border: none;
+    width: 32px;
+    height: 32px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.btn-remove:hover {
+    background: #fecaca;
+}
+
+.image-upload-section {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.upload-area {
+    border: 2px dashed #d1d5db;
+    border-radius: 12px;
+    padding: 3rem;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.upload-area:hover {
+    border-color: #667eea;
+    background: #fafafa;
+}
+
+.upload-area svg {
+    color: #9ca3af;
+    margin-bottom: 1rem;
+}
+
+.upload-area p {
+    font-weight: 600;
+    color: #374151;
+    margin: 0.5rem 0;
+}
+
+.upload-area span {
+    font-size: 0.85rem;
+    color: #9ca3af;
+}
+
+.image-preview-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 1rem;
+}
+
+.image-preview {
+    position: relative;
+    aspect-ratio: 1;
+    border-radius: 12px;
+    overflow: hidden;
+    border: 2px solid #e5e7eb;
+}
+
+.image-preview img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.remove-image {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    background: rgba(239, 68, 68, 0.9);
+    color: white;
+    border: none;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.remove-image:hover {
+    background: #dc2626;
+    transform: scale(1.1);
+}
+
+@media (max-width: 1024px) {
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 768px) {
+    .add-product {
+        padding: 1rem;
+    }
+
+    .page-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+
+    .variants-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .form-section {
+        padding: 1.5rem;
+    }
+}
+
+
+.bg-gradient {
+          background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .image-box {
+          height: 100%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+
+        .photo-upload-box {
+          position: relative;
+          width: 200px;
+          height: 200px;
+        }
+
+        .upload-label {
+          cursor: pointer;
+          display: block;
+          width: 100%;
+          height: 100%;
+        }
+
+        .file-input {
+          display: none;
+        }
+
+        .photo-circle {
+          width: 200px;
+          height: 200px;
+          border-radius: 50%;
+          border: 3px dashed #667eea;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          overflow: hidden;
+          background: #f8f9fa;
+          transition: all 0.3s ease;
+        }
+
+        .photo-circle:hover {
+          border-color: #764ba2;
+          background: #f0f0f0;
+        }
+
+        .photo-image {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+        }
+
+        .photo-icon-container {
+          text-align: center;
+        }
+
+        .photo-icon {
+          font-size: 3rem;
+          margin-bottom: 0.5rem;
+        }
+
+        .upload-text {
+          color: #667eea;
+          font-weight: 600;
+          margin: 0;
+        }
+
+        .remove-photo-btn {
+          position: absolute;
+          top: 0;
+          right: 0;
+          background: #dc3545;
+          color: white;
+          border: none;
+          border-radius: 50%;
+          width: 30px;
+          height: 30px;
+          cursor: pointer;
+          font-size: 1.2rem;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+
+        .remove-photo-btn:hover {
+          background: #c82333;
+        }
+
+        .form-box {
+          margin-bottom: 0;
+        }
+
+        .floating-group {
+          position: relative;
+          margin-bottom: 0;
+        }
+
+        .floating-input {
+          width: 100%;
+          padding: 15px 12px 8px;
+          border: 2px solid #e0e0e0;
+          border-radius: 8px;
+          font-size: 1rem;
+          transition: all 0.3s ease;
+          background: white;
+          outline: none;
+        }
+
+        .floating-input:focus {
+          border-color: #667eea;
+          box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .floating-input:focus + .floating-label,
+        .floating-input:not(:placeholder-shown) + .floating-label,
+        .floating-input:valid + .floating-label,
+        select.floating-input:not([value=""]) + .floating-label,
+        select.floating-input + .floating-label {
+          top: 4px;
+          font-size: 0.75rem;
+          color: #667eea;
+        }
+
+        .floating-label {
+          position: absolute;
+          left: 12px;
+          top: 50%;
+          transform: translateY(-50%);
+          color: #999;
+          font-size: 1rem;
+          pointer-events: none;
+          transition: all 0.3s ease;
+          background: white;
+          padding: 0 4px;
+        }
+
+        textarea.floating-input {
+          resize: vertical;
+          min-height: 80px;
+          padding-top: 20px;
+        }
+
+        textarea.floating-input + .floating-label {
+          top: 20px;
+          transform: none;
+        }
+
+        textarea.floating-input:focus + .floating-label,
+        textarea.floating-input:not(:placeholder-shown) + .floating-label {
+          top: 4px;
+          font-size: 0.75rem;
+        }
+
+        .required {
+          color: #dc3545;
+        }
+
+        .form-group {
+          margin-bottom: 0;
+        }
+
+        .static-label {
+          display: block;
+          color: #333;
+          font-weight: 600;
+          margin-bottom: 12px;
+          font-size: 0.95rem;
+        }
+
+        .radio-group {
+          display: flex;
+          flex-direction: column;
+          gap: 12px;
+        }
+
+        .radio-label {
+          display: flex;
+          align-items: center;
+          cursor: pointer;
+          margin: 0;
+        }
+
+        .radio {
+          margin-right: 10px;
+          cursor: pointer;
+        }
+
+        .radio-text {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          font-size: 0.95rem;
+        }
+
+        .status-dot {
+          width: 10px;
+          height: 10px;
+          border-radius: 50%;
+          display: inline-block;
+        }
+
+        .status-dot[data-status="available"] {
+          background: #28a745;
+        }
+
+        .status-dot[data-status="out-of-stock"] {
+          background: #dc3545;
+        }
+
+        .btn-submit {
+          background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+          color: white;
+          border: none;
+          padding: 12px 40px;
+          border-radius: 8px;
+          font-size: 1.1rem;
+          font-weight: 600;
+          cursor: pointer;
+          transition: all 0.3s ease;
+          box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-submit:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+        }
+
+        @media (max-width: 768px) {
+          .photo-upload-box {
+            width: 150px;
+            height: 150px;
+            margin: 0 auto;
+          }
+
+          .photo-circle {
+            width: 150px;
+            height: 150px;
+          }
+
+          .col-12.col-md-4.mt-3,
+          .col-12.col-md-6.mt-3 {
+            margin-top: 1rem !important;
+          }
+        }

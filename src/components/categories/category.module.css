@@ -1,11 +1,11 @@
 /* CakeDelivery.module.css */
-body{
-  font-family: 'Helvetica Neue', 'HelveticaNeue', Helvetica, Arial, sans-serif !important;
+body {
+  font-family: "poppins", sans-serif !important;
 }
+
 /* Main Container */
 .cakeDeliveryContainer {
-   
-  min-height: "auto";
+  min-height: auto;
 }
 
 /* Header Section */
@@ -15,16 +15,16 @@ body{
 }
 
 .mainTitle {
-  font-size: 2.5rem;
+  font-size: 26px;
   font-weight: 700;
-  color: #2c3e50;
+  color: #0E4D65;
   margin-bottom: 10px;
   letter-spacing: -0.5px;
 }
 
 .subtitle {
-  font-size: 1.1rem;
-  color: #7f8c8d;
+  font-size: 16px;
+  color: #666;
   font-weight: 400;
   margin: 0;
 }
@@ -60,23 +60,7 @@ body{
   transform: scale(1.15);
 }
 
-/* Tooltip Overlay - Updated for smaller padding and inside image */
-/* .tooltipOverlay {
-  position: absolute;
-  bottom: 12px;
-  left: 50%;
-  transform: translateX(-50%);
-  background: rgba(0, 0, 0, 0.85);
-  color: white;
-  padding: 5px 12px;
-  border-radius: 6px;
-  white-space: nowrap;
-  z-index: 10;
-  animation: slideUp 0.3s ease;
-  backdrop-filter: blur(8px);
-  pointer-events: none;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-} */
+/* Tooltip */
 .tooltip {
   position: absolute;
   bottom: 12px;
@@ -94,8 +78,14 @@ body{
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateX(-50%) translateY(5px); }
-  to   { opacity: 1; transform: translateX(-50%) translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
 }
 
 @keyframes slideUp {
@@ -118,149 +108,142 @@ body{
 
 /* Cake Title */
 .cakeTitle {
-  font-size: 1.05rem;
+  font-size: 18px;
   font-weight: 600;
-  color: #34495e;
+  color: #0E4D65;
   margin: 0;
   transition: none;
 }
 
-/* Media Queries */
-
-/* Extra Large Screens (1400px and up) */
+/* ==================== EXTRA LARGE SCREENS (1400px+) ==================== */
 @media (min-width: 1400px) {
   .cakeDeliveryContainer {
     padding: 60px 0px;
   }
-  
+
   .mainTitle {
-    font-size: 3rem;
+    font-size: 32px;
   }
-  
+
   .subtitle {
-    font-size: 1.3rem;
+    font-size: 18px;
   }
-  
+
   .imageWrapper {
     border-radius: 25px;
   }
-  
+
   .cakeName {
     font-size: 0.75rem;
   }
-  
 
+  .cakeTitle {
+    font-size: 20px;
+  }
 }
 
-/* Large Screens (992px to 1399px) */
+/* ==================== LARGE SCREENS (992px - 1399px) ==================== */
 @media (min-width: 992px) and (max-width: 1399px) {
   .mainTitle {
-    font-size: 2.5rem;
+    font-size: 26px;
   }
-  
+
   .cakeTitle {
-    font-size: 1rem;
+    font-size: 18px;
   }
-  
+
   .imageWrapper {
     border-radius: 18px;
   }
-  
+
   .cakeName {
     font-size: 0.7rem;
   }
-  
-
 }
 
-/* Medium Screens (768px to 991px) */
+/* ==================== MEDIUM SCREENS (768px - 991px) ==================== */
 @media (min-width: 768px) and (max-width: 991px) {
   .cakeDeliveryContainer {
     padding: 35px 0px;
   }
-  
+
   .mainTitle {
-    font-size: 2.2rem;
+    font-size: 22px;
   }
-  
+
   .subtitle {
-    font-size: 1rem;
+    font-size: 16px;
   }
-  
+
   .imageWrapper {
     border-radius: 16px;
   }
-  
+
   .cakeTitle {
-    font-size: 0.95rem;
+    font-size: 16px;
   }
-  
+
   .cakeName {
     font-size: 0.65rem;
   }
-  
-
 }
 
-/* Small Screens (576px to 767px) */
+/* ==================== SMALL SCREENS (576px - 767px) ==================== */
 @media (min-width: 576px) and (max-width: 767px) {
   .cakeDeliveryContainer {
     padding: 30px 0px;
   }
-  
+
   .mainTitle {
-    font-size: 1.9rem;
+    font-size: 20px;
   }
-  
+
   .subtitle {
-    font-size: 0.95rem;
+    font-size: 14px;
   }
-  
+
   .imageWrapper {
     border-radius: 14px;
     margin-bottom: 12px;
   }
-  
+
   .cakeTitle {
-    font-size: 0.9rem;
+    font-size: 14px;
   }
-  
+
   .cakeName {
     font-size: 0.6rem;
   }
-
 }
 
-/* Extra Small Screens (below 576px) */
+/* ==================== EXTRA SMALL SCREENS (below 576px) ==================== */
 @media (max-width: 575px) {
   .cakeDeliveryContainer {
     padding: 25px 0px;
   }
-  
+
   .headerSection {
     margin-bottom: 30px;
   }
-  
+
   .mainTitle {
-    font-size: 1.7rem;
+    font-size: 18px;
   }
-  
+
   .subtitle {
-    font-size: 0.9rem;
+    font-size: 14px;
   }
-  
+
   .imageWrapper {
     border-radius: 12px;
     margin-bottom: 10px;
   }
-  
+
   .cakeTitle {
-    font-size: 0.85rem;
+    font-size: 12px;
   }
-  
+
   .cakeName {
     font-size: 0.58rem;
   }
-  
-
 }

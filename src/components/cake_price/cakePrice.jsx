@@ -1,5 +1,6 @@
 import React from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
+import { FaRegHeart, FaHeart } from "react-icons/fa";
 import styles from "./cakePrice.module.css";
 
 // 🔹 Import Local Images
@@ -59,8 +60,6 @@ const CakePrice = () => {
       reviews: 1,
       delivery: "In 3 hours",
     },
-
-    // 🔽 2nd row cakes
     {
       id: 5,
       image: cake_price5,
@@ -122,19 +121,17 @@ const CakePrice = () => {
               />
 
               <button
-                className={styles.wishlistBtn}
+                className={`${styles.wishlistBtn} ${
+                  wishlist[cake.id] ? styles.liked : ""
+                }`}
                 onClick={() => toggleWishlist(cake.id)}
-                style={{ color: wishlist[cake.id] ? "#e74c3c" : "#666" }}
+                aria-label="Add to wishlist"
               >
-                <svg
-                  width="24"
-                  height="24"
-                  fill={wishlist[cake.id] ? "currentColor" : "none"}
-                  stroke="currentColor"
-                  strokeWidth="2"
-                >
-                  <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
-                </svg>
+                {wishlist[cake.id] ? (
+                  <FaHeart size={20} />
+                ) : (
+                  <FaRegHeart size={20} />
+                )}
               </button>
 
               <span className={styles.vegBadge}>
@@ -146,7 +143,6 @@ const CakePrice = () => {
               <h5 className={styles.cakeName}>{cake.name}</h5>
               <p className={styles.cakePrice}>₹ {cake.price}</p>
 
-              {/* ⭐ Show rating for all except ID 5 and 6 */}
               {cake.id !== 5 && cake.id !== 6 && cake.id !== 8 ? (
                 <div className={styles.ratingSection}>
                   <span className={styles.ratingBadge}>★ {cake.rating}</span>
@@ -155,20 +151,17 @@ const CakePrice = () => {
                   </span>
                 </div>
               ) : (
-                // Empty space to maintain alignment for cards 5 and 6
                 <div className={styles.ratingSection}></div>
               )}
 
-              {/* ✅ Show delivery for all cakes */}
-              <p className={styles.deliveryText}>
-                <span className={styles.deliveryLabel}>
-                  Earliest Delivery :
-                </span>
+              <div className={styles.deliveryText}>
+                <span className={styles.deliveryLabel}>Earliest Delivery :</span>
                 <span className={styles.deliveryTime}> {cake.delivery}</span>
-              </p>
+              </div>
             </div>
           </div>
         ))}
+        <button className={styles.viewAllBtn}>View All</button>
       </div>
     </div>
   );
