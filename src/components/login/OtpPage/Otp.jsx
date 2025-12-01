@@ -156,7 +156,7 @@ const Otp = () => {
             {/* Header */}
             <div className="text-center my-4">
               <div
-                className="d-flex align-items-center justify-content-center red-color-bg rounded-circle mx-auto mb-3"
+                className="d-flex align-items-center justify-content-center voilet-color-bg rounded-circle mx-auto mb-3"
                 style={{ width: "60px", height: "60px" }}
               >
                 <RiShieldUserLine color="white" size={30} />
@@ -178,7 +178,7 @@ const Otp = () => {
                   <input
                     key={index}
                     type="text"
-                    className="otp-input"
+                    className="otp-input ms-2"
                     maxLength={1}
                     value={digit}
                     onChange={(e) => handleOtpChange(e.target, index)}
@@ -191,7 +191,7 @@ const Otp = () => {
 
               <button
                 type="button"
-                className="text-center otp-btn red-color-bg dark-white-text mt-4"
+                className="text-center otp-btn voilet-color-bg text-white mt-4"
                 onClick={handleConfirmClick}
               >
                 Verify code
@@ -203,7 +203,7 @@ const Otp = () => {
               Didn’t receive the code?{" "}
               <span
                 onClick={handleResendClick}
-                className={canResend ? "red-color-text resend" : "text-muted"}
+                className={canResend ? "text-danger resend" : "text-muted"}
                 style={{
                   cursor: canResend ? "pointer" : "not-allowed",
                 }}

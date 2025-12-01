@@ -99,7 +99,7 @@ import { MdOutlineKeyboardBackspace } from "react-icons/md";
             {/* Header */}
             <div className="text-center my-4">
               <div
-                className="d-flex align-items-center justify-content-center red-color-bg rounded-circle mx-auto mb-3"
+                className="d-flex align-items-center justify-content-center voilet-color-bg rounded-circle mx-auto mb-3"
                 style={{ width: "60px", height: "60px" }}
               >
                 <RiShieldUserLine color="white" size={30} />
@@ -126,11 +126,11 @@ import { MdOutlineKeyboardBackspace } from "react-icons/md";
                       display: "none",
                     },
                     "& .MuiOutlinedInput-root.Mui-focused fieldset": {
-                      borderColor: "#cf2030",
+                      borderColor: "#5336AC",
                       borderWidth: "2px",
                     },
                     "& .MuiInputLabel-root.Mui-focused": {
-                      color: "#cf2030",
+                      color: "#5336AC",
                     },
                   }}
                 />
@@ -139,7 +139,7 @@ import { MdOutlineKeyboardBackspace } from "react-icons/md";
               {/* Button */}
               <button
                 type="button"
-                className="text-center newforget-btn dark-white-text mt-4 red-color-bg d-flex align-items-center justify-content-center"
+                className="text-center newforget-btn text-white mt-4 voilet-color-bg d-flex align-items-center justify-content-center"
                 onClick={handleConfirmClick}
                 disabled={loading}
                 style={{
