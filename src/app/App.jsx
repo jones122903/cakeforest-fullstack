@@ -8,20 +8,19 @@ import Carousel from "../components/carousel/carousel.jsx";
 import CakeCategory from "../components/Cake_Choices/Cake_Choices.jsx";
 import Cakeflovour from "../components/cakeFlovour/cakeflovour.jsx";
 import PWAInstallPrompt from "../components/PWAInstallPrompt/PWAInstallPrompt.jsx";
+import CakeGallery from "../components/cake_gallery/CakeGallery.jsx";
 
 function App() {
   return (
     <Router>
       <PWAInstallPrompt />
 
-
-
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/topbar" element={<Topbar />} />
         <Route path="/footer" element={<Footer />} />
-        {/* <Route path="/category" element={<Category />} />
-        <Route path="/cake_category" element={<CakeCategory/>} />
+        <Route path="/gallery" element={<CakeGallery />} />
+        {/* <Route path="/cake_category" element={<CakeCategory/>} />
 
         <Route path="/carousel" element={<Carousel/>} />
         <Route path="/cake_flovor" element={<Cakeflovour/>} /> */}
