@@ -9,7 +9,6 @@ import "../app/App.css"
 import AllCake from "../components/allcake/allcake.jsx";
 import Cakeforher from "../components/cakeforher/cakeforher.jsx";
 import ReviewsSection from "../components/reviewsection/reviewsection.jsx";
-
 import FlowerAuraNavbar from "../components/topbar/topbar.jsx";
 import Footer from "../components/footer/footer.jsx";
 import CakeProductPage from "../components/cakeProductPage/cakeProductPage.jsx";
@@ -19,12 +18,9 @@ function Buypage() {
     <div  className="homeContainer" >
       
       <div>
- 
-
         <div className="my-5">
            <CakeProductPage/>
         </div>
-
       </div>
 
       

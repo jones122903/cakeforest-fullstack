@@ -19,6 +19,7 @@ import Buypage from "../pages/buypage.jsx";
 import Footer from "../components/footer/footer.jsx";
 import PWAInstallPrompt from "../components/PWAInstallPrompt/PWAInstallPrompt.jsx";
 import { AuthProvider } from "../admin/context/AuthContext.jsx";
+import Login from "../components/login/login.jsx";
 
 // import CakeGallery from "../components/cake_gallery/CakeGallery.jsx";
  
@@ -53,6 +54,8 @@ function App() {
             <Route path="/" element={<Home />} />
             <Route path="/buypage" element={<Buypage />} />
             <Route path="/footer" element={<Footer />} />
+            <Route path="/login" element={<Login />} />
+
 
             {/* Admin Routes */}
             <Route path="/admin" element={<AdminLayout />}>
