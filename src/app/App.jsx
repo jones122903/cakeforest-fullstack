@@ -18,6 +18,10 @@ import OrderSummary from "../components/Cart All Pages/CartUI.jsx";
 import Buypage from "../pages/buypage.jsx";
 import Footer from "../components/footer/footer.jsx";
 import PWAInstallPrompt from "../components/PWAInstallPrompt/PWAInstallPrompt.jsx";
+
+import "bootstrap/dist/css/bootstrap.min.css"
+
+
 import { AuthProvider } from "../admin/context/AuthContext.jsx";
 
 // import CakeGallery from "../components/cake_gallery/CakeGallery.jsx";
@@ -29,8 +33,9 @@ import { AuthProvider } from "../admin/context/AuthContext.jsx";
 
 
 
+
       <Routes>
-        <Route path="/" element={<Home />} />
+        <Route path="/" element={<Home/>} />
         <Route path="/topbar" element={<Topbar />} />
         <Route path="/footer" element={<Footer />} />
         <Route path="/cart" element={<OrderSummary/>} />
