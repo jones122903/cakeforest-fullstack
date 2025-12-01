@@ -3,6 +3,19 @@ import Home from "../pages/home.jsx";
 import Buypage from "../pages/buypage.jsx";
 import Footer from "../components/footer/footer.jsx";
 import PWAInstallPrompt from "../components/PWAInstallPrompt/PWAInstallPrompt.jsx";
+
+import CakeGallery from "../components/cake_gallery/CakeGallery.jsx";
+
+function App() {
+  return (
+    <Router>
+      <PWAInstallPrompt />
+
+      <Routes>
+       
+        <Route path="/gallery" element={<CakeGallery />} />
+        {/* <Route path="/cake_category" element={<CakeCategory/>} />
+
 import "./App.css";
 
 // Admin imports
@@ -31,6 +44,7 @@ function App() {
             <Route path="/" element={<Home />} />
             <Route path="/buypage" element={<Buypage />} />
             <Route path="/footer" element={<Footer />} />
+
 
             {/* Admin Routes */}
             <Route path="/admin" element={<AdminLayout />}>
