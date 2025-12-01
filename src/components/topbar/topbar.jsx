@@ -1,119 +1,76 @@
-// import React, { useState } from "react";
-// import "./topbar.css";
+import React, { useState } from "react";
+import {
+  Search,
+  MapPin,
+  Edit2,
+  Package,
+  ShoppingCart,
+  IndianRupee,
+  User,
+  Menu,
+} from "lucide-react";
+import "./topbar.css";
 
-// // Import icons from react-icons (NO ERROR)
-// import {
-//   FaSearch,
-//   FaShoppingCart,
-//   FaUser,
-//   FaBars,
-//   FaTimes,
-//   FaGift,
-//   FaHeart,
-//   FaQuestionCircle,
-//   FaInfoCircle,
-//   FaPhone,
-//   FaWhatsapp,
-//   FaAward
-// } from "react-icons/fa";
-
-// export default function FlowerAuraTopBar() {
-//   const [isMenuOpen, setIsMenuOpen] = useState(false);
-//   const [isMoreOpen, setIsMoreOpen] = useState(false);
-
-//   return (
-//     <div className="topbar-container">
-
-//       {/* Topbar */}
-//       <div className="topbar">
-//         {/* Logo */}
-//         <div className="logo">
-//           <button onClick={() => setIsMenuOpen(!isMenuOpen)} className="mobile-menu-btn">
-//             {isMenuOpen ? <FaTimes size={22} /> : <FaBars size={22} />}
-//           </button>
-
-//           FlowerAura
-//         </div>
-
-//         {/* Search */}
-//         <div className="search-container">
-//           <input className="search-input" placeholder="Search for..." />
-//           <FaSearch className="search-icon" />
-//         </div>
-
-//         {/* Right Section */}
-//         <div className="right-actions">
-//           <a href="#" className="action-link">
-//             <FaGift /> Track Order
-//           </a>
-
-//           {/* Cart */}
-//           <div className="action-link" style={{ position: "relative" }}>
-//             <FaShoppingCart />
-//             <span>Cart</span>
-//             <span className="cart-count">0</span>
-//           </div>
-
-//           {/* Currency */}
-//           <select className="action-link" style={{ border: "1px solid #ccc", padding: "4px", borderRadius: "6px" }}>
-//             <option>INR</option>
-//             <option>USD</option>
-//           </select>
-
-//           {/* Sign In */}
-//           <div className="action-link">
-//             <FaUser /> Sign In
-//           </div>
-
-//           {/* More Menu */}
-//           <div className="more-menu">
-//             <div className="action-link" onClick={() => setIsMoreOpen(!isMoreOpen)}>
-//               <FaBars /> More
-//             </div>
-
-//             {isMoreOpen && (
-//               <div className="more-dropdown">
-//                 <a href="#"><FaGift /> Corporate Gifts</a>
-//                 <a href="#"><FaHeart /> My Favourites</a>
-//                 <a href="#"><FaAward /> Franchise</a>
-//                 <a href="#"><FaQuestionCircle /> FAQ</a>
-//                 <a href="#"><FaInfoCircle /> About Us</a>
-//                 <a href="#"><FaGift /> Sell With Us</a>
-//                 <a href="#"><FaPhone /> Contact Us</a>
-//                 <a href="#"><FaWhatsapp /> WhatsApp</a>
-//               </div>
-//             )}
-//           </div>
-//         </div>
-//       </div>
-
-//       {/* Mobile Menu */}
-//       {isMenuOpen && (
-//         <div className="mobile-menu">
-//           <div className="mobile-item"><FaGift /> Track Order</div>
-//           <div className="mobile-item"><FaGift /> Corporate Gifts</div>
-//           <div className="mobile-item"><FaHeart /> My Favourites</div>
-//           <div className="mobile-item"><FaAward /> Refer & Earn</div>
-//           <div className="mobile-item"><FaAward /> Franchise</div>
-//           <div className="mobile-item"><FaQuestionCircle /> FAQ</div>
-//           <div className="mobile-item"><FaInfoCircle /> About Us</div>
-//           <div className="mobile-item"><FaPhone /> Contact Us</div>
-//           <div className="mobile-item"><FaWhatsapp /> WhatsApp</div>
-//         </div>
-//       )}
-//     </div>
-//   );
-// }
+export default function FlowerAuraNavbar() {
+  const [searchQuery, setSearchQuery] = useState("");
+  const [deliveryLocation, setDeliveryLocation] = useState("Deliver To ?");
+  const [cartCount] = useState(0);
 
 
-import React from 'react'
-
-const topbar = () => {
   return (
-    <div>
-      j
-    </div>
-  )
-}
+    <div className="navbar-wrapper">
+      {/* TOP BAR */}
+      <div className="topbar">
+        {/* Logo */}
+        <div className="logo-area">
+       
+          <span className="logo-text">CAKE FORESTS</span>
+        </div>
 
-export default topbar
+        {/* Delivery */}
+        <div className="delivery-box">
+          <img src="https://flagcdn.com/w40/in.png" alt="IN" />
+          <span>{deliveryLocation}</span>
+          <Edit2 size={16} />
+        </div>
+
+        {/* Search */}
+        <div className="search-area">
+          <input
+            type="text"
+            placeholder="Search for flowers, cakes, gifts, etc."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+          />
+          <span className="search-btn mt-1 me-3" type="button" >
+            <Search size={18} />
+          </span>
+        </div>
+
+        {/* Actions */}
+        <div className="action-area">
+         
+
+          <div className="action-box cart">
+            <ShoppingCart size={22} />
+            {cartCount > 0 && <span className="cart-badge">{cartCount}</span>}
+            <span>Cart</span>
+          </div>
+
+       
+          <div className="action-box">
+            <User size={22} />
+            <span>Sign In</span>
+          </div>
+
+          <div className="action-box">
+            <Menu size={22} />
+            <span>More</span>
+          </div>
+        </div>
+      </div>
+
+    
+    </div>
+  );
+}
