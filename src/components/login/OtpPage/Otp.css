@@ -25,7 +25,7 @@
   border: 2px solid #a7a7a7;
   width: 48px;
   z-index: 1;
-  padding-right: 10px;
+  padding-left: 0px;
   border-radius: 8px;
   outline: none;
   text-align: center; /* centers text horizontally */
@@ -36,15 +36,15 @@
 
 .otp-input:focus {
   height: 48px;
-  border: 2px solid #cf2030;
+  border: 2px solid #5336AC;
   width: 48px;
   z-index: 1;
   padding-right: 10px;
   transform: translateY(-3px);
   border-radius: 8px;
   outline: none;
-  border-color: #CF2030; /* or #cf2030 if you want same red shade */
-  box-shadow: 0 0 4px rgba(207, 32, 48, 0.5); /* optional glow effect */
+  border-color: #5336AC; /* or #cf2030 if you want same red shade */
+  box-shadow: 0 0 4px rgba(77, 36, 239, 0.5); /* optional glow effect */
 }
 .resend{
   text-decoration: none;

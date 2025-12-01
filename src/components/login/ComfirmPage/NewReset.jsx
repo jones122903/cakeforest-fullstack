@@ -65,7 +65,7 @@ const NewReset = () => {
             {/* Header */}
             <div className="text-center mb-4">
               <div
-                className="d-flex align-items-center justify-content-center red-color-bg rounded-circle mx-auto mb-3"
+                className="d-flex align-items-center justify-content-center voilet-color-bg rounded-circle mx-auto mb-3"
                 style={{ width: "60px", height: "60px" }}
               >
                 <RiShieldUserLine color="white" size={30} />
@@ -102,9 +102,9 @@ const NewReset = () => {
                     ),
                   }}
                   sx={{
-                    "& .MuiInputLabel-root.Mui-focused": { color: "#cf2030" },
+                    "& .MuiInputLabel-root.Mui-focused": { color: "#5336AC" },
                     "& .MuiOutlinedInput-root.Mui-focused fieldset": {
-                      borderColor: "#cf2030",
+                      borderColor: "#5336AC",
                     },
                     "& .MuiFormLabel-asterisk": { display: "none" },
                   }}
@@ -140,9 +140,9 @@ const NewReset = () => {
                     ),
                   }}
                   sx={{
-                    "& .MuiInputLabel-root.Mui-focused": { color: "#cf2030" },
+                    "& .MuiInputLabel-root.Mui-focused": { color: "#5336AC" },
                     "& .MuiOutlinedInput-root.Mui-focused fieldset": {
-                      borderColor: "#cf2030",
+                      borderColor: "#5336AC",
                     },
                     "& .MuiFormLabel-asterisk": { display: "none" },
                   }}
@@ -235,7 +235,7 @@ const NewReset = () => {
               <button
                 type="submit"
                 disabled={!canSubmit}
-                className={`text-center mt-2 ${style.submitButton}`}
+                className={`text-center mt-2 violet-color-bg ${style.submitButton}`}
                 style={{
                   cursor: canSubmit ? "pointer" : "not-allowed",
                 }}
