@@ -7,7 +7,7 @@
 }
 
 .cakeContainer {
-  max-width: 100%;
+  max-width: 90%;
   margin: 0 auto;
   padding: 2rem;
 }
@@ -26,7 +26,7 @@
 }
 
 .mainTitle {
-  font-size: 26px;
+  font-size: 26px !important;
   font-weight: 700;
   color: #333;
   margin-bottom: 0.25rem;
@@ -49,7 +49,7 @@
   border: 1px solid #0E4D65;
   border-radius: 8px;
   font-weight: 600;
-  font-size: 16px;
+  font-size: 16px !important;
   cursor: pointer;
   transition: all 0.3s ease;
 }
@@ -149,7 +149,7 @@
 }
 
 .cakeCard:hover .cakeImage {
-  transform: scale(1.1);
+  transform: scale(1);
 }
 
 /* Badge Tag */
@@ -350,6 +350,7 @@
 
   .cakesGrid {
     grid-template-columns: repeat(4, 1fr);
+    max-width: none;
   }
 
   .wishlistBtn {
@@ -359,7 +360,7 @@
 
   .badgeTag {
     padding: 8px 14px;
-    font-size: 13px;
+    font-size: 13px !important;
   }
 }
 
@@ -370,8 +371,9 @@
   }
 
   .cakesGrid {
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(4, 1fr);
     gap: 1.25rem;
+    max-width: none;
   }
 
   .wishlistBtn {
@@ -380,7 +382,7 @@
   }
 
   .mainTitle {
-    font-size: 24px;
+    font-size: 24px !important;
   }
 
   .filterChips {
@@ -389,7 +391,7 @@
 
   .filterChip {
     padding: 6px 12px;
-    font-size: 13px;
+    font-size: 13px !important;
   }
 }
 
@@ -409,8 +411,9 @@
   }
 
   .cakesGrid {
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(4, 1fr);
     gap: 1rem;
+    max-width: none;
   }
 
   .filterChips {
@@ -419,7 +422,7 @@
 
   .filterChip {
     padding: 6px 12px;
-    font-size: 13px;
+    font-size: 13px !important;
   }
 
   .imageWrapper {
@@ -432,11 +435,11 @@
   }
 
   .cakeName {
-    font-size: 16px;
+    font-size: 16px !important;
   }
 
   .cakePrice {
-    font-size: 16px;
+    font-size: 16px !important;
   }
 }
 
@@ -463,11 +466,11 @@
   }
 
   .mainTitle {
-    font-size: 22px;
+    font-size: 22px !important;
   }
 
   .subtitle {
-    font-size: 14px;
+    font-size: 14px !important;
   }
 
   .viewAllBtn {
@@ -487,7 +490,7 @@
 
   .filterChip {
     padding: 6px 12px;
-    font-size: 12px;
+    font-size: 12px !important;
   }
 
   .sortDropdown {
@@ -508,21 +511,21 @@
   }
 
   .cakeName {
-    font-size: 16px;
+    font-size: 16px !important;
   }
 
   .cakePrice {
-    font-size: 16px;
+    font-size: 16px !important;
     margin-bottom: 0.35rem;
   }
 
   .ratingBadge {
     padding: 2px 4px;
-    font-size: 12px;
+    font-size: 12px !important;
   }
 
   .reviewsText {
-    font-size: 12px;
+    font-size: 12px !important;
   }
 
   .wishlistBtn {
@@ -537,7 +540,7 @@
 
   .badgeTag {
     padding: 6px 10px;
-    font-size: 11px;
+    font-size: 11px !important;
     top: 10px;
     left: 10px;
   }
@@ -555,16 +558,16 @@
   }
 
   .mainTitle {
-    font-size: 20px;
+    font-size: 20px !important;
   }
 
   .subtitle {
-    font-size: 13px;
+    font-size: 13px !important;
   }
 
   .viewAllBtn {
     height: 35px;
-    font-size: 14px;
+    font-size: 14px !important;
     padding: 5px 10px;
   }
 
@@ -581,12 +584,12 @@
 
   .filterChip {
     padding: 5px 10px;
-    font-size: 11px;
+    font-size: 11px !important;
   }
 
   .dropdown {
     padding: 8px 12px;
-    font-size: 12px;
+    font-size: 12px !important;
   }
 
   .cakesGrid {
@@ -599,34 +602,34 @@
   }
 
   .cakeName {
-    font-size: 14px;
+    font-size: 14px !important;
     margin-bottom: 0.35rem;
     margin-top: 5px;
   }
 
   .cakePrice {
-    font-size: 14px;
+    font-size: 14px !important;
   }
 
   .ratingBadge {
     padding: 2px 3px;
-    font-size: 11px;
+    font-size: 11px !important;
   }
 
   .reviewsText {
-    font-size: 10.9px;
+    font-size: 10.9px !important;
   }
 
   .deliveryText {
-    font-size: 11px;
+    font-size: 11px !important;
   }
 
   .deliveryLabel {
-    font-size: 11px;
+    font-size: 11px !important;
   }
 
   .deliveryTime {
-    font-size: 11px;
+    font-size: 11px !important;
   }
 
   .cardBody {
@@ -645,7 +648,7 @@
 
   .badgeTag {
     padding: 4px 8px;
-    font-size: 10px;
+    font-size: 10px !important;
     top: 8px;
     left: 8px;
   }
@@ -663,16 +666,16 @@
   }
 
   .mainTitle {
-    font-size: 18px;
+    font-size: 18px !important;
   }
 
   .subtitle {
-    font-size: 12px;
+    font-size: 12px !important;
   }
 
   .viewAllBtn {
     height: 32px;
-    font-size: 12px;
+    font-size: 12px !important;
     padding: 5px 8px;
   }
 
@@ -682,7 +685,7 @@
 
   .filterChip {
     padding: 4px 8px;
-    font-size: 10px;
+    font-size: 9px !important;
   }
 
   .cakesGrid {
@@ -695,33 +698,33 @@
   }
 
   .cakeName {
-    font-size: 12px;
+    font-size: 12px !important;
     margin-top: 4px;
   }
 
   .cakePrice {
-    font-size: 13px;
+    font-size: 13px !important;
   }
 
   .ratingBadge {
     padding: 1px 3px;
-    font-size: 10px;
+    font-size: 10px !important;
   }
 
   .reviewsText {
-    font-size: 10px;
+    font-size: 10px !important;
   }
 
   .deliveryText {
-    font-size: 10px;
+    font-size: 10px !important;
   }
 
   .deliveryLabel {
-    font-size: 10px;
+    font-size: 10px !important;
   }
 
   .deliveryTime {
-    font-size: 10px;
+    font-size: 10px !important;
   }
 
   .cardBody {
@@ -740,7 +743,7 @@
 
   .badgeTag {
     padding: 3px 6px;
-    font-size: 9px;
+    font-size: 9px !important;
   }
 }
 
@@ -751,21 +754,27 @@
   }
 
   .mainTitle {
-    font-size: 16px;
+    font-size: 16px !important;
   }
 
   .subtitle {
-    font-size: 11px;
+    font-size: 11px !important;
   }
 
   .viewAllBtn {
     height: 30px;
-    font-size: 11px;
+    font-size: 11px !important;
   }
 
   .filterChip {
     padding: 3px 6px;
-    font-size: 9px;
+    font-size: 7px !important;
+    font-weight: 540;
+  }
+  .dropdown{
+    width: 31% !important;
+    margin-left: 65%;
+    font-size: 10px !important;
   }
 
   .cakesGrid {
@@ -778,33 +787,33 @@
   }
 
   .cakeName {
-    font-size: 11px;
+    font-size: 11px !important;
     margin-top: 3px;
   }
 
   .cakePrice {
-    font-size: 12px;
+    font-size: 12px !important;
   }
 
   .ratingBadge {
-    font-size: 9px;
+    font-size: 9px !important;
     padding: 1px 2px;
   }
 
   .reviewsText {
-    font-size: 9px;
+    font-size: 9px !important;
   }
 
   .deliveryText {
-    font-size: 9px;
+    font-size: 9px !important;
   }
 
   .deliveryLabel {
-    font-size: 9px;
+    font-size: 9px !important;
   }
 
   .deliveryTime {
-    font-size: 9px;
+    font-size: 9px !important;
   }
 
   .cardBody {
@@ -823,7 +832,7 @@
 
   .badgeTag {
     padding: 2px 5px;
-    font-size: 8px;
+    font-size: 8px !important;
   }
 }
 
@@ -834,23 +843,23 @@
   }
 
   .mainTitle {
-    font-size: 14px;
+    font-size: 14px !important;
   }
 
   .subtitle {
-    font-size: 10px;
+    font-size: 10px !important;
   }
 
   .viewAllBtn {
     height: 28px;
-    font-size: 10px;
+    font-size: 10px !important;
     min-width: 80px;
     width: 100px;
   }
 
   .filterChip {
     padding: 2px 5px;
-    font-size: 8px;
+    font-size: 8px !important;
   }
 
   .cakesGrid {
@@ -862,31 +871,31 @@
   }
 
   .cakeName {
-    font-size: 10px;
+    font-size: 10px !important;
   }
 
   .cakePrice {
-    font-size: 11px;
+    font-size: 11px !important;
   }
 
   .ratingBadge {
-    font-size: 8px;
+    font-size: 8px !important;
   }
 
   .reviewsText {
-    font-size: 8px;
+    font-size: 8px !important;
   }
 
   .deliveryText {
-    font-size: 8px;
+    font-size: 8px !important;
   }
 
   .deliveryLabel {
-    font-size: 8px;
+    font-size: 8px !important;
   }
 
   .deliveryTime {
-    font-size: 8px;
+    font-size: 8px !important;
   }
 
   .cardBody {
@@ -905,8 +914,67 @@
 
   .badgeTag {
     padding: 1px 3px;
-    font-size: 7px;
+    font-size: 7px !important;
     top: 5px;
     left: 5px;
+  }
+}
+
+/* ==================== SWIPER CAROUSEL STYLES ==================== */
+.cakeSwiper {
+  width: 100%;
+  height: 100%;
+}
+
+.cakeSwiper :global(.swiper-slide) {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Swiper Navigation Arrows - Hidden */
+.cakeSwiper :global(.swiper-button-next),
+.cakeSwiper :global(.swiper-button-prev) {
+  display: none;
+}
+
+/* Swiper Pagination Dots */
+.cakeSwiper :global(.swiper-pagination) {
+  bottom: 15px !important;
+  left: auto !important;
+  right: 15px !important;
+  width: auto !important;
+  display: flex;
+  justify-content: flex-end;
+  z-index: 10;
+}
+
+.cakeSwiper :global(.swiper-pagination-bullet) {
+  width: 8px;
+  height: 8px;
+  background: rgba(255, 255, 255, 0.8);
+  opacity: 1;
+  transition: all 0.3s ease;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+  margin: 0 3px !important;
+}
+
+.cakeSwiper :global(.swiper-pagination-bullet-active) {
+  background: #0E4D65;
+  transform: scale(1);
+}
+
+/* Responsive Swiper Styles */
+@media (max-width: 768px) {
+  .cakeSwiper :global(.swiper-pagination-bullet) {
+    width: 6px;
+    height: 6px;
+  }
+}
+
+@media (max-width: 480px) {
+  .cakeSwiper :global(.swiper-pagination-bullet) {
+    width: 5px;
+    height: 5px;
   }
 }
