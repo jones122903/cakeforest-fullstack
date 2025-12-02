@@ -66,15 +66,32 @@ const Footer = () => {
               </div>
 
               <h6 className={`${style.socialHeading}`}>Spread the Love On Social Media</h6>
-              {/* social media icons */}
               <div className={`${style.socialIconsContainer}`}>
-                <div className={`${style.iconBox} p-2`}><FaFacebook size={30} color='blue' /></div>
-                <div className={`${style.iconBox} p-2`}><FaSquareXTwitter size={30} color='black' /></div>
-                <div className={`${style.iconBox} p-2`}><FaYoutube size={30} color='red' /></div>
-                <div className={`${style.iconBox} p-2`}><FaPinterest size={30} color='red' /></div>
-                <div className={`${style.iconBox} p-2`}><FaInstagram size={30} color='red' /></div>
-                <div className={`${style.iconBox} p-2`}><FaLinkedin size={30} color='blue' /></div>
+                <div className={`${style.iconBox} ${style.facebook}`}>
+                  <FaFacebook size={28} color="white" />
+                </div>
+
+                <div className={`${style.iconBox} ${style.twitter}`}>
+                  <FaSquareXTwitter size={28} color="white" />
+                </div>
+
+                <div className={`${style.iconBox} ${style.youtube}`}>
+                  <FaYoutube size={28} color="white" />
+                </div>
+
+                <div className={`${style.iconBox} ${style.pinterest}`}>
+                  <FaPinterest size={28} color="white" />
+                </div>
+
+                <div className={`${style.iconBox} ${style.instagram}`}>
+                  <FaInstagram size={28} color="white" />
+                </div>
+
+                <div className={`${style.iconBox} ${style.linkedin}`}>
+                  <FaLinkedin size={28} color="white" />
+                </div>
               </div>
+
             </div>
           </div>
         </div>
