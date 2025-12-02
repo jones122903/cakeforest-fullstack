@@ -17,6 +17,7 @@ import CartUI from "../components/Cart All Pages/CartUI.jsx";
 import OrderSummary from "../components/Cart All Pages/CartUI.jsx";
 import Buypage from "../pages/buypage.jsx";
 import Footer from "../components/footer/footer.jsx";
+import CakeGallery from "../components/cake_gallery/cakeGallery.jsx";
 import PWAInstallPrompt from "../components/PWAInstallPrompt/PWAInstallPrompt.jsx";
 
 import "bootstrap/dist/css/bootstrap.min.css"
@@ -63,6 +64,7 @@ function App() {
             <Route path="/" element={<Home />} />
             <Route path="/buypage" element={<Buypage />} />
             <Route path="/order" element={<OrderSummary/>} />
+            <Route path="/gallery" element={ <CakeGallery/>} />
             <Route path="/footer" element={<Footer />} />
             <Route path="/login" element={<Login />} />
             <Route path="/forget" element={<NewForget />} />
