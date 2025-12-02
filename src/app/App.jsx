@@ -62,6 +62,7 @@ function App() {
             {/* Public Routes */}
             <Route path="/" element={<Home />} />
             <Route path="/buypage" element={<Buypage />} />
+            <Route path="/order" element={<OrderSummary/>} />
             <Route path="/footer" element={<Footer />} />
             <Route path="/login" element={<Login />} />
             <Route path="/forget" element={<NewForget />} />
