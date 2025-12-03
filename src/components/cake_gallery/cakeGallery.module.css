@@ -12,6 +12,17 @@
   padding: 2rem;
 }
 
+.ratingPlaceholder {
+  height: 24px;
+  /* ⭐ Same height as rating section */
+  margin-bottom: 6px;
+  /* ⭐ Same spacing as real rating */
+  display: block;
+  /* Ensure it occupies space */
+  visibility: hidden;
+  /* Invisible but space is kept */
+}
+
 /* ==================== HEADER SECTION ==================== */
 .headerSection {
   display: flex;
@@ -95,6 +106,12 @@
   color: #0E4D65;
 }
 
+.activeFilter {
+  background-color: #0E4D65;
+  color: white !important;
+  border-color: #0E4D65;
+}
+
 .sortDropdown {
   display: flex;
   align-items: center;
@@ -126,6 +143,7 @@
   border-radius: 12px;
   overflow: hidden;
   transition: box-shadow 0.3s ease;
+  cursor: pointer;
 }
 
 .cakeCard:hover {
@@ -208,7 +226,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 2;
+  z-index: 10;
 }
 
 .vegDot {
@@ -393,6 +411,14 @@
     padding: 6px 12px;
     font-size: 13px !important;
   }
+
+  .cakeName {
+    font-size: 14px !important;
+  }
+
+  .cakePrice {
+    font-size: 14px !important;
+  }
 }
 
 /* ==================== TABLET LANDSCAPE (1024px) ==================== */
@@ -435,11 +461,11 @@
   }
 
   .cakeName {
-    font-size: 16px !important;
+    font-size: 14px !important;
   }
 
   .cakePrice {
-    font-size: 16px !important;
+    font-size: 14px !important;
   }
 }
 
@@ -771,7 +797,8 @@
     font-size: 7px !important;
     font-weight: 540;
   }
-  .dropdown{
+
+  .dropdown {
     width: 31% !important;
     margin-left: 65%;
     font-size: 10px !important;
@@ -796,8 +823,8 @@
   }
 
   .ratingBadge {
-    font-size: 9px !important;
     padding: 1px 2px;
+    font-size: 9px !important;
   }
 
   .reviewsText {
@@ -817,7 +844,7 @@
   }
 
   .cardBody {
-    padding: 1px;
+    padding: 2px;
   }
 
   .wishlistBtn {
@@ -830,16 +857,23 @@
     height: 16px;
   }
 
+  .vegDot {
+    width: 8px;
+    height: 8px;
+  }
+
   .badgeTag {
     padding: 2px 5px;
     font-size: 8px !important;
+    top: 6px;
+    left: 6px;
   }
 }
 
-/* ==================== EXTRA SMALL (340px) ==================== */
-@media (max-width: 340px) {
+/* ==================== EXTRA SMALL MOBILE (320px) ==================== */
+@media (max-width: 320px) {
   .cakeContainer {
-    padding: 0.35rem 0.15rem;
+    padding: 0.5rem 0.2rem;
   }
 
   .mainTitle {
@@ -853,16 +887,15 @@
   .viewAllBtn {
     height: 28px;
     font-size: 10px !important;
-    min-width: 80px;
-    width: 100px;
   }
 
   .filterChip {
     padding: 2px 5px;
-    font-size: 8px !important;
+    font-size: 7px !important;
   }
 
   .cakesGrid {
+    grid-template-columns: repeat(2, 1fr);
     gap: 0.3rem;
   }
 
@@ -872,6 +905,7 @@
 
   .cakeName {
     font-size: 10px !important;
+    margin-top: 2px;
   }
 
   .cakePrice {
@@ -879,6 +913,7 @@
   }
 
   .ratingBadge {
+    padding: 1px 2px;
     font-size: 8px !important;
   }
 
@@ -903,8 +938,8 @@
   }
 
   .wishlistBtn {
-    width: 20px;
-    height: 20px;
+    width: 22px;
+    height: 22px;
   }
 
   .vegBadge {
@@ -912,69 +947,15 @@
     height: 14px;
   }
 
-  .badgeTag {
-    padding: 1px 3px;
-    font-size: 7px !important;
-    top: 5px;
-    left: 5px;
-  }
-}
-
-/* ==================== SWIPER CAROUSEL STYLES ==================== */
-.cakeSwiper {
-  width: 100%;
-  height: 100%;
-}
-
-.cakeSwiper :global(.swiper-slide) {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-/* Swiper Navigation Arrows - Hidden */
-.cakeSwiper :global(.swiper-button-next),
-.cakeSwiper :global(.swiper-button-prev) {
-  display: none;
-}
-
-/* Swiper Pagination Dots */
-.cakeSwiper :global(.swiper-pagination) {
-  bottom: 15px !important;
-  left: auto !important;
-  right: 15px !important;
-  width: auto !important;
-  display: flex;
-  justify-content: flex-end;
-  z-index: 10;
-}
-
-.cakeSwiper :global(.swiper-pagination-bullet) {
-  width: 8px;
-  height: 8px;
-  background: rgba(255, 255, 255, 0.8);
-  opacity: 1;
-  transition: all 0.3s ease;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
-  margin: 0 3px !important;
-}
-
-.cakeSwiper :global(.swiper-pagination-bullet-active) {
-  background: #0E4D65;
-  transform: scale(1);
-}
-
-/* Responsive Swiper Styles */
-@media (max-width: 768px) {
-  .cakeSwiper :global(.swiper-pagination-bullet) {
+  .vegDot {
     width: 6px;
     height: 6px;
   }
-}
 
-@media (max-width: 480px) {
-  .cakeSwiper :global(.swiper-pagination-bullet) {
-    width: 5px;
-    height: 5px;
+  .badgeTag {
+    padding: 2px 4px;
+    font-size: 7px !important;
+    top: 5px;
+    left: 5px;
   }
 }
