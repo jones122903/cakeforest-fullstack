@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Heart, MapPin, Smile, Truck } from 'lucide-react';
-
+import { useNavigate } from 'react-router-dom';
 // Import cake images
 import redVelvetMain from '../../assets/images/cakes/red_velvet_main.png';
 import chocolateCake from '../../assets/images/cakes/chocolate_cake.png';
@@ -13,6 +13,7 @@ import pineappleCake from '../../assets/images/cakes/pineapple_cake.png';
 import './cakeProductPage.css'
 
 const CakeProductPage = () => {
+  const navigate = useNavigate();
   const [selectedWeight, setSelectedWeight] = useState('0.5 Kg');
   const [selectedVariant, setSelectedVariant] = useState('Basic');
   const [nameOnCake, setNameOnCake] = useState('');
@@ -66,6 +67,10 @@ const CakeProductPage = () => {
 
 
   const currentPrice = variants.find(v => v.name === selectedVariant)?.price || 685;
+
+  const goToChapter = () => {
+    navigate("/order");
+  };
 
   return (
     <div  >
@@ -219,7 +224,7 @@ const CakeProductPage = () => {
             {/* Buttons */}
             <div className="buttons-container">
               <button className="btn-cart w-100 w-md-50">GO TO CART</button>
-              <button className="btn-buy w-100 w-md-50">BUY NOW | ₹ {currentPrice}</button>
+              <button className="btn-buy w-100 w-md-50" onClick={goToChapter}>BUY NOW | ₹ {currentPrice}</button>
             </div>
           </div>
         </div>
