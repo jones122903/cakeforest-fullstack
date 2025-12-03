@@ -97,12 +97,13 @@ import rasmalaipistadelightcake3 from '../../assets/cake/rasmalai pista delight 
 const CakeGallery = () => {
   const [wishlist, setWishlist] = useState({});
   const [selectedFilter, setSelectedFilter] = useState('All');
+  const [sortBy, setSortBy] = useState('popularity');
   const swiperRefs = useRef({});
 
   // Different images for each cake for carousel effect
   const cakeImages = {
-    1: [chocolatetrafflecake1, chocolatetrafflecake2, chocolatetrafflecake3, chocolatetrafflecake4, chocolatetrafflecake5, chocolatetrafflecake6],
-    2: [scrumptiousvanillacake1, scrumptiousvanillacake2, scrumptiousvanillacake3, scrumptiousvanillacake4, scrumptiousvanillacake5],
+    1: [chocolatetrafflecake1, chocolatetrafflecake2, chocolatetrafflecake3, chocolatetrafflecake4,],
+    2: [scrumptiousvanillacake1, scrumptiousvanillacake2, scrumptiousvanillacake3, scrumptiousvanillacake4],
     3: [pearlsnbutterflythemed1, pearlsnbutterflythemed2, pearlsnbutterflythemed3],
     4: [vintagefloralcake1, vintagefloralcake2, vintagefloralcake3],
     5: [purplebutterflybirthdaycake1, purplebutterflybirthdaycake2, purplebutterflybirthdaycake3],
@@ -111,7 +112,7 @@ const CakeGallery = () => {
     8: [redvelvetcake1, redvelvetcake2, redvelvetcake3],
     9: [forevertogoanniversarycake1, forevertogoanniversarycake2, forevertogoanniversarycake3],
     10: [pinkbarbienBowcake1, pinkbarbienBowcake2, pinkbarbienBowcake3],
-    11: [rasmalaipistacreamcake1, rasmalaipistacreamcake2, rasmalaipistacreamcake3, rasmalaipistacreamcake4, rasmalaipistacreamcake5],
+    11: [rasmalaipistacreamcake1, rasmalaipistacreamcake2, rasmalaipistacreamcake3, rasmalaipistacreamcake4],
     12: [fruitfiestachocolatecake1, fruitfiestachocolatecake2, fruitfiestachocolatecake3],
     13: [labubudollsbentocake1, labubudollsbentocake2, labubudollsbentocake3],
     14: [harrypottergryffindordripcake1, harrypottergryffindordripcake2, harrypottergryffindordripcake3],
@@ -124,6 +125,8 @@ const CakeGallery = () => {
       id: 1,
       name: 'Chocolate Truffle Cake',
       price: '₹595',
+      originalPrice: '₹799',
+      discount: '26%',
       rating: 4.9,
       reviews: 828,
       delivery: 'Tomorrow',
@@ -135,6 +138,8 @@ const CakeGallery = () => {
       id: 2,
       name: 'Scrumptious Vanilla Cake',
       price: '₹635',
+      originalPrice: '₹849',
+      discount: '25%',
       rating: 4.9,
       reviews: 90,
       delivery: 'Tomorrow',
@@ -179,6 +184,8 @@ const CakeGallery = () => {
       id: 6,
       name: 'Choco Butterscotch Cake',
       price: '₹645',
+      originalPrice: '₹799',
+      discount: '19%',
       rating: 5,
       reviews: 1,
       delivery: 'Tomorrow',
@@ -201,6 +208,8 @@ const CakeGallery = () => {
       id: 8,
       name: 'Red Velvet Cake',
       price: '₹685',
+      originalPrice: '₹899',
+      discount: '24%',
       rating: 4.5,
       reviews: 320,
       delivery: 'Tomorrow',
@@ -234,6 +243,8 @@ const CakeGallery = () => {
       id: 11,
       name: 'Rasmalai Pista Cream Cake',
       price: '₹815',
+      originalPrice: '₹999',
+      discount: '18%',
       rating: 4.9,
       reviews: 271,
       delivery: 'Tomorrow',
@@ -310,6 +321,31 @@ const CakeGallery = () => {
     ? cakes
     : cakes.filter(cake => cake.category === selectedFilter);
 
+  // Sort cakes based on selected sort option
+  const sortedCakes = [...filteredCakes].sort((a, b) => {
+    switch (sortBy) {
+      case 'priceLowToHigh':
+        // Extract numeric value from price string (e.g., "₹595" => 595)
+        const priceA = parseInt(a.price.replace('₹', ''));
+        const priceB = parseInt(b.price.replace('₹', ''));
+        return priceA - priceB;
+
+      case 'priceHighToLow':
+        const priceA2 = parseInt(a.price.replace('₹', ''));
+        const priceB2 = parseInt(b.price.replace('₹', ''));
+        return priceB2 - priceA2;
+
+      case 'newest':
+        // Sort by ID in descending order (assuming higher ID = newer)
+        return b.id - a.id;
+
+      case 'popularity':
+      default:
+        // Sort by reviews count (higher reviews = more popular)
+        return b.reviews - a.reviews;
+    }
+  });
+
   return (
     <div className={styles.cakeContainer}>
       {/* Filter Section */}
@@ -326,18 +362,22 @@ const CakeGallery = () => {
           ))}
         </div>
         <div className={styles.sortDropdown}>
-          <select className={styles.dropdown}>
-            <option>Popularity</option>
-            <option>Price: Low to High</option>
-            <option>Price: High to Low</option>
-            <option>Newest</option>
+          <select
+            className={styles.dropdown}
+            value={sortBy}
+            onChange={(e) => setSortBy(e.target.value)}
+          >
+            <option value="popularity">Popularity</option>
+            <option value="priceLowToHigh">Price: Low to High</option>
+            <option value="priceHighToLow">Price: High to Low</option>
+            <option value="newest">Newest</option>
           </select>
         </div>
       </div>
 
       {/* Cakes Grid */}
       <div className={styles.cakesGrid}>
-        {filteredCakes.map(cake => {
+        {sortedCakes.map(cake => {
           // Only render cake card if images exist for this cake
           if (!cakeImages[cake.id]) return null;
 
@@ -373,6 +413,7 @@ const CakeGallery = () => {
                   pagination={{
                     clickable: true,
                     dynamicBullets: true,
+                    
                   }}
                   autoplay={{
                     delay: 1500,
@@ -426,7 +467,19 @@ const CakeGallery = () => {
               {/* Card Body */}
               <div className={styles.cardBody}>
                 <h3 className={styles.cakeName}>{cake.name}</h3>
-                <p className={styles.cakePrice}>{cake.price}</p>
+
+                {/* Price Section with discount */}
+                <div className={styles.priceContainer}>
+                  <p className={styles.cakePrice}>{cake.price}</p>
+                  {cake.originalPrice && (
+                    <>
+                      <p className={styles.originalPrice}>{cake.originalPrice}</p>
+                      {cake.discount && (
+                        <span className={styles.discountBadge}>{cake.discount} OFF</span>
+                      )}
+                    </>
+                  )}
+                </div>
 
                 {/* Rating Section */}
                 {cake.rating ? (
