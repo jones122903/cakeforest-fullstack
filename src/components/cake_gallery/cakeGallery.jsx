@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { FaHeart, FaRegHeart } from 'react-icons/fa';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Pagination, Autoplay } from 'swiper/modules';
@@ -6,7 +6,7 @@ import 'swiper/css';
 import 'swiper/css/pagination';
 import styles from './cakeGallery.module.css';
 
-// Import cake images from assets/cake_gallery folder
+// Import cake images from assets/cake folder
 // Chocolate Truffle Cake images
 import chocolatetrafflecake1 from '../../assets/cake/chocolate traffle cake/chocolatetrafflecake1.jpg';
 import chocolatetrafflecake2 from '../../assets/cake/chocolate traffle cake/chocolatetrafflecake2.jpg';
@@ -32,16 +32,91 @@ import vintagefloralcake1 from '../../assets/cake/vintage floral cake/vintageflo
 import vintagefloralcake2 from '../../assets/cake/vintage floral cake/vintagefloralcake2.jpg';
 import vintagefloralcake3 from '../../assets/cake/vintage floral cake/vintagefloralcake3.jpg';
 
+// Purple Butterfly Birthday Cake images
+import purplebutterflybirthdaycake1 from '../../assets/cake/purple butterfly birthday cake/purplebutterflybirthdaycake1.jpg';
+import purplebutterflybirthdaycake2 from '../../assets/cake/purple butterfly birthday cake/purplebutterflybirthdaycake2.jpg';
+import purplebutterflybirthdaycake3 from '../../assets/cake/purple butterfly birthday cake/purplebutterflybirthdaycake3.jpg';
+
+// Choco Butterscotch Cake images
+import chocobutterscotchcake1 from '../../assets/cake/choco butterscotch cake/chocobutterscotchcake1.jpg';
+import chocobutterscotchcake2 from '../../assets/cake/choco butterscotch cake/chocobutterscotchcake2.jpg';
+import chocobutterscotchcake3 from '../../assets/cake/choco butterscotch cake/chocobutterscotchcake3.jpg';
+
+// Floral Pearl Elegance Cake images
+import floralpearlelegancecake1 from '../../assets/cake/floral pearl elegance cake/floralpearlelegancecake1.jpg';
+import floralpearlelegancecake2 from '../../assets/cake/floral pearl elegance cake/floralpearlelegancecake2.jpg';
+import floralpearlelegancecake3 from '../../assets/cake/floral pearl elegance cake/floralpearlelegancecake3.jpg';
+
+// Red Velvet Cake images
+import redvelvetcake1 from '../../assets/cake/red velvet cake/redvelvetcake1.jpg';
+import redvelvetcake2 from '../../assets/cake/red velvet cake/redvelvetcake2.jpg';
+import redvelvetcake3 from '../../assets/cake/red velvet cake/redvelvetcake3.jpg';
+
+// Forever To Go Anniversary Cake images
+import forevertogoanniversarycake1 from '../../assets/cake/forever to go anniversary cake/forevertogoanniversarycake1.jpg';
+import forevertogoanniversarycake2 from '../../assets/cake/forever to go anniversary cake/forevertogoanniversarycake2.jpg';
+import forevertogoanniversarycake3 from '../../assets/cake/forever to go anniversary cake/forevertogoanniversarycake3.jpg';
+
+// Pink Barbie N Bow Cake images
+import pinkbarbienBowcake1 from '../../assets/cake/Pink Barbie N Bow Cake/PinkBarbieNBowCake1.jpg';
+import pinkbarbienBowcake2 from '../../assets/cake/Pink Barbie N Bow Cake/PinkBarbieNBowCake2.jpg';
+import pinkbarbienBowcake3 from '../../assets/cake/Pink Barbie N Bow Cake/PinkBarbieNBowCake3.jpg';
+
+// Rasmalai Pista Cream Cake images
+import rasmalaipistacreamcake1 from '../../assets/cake/rasmalai pista cream cake/rasmalaipistacreamcake1(3).jpg';
+import rasmalaipistacreamcake2 from '../../assets/cake/rasmalai pista cream cake/rasmalaipistacreamcake2(2).jpg';
+import rasmalaipistacreamcake3 from '../../assets/cake/rasmalai pista cream cake/rasmalaipistacreamcake3.jpg';
+import rasmalaipistacreamcake4 from '../../assets/cake/rasmalai pista cream cake/rasmalaipistacreamcake4.jpg';
+import rasmalaipistacreamcake5 from '../../assets/cake/rasmalai pista cream cake/rasmalaipistacreamcake5.jpg';
+
+// Fruit Fiesta Chocolate Cake images
+import fruitfiestachocolatecake1 from '../../assets/cake/Fruit Fiesta Chocolate Cake/FruitFiestaChocolateCake1.jpg';
+import fruitfiestachocolatecake2 from '../../assets/cake/Fruit Fiesta Chocolate Cake/FruitFiestaChocolateCake2.jpg';
+import fruitfiestachocolatecake3 from '../../assets/cake/Fruit Fiesta Chocolate Cake/FruitFiestaChocolateCake3.jpg';
+
+// Labubu Dolls Bento Cake images
+import labubudollsbentocake1 from '../../assets/cake/labubu dolls bento cake/labubudollsbentocake1.jpg';
+import labubudollsbentocake2 from '../../assets/cake/labubu dolls bento cake/labubudollsbentocake2.jpg';
+import labubudollsbentocake3 from '../../assets/cake/labubu dolls bento cake/labubudollsbentocake3.jpg';
+
+// Harry Potter Gryffindor Drip Cake images
+import harrypottergryffindordripcake1 from '../../assets/cake/Harry Potter Gryffindor Drip Cake/HarryPotterGryffindorDripCake1.jpg';
+import harrypottergryffindordripcake2 from '../../assets/cake/Harry Potter Gryffindor Drip Cake/HarryPotterGryffindorDripCake2.jpg';
+import harrypottergryffindordripcake3 from '../../assets/cake/Harry Potter Gryffindor Drip Cake/HarryPotterGryffindorDripCake3.jpg';
+
+// Classic Butterscotch Crunch Cake images
+import classicbutterscotchcrunchcake1 from '../../assets/cake/Classic Butterscotch Crunch Cake/ClassicButterscotchCrunchCake1.jpg';
+import classicbutterscotchcrunchcake2 from '../../assets/cake/Classic Butterscotch Crunch Cake/ClassicButterscotchCrunchCake2.jpg';
+import classicbutterscotchcrunchcake3 from '../../assets/cake/Classic Butterscotch Crunch Cake/ClassicButterscotchCrunchCake3.jpg';
+
+// Rasmalai Pista Delight Cake images
+import rasmalaipistadelightcake1 from '../../assets/cake/rasmalai pista delight cake/rasmalaipistadelightcake1.jpg';
+import rasmalaipistadelightcake2 from '../../assets/cake/rasmalai pista delight cake/rasmalaipistadelightcake2.jpg';
+import rasmalaipistadelightcake3 from '../../assets/cake/rasmalai pista delight cake/rasmalaipistadelightcake3.jpg';
+
 const CakeGallery = () => {
   const [wishlist, setWishlist] = useState({});
+  const [selectedFilter, setSelectedFilter] = useState('All');
+  const swiperRefs = useRef({});
 
   // Different images for each cake for carousel effect
-  // Each cake has 3-6 HD quality images (1080x1080 recommended)
   const cakeImages = {
     1: [chocolatetrafflecake1, chocolatetrafflecake2, chocolatetrafflecake3, chocolatetrafflecake4, chocolatetrafflecake5, chocolatetrafflecake6],
     2: [scrumptiousvanillacake1, scrumptiousvanillacake2, scrumptiousvanillacake3, scrumptiousvanillacake4, scrumptiousvanillacake5],
     3: [pearlsnbutterflythemed1, pearlsnbutterflythemed2, pearlsnbutterflythemed3],
     4: [vintagefloralcake1, vintagefloralcake2, vintagefloralcake3],
+    5: [purplebutterflybirthdaycake1, purplebutterflybirthdaycake2, purplebutterflybirthdaycake3],
+    6: [chocobutterscotchcake1, chocobutterscotchcake2, chocobutterscotchcake3],
+    7: [floralpearlelegancecake1, floralpearlelegancecake2, floralpearlelegancecake3],
+    8: [redvelvetcake1, redvelvetcake2, redvelvetcake3],
+    9: [forevertogoanniversarycake1, forevertogoanniversarycake2, forevertogoanniversarycake3],
+    10: [pinkbarbienBowcake1, pinkbarbienBowcake2, pinkbarbienBowcake3],
+    11: [rasmalaipistacreamcake1, rasmalaipistacreamcake2, rasmalaipistacreamcake3, rasmalaipistacreamcake4, rasmalaipistacreamcake5],
+    12: [fruitfiestachocolatecake1, fruitfiestachocolatecake2, fruitfiestachocolatecake3],
+    13: [labubudollsbentocake1, labubudollsbentocake2, labubudollsbentocake3],
+    14: [harrypottergryffindordripcake1, harrypottergryffindordripcake2, harrypottergryffindordripcake3],
+    15: [classicbutterscotchcrunchcake1, classicbutterscotchcrunchcake2, classicbutterscotchcrunchcake3],
+    16: [rasmalaipistadelightcake1, rasmalaipistadelightcake2, rasmalaipistadelightcake3],
   };
 
   const cakes = [
@@ -54,6 +129,7 @@ const CakeGallery = () => {
       delivery: 'Tomorrow',
       badge: 'Same Day',
       veg: true,
+      category: 'Chocolate',
     },
     {
       id: 2,
@@ -64,6 +140,7 @@ const CakeGallery = () => {
       delivery: 'Tomorrow',
       badge: 'Best Seller',
       veg: true,
+      category: 'Birthday',
     },
     {
       id: 3,
@@ -74,6 +151,7 @@ const CakeGallery = () => {
       delivery: 'Tomorrow',
       badge: null,
       veg: true,
+      category: 'Designer',
     },
     {
       id: 4,
@@ -84,6 +162,139 @@ const CakeGallery = () => {
       delivery: 'Tomorrow',
       badge: null,
       veg: true,
+      category: 'Designer',
+    },
+    {
+      id: 5,
+      name: 'Purple Butterfly Birthday Cake',
+      price: '₹815',
+      rating: null,
+      reviews: 0,
+      delivery: 'Tomorrow',
+      badge: 'Best Seller',
+      veg: true,
+      category: 'Birthday',
+    },
+    {
+      id: 6,
+      name: 'Choco Butterscotch Cake',
+      price: '₹645',
+      rating: 5,
+      reviews: 1,
+      delivery: 'Tomorrow',
+      badge: null,
+      veg: true,
+      category: 'Butterscotch',
+    },
+    {
+      id: 7,
+      name: 'Floral Pearl Elegance Cake',
+      price: '₹795',
+      rating: 5,
+      reviews: 1,
+      delivery: 'Tomorrow',
+      badge: null,
+      veg: true,
+      category: 'Designer',
+    },
+    {
+      id: 8,
+      name: 'Red Velvet Cake',
+      price: '₹685',
+      rating: 4.5,
+      reviews: 320,
+      delivery: 'Tomorrow',
+      badge: null,
+      veg: true,
+      category: 'Chocolate',
+    },
+    {
+      id: 9,
+      name: 'Forever To Go Anniversary Cake',
+      price: '₹815',
+      rating: null,
+      reviews: 0,
+      delivery: 'Tomorrow',
+      badge: null,
+      veg: true,
+      category: 'Anniversary',
+    },
+    {
+      id: 10,
+      name: 'Pink Barbie N Bow Cake',
+      price: '₹1895',
+      rating: null,
+      reviews: 0,
+      delivery: 'Tomorrow',
+      badge: null,
+      veg: true,
+      category: 'Designer',
+    },
+    {
+      id: 11,
+      name: 'Rasmalai Pista Cream Cake',
+      price: '₹815',
+      rating: 4.9,
+      reviews: 271,
+      delivery: 'Tomorrow',
+      badge: 'Same Day',
+      veg: true,
+      category: 'Birthday',
+    },
+    {
+      id: 12,
+      name: 'Fruit Fiesta Chocolate Cake',
+      price: '₹775',
+      rating: null,
+      reviews: 0,
+      delivery: 'Tomorrow',
+      badge: 'Best Seller',
+      veg: true,
+      category: 'Chocolate',
+    },
+    {
+      id: 13,
+      name: 'Labubu Dolls Bento Cake',
+      price: '₹545',
+      rating: null,
+      reviews: 0,
+      delivery: 'Tomorrow',
+      badge: null,
+      veg: true,
+      category: 'Photo Cakes',
+    },
+    {
+      id: 14,
+      name: 'Harry Potter Gryffindor Drip Cake',
+      price: '₹1995',
+      rating: null,
+      reviews: 0,
+      delivery: 'Tomorrow',
+      badge: null,
+      veg: true,
+      category: 'Designer',
+    },
+    {
+      id: 15,
+      name: 'Classic Butterscotch Crunch Cake',
+      price: '₹645',
+      rating: null,
+      reviews: 0,
+      delivery: 'Tomorrow',
+      badge: 'Best Seller',
+      veg: true,
+      category: 'Butterscotch',
+    },
+    {
+      id: 16,
+      name: 'Rasmalai Pista Delight Cake',
+      price: '₹815',
+      rating: 5,
+      reviews: 2,
+      delivery: 'Tomorrow',
+      badge: 'Best Seller',
+      veg: true,
+      category: 'Birthday',
     },
   ];
 
@@ -94,13 +305,22 @@ const CakeGallery = () => {
     }));
   };
 
+  // Filter cakes based on selected category
+  const filteredCakes = selectedFilter === 'All'
+    ? cakes
+    : cakes.filter(cake => cake.category === selectedFilter);
+
   return (
     <div className={styles.cakeContainer}>
       {/* Filter Section */}
       <div className={styles.filterSection}>
         <div className={styles.filterChips}>
-          {['Birthday', 'Anniversary', 'Chocolate', 'Butterscotch', 'Photo Cakes', 'Designer'].map(filter => (
-            <button key={filter} className={styles.filterChip}>
+          {['All', 'Birthday', 'Anniversary', 'Chocolate', 'Butterscotch', 'Photo Cakes', 'Designer'].map(filter => (
+            <button
+              key={filter}
+              className={`${styles.filterChip} ${selectedFilter === filter ? styles.activeFilter : ''}`}
+              onClick={() => setSelectedFilter(filter)}
+            >
               {filter}
             </button>
           ))}
@@ -117,7 +337,7 @@ const CakeGallery = () => {
 
       {/* Cakes Grid */}
       <div className={styles.cakesGrid}>
-        {cakes.map(cake => {
+        {filteredCakes.map(cake => {
           // Only render cake card if images exist for this cake
           if (!cakeImages[cake.id]) return null;
 
@@ -125,23 +345,26 @@ const CakeGallery = () => {
             <div
               key={cake.id}
               className={styles.cakeCard}
+
+
+              onMouseEnter={() => {
+                const swiper = swiperRefs.current[cake.id];
+                if (swiper && swiper.autoplay) {
+                  swiper.autoplay.start();
+                }
+              }}
+              onMouseLeave={() => {
+                const swiper = swiperRefs.current[cake.id];
+                if (swiper && swiper.autoplay) {
+                  swiper.autoplay.stop();
+                  swiper.slideTo(0);
+                }
+              }}
             >
               {/* Swiper Carousel - Plays only on hover */}
-              <div 
+              <div
                 className={styles.imageWrapper}
-                onMouseEnter={(e) => {
-                  const swiper = e.currentTarget.querySelector('.swiper')?.swiper;
-                  if (swiper && swiper.autoplay) {
-                    swiper.autoplay.start();
-                  }
-                }}
-                onMouseLeave={(e) => {
-                  const swiper = e.currentTarget.querySelector('.swiper')?.swiper;
-                  if (swiper && swiper.autoplay) {
-                    swiper.autoplay.stop();
-                    swiper.slideTo(0); // Reset to first slide
-                  }
-                }}
+
               >
                 <Swiper
                   modules={[Pagination, Autoplay]}
@@ -153,14 +376,15 @@ const CakeGallery = () => {
                   }}
                   autoplay={{
                     delay: 1500,
-                    disableOnInteraction: true,
-                    pauseOnMouseEnter: true,
+                    disableOnInteraction: false,
+                    pauseOnMouseEnter: false,
                   }}
                   loop={true}
                   speed={500}
                   className={styles.cakeSwiper}
                   onSwiper={(swiper) => {
-                    swiper.autoplay.stop(); // Stop autoplay initially
+                    swiperRefs.current[cake.id] = swiper;
+                    swiper.autoplay.stop();
                   }}
                 >
                   {cakeImages[cake.id].map((image, idx) => (
@@ -205,14 +429,15 @@ const CakeGallery = () => {
                 <p className={styles.cakePrice}>{cake.price}</p>
 
                 {/* Rating Section */}
-                {cake.rating && (
+                {cake.rating ? (
                   <div className={styles.ratingSection}>
-                    <span className={styles.ratingBadge}>
-                      ★ {cake.rating}
-                    </span>
+                    <span className={styles.ratingBadge}>★ {cake.rating}</span>
                     <span className={styles.reviewsText}>({cake.reviews} Reviews)</span>
                   </div>
+                ) : (
+                  <div className={styles.ratingPlaceholder}></div>
                 )}
+
 
                 {/* Delivery Info */}
                 <p className={styles.deliveryText}>
