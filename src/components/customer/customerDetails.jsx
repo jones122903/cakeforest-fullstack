@@ -3,7 +3,8 @@ import styles from './customerDetails.module.css';
 import {
   User, Phone, Mail, MessageCircle,
   MapPin, Navigation, Building, Flag,
-  CreditCard, CheckCircle, ShoppingBag
+  CreditCard, CheckCircle, ShoppingBag,
+  AlignRight
 } from 'lucide-react';
 
 const CustomerDetails = () => {
@@ -60,6 +61,41 @@ const CustomerDetails = () => {
     }
   };
 
+  const payment =(num)=>{
+   if(num===" "){
+    alert("no value")
+   }else{
+     const options = {
+      key: " ", 
+      amount: num,
+      currency: "INN",
+      name: "CakeForest Shop",
+      description: "Order Payment",
+      handler: async function (response) {
+        const verify = await axios.post("http://localhost:5000/api/payment/verify-payment", response);
+        if (verify.data.success) {
+          alert("Payment Successful!");
+        } else {
+          alert("Payment Failed!");
+        }
+      },
+      prefill: {
+        name: "Pravin",
+        email: "pravinjoshua2@gmail.com",
+        contact: "8870985683",
+      },
+      notes:{
+        address:"releitect"
+      },
+      theme: {
+        color: "#0e4d65",
+      },
+    };
+
+    const rzp1 = new window.Razorpay(options);
+    rzp1.open()
+   }
+    }
   const handleSubmit = (e) => {
     e.preventDefault();
     if (validate()) {
@@ -108,7 +144,7 @@ const CustomerDetails = () => {
               <div className={styles.row}>
                 <div className={styles.col}>
                   <div className={styles.inputGroup}>
-                    <label className={styles.label}>Phone Number <span style={{ color: '#ff6161' }}>*</span></label>
+                    <label className={styles.label}>Delivery Number <span style={{ color: '#ff6161' }}>*</span></label>
                     <div className={styles.inputWrapper}>
                       <Phone size={16} className={styles.icon} />
                       <input
