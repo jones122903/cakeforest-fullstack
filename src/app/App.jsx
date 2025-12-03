@@ -28,6 +28,7 @@ import Login from "../components/login/login.jsx";
 import  NewForget  from "../components/login/forget/NewForget.jsx";
 import  Otp  from "../components/login/OtpPage/Otp.jsx";
 import  NewReset  from "../components/login/ComfirmPage/NewReset.jsx";
+import CustomerDetails from "../components/customer/customerDetails.jsx";
  
 
 // import CakeGallery from "../components/cake_gallery/CakeGallery.jsx";
@@ -64,6 +65,7 @@ function App() {
             <Route path="/" element={<Home />} />
             <Route path="/buypage" element={<Buypage />} />
             <Route path="/order" element={<OrderSummary/>} />
+            <Route path="/details" element={<CustomerDetails/>} />
             <Route path="/gallery" element={ <CakeGallery/>} />
             <Route path="/footer" element={<Footer />} />
             <Route path="/login" element={<Login />} />
