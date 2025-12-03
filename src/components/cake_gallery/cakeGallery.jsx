@@ -5,6 +5,7 @@ import { Pagination, Autoplay } from 'swiper/modules';
 import 'swiper/css';
 import 'swiper/css/pagination';
 import styles from './cakeGallery.module.css';
+import { motion, AnimatePresence } from 'framer-motion';
 
 // Import cake images from assets/cake folder
 // Chocolate Truffle Cake images
@@ -444,17 +445,46 @@ const CakeGallery = () => {
                   <span className={styles.badgeTag}>{cake.badge}</span>
                 )}
 
-                {/* Wishlist Button */}
-                <button
-                  className={`${styles.wishlistBtn} ${wishlist[cake.id] ? styles.liked : ''}`}
-                  onClick={() => toggleWishlist(cake.id)}
-                >
-                  {wishlist[cake.id] ? (
-                    <FaHeart size={20} />
-                  ) : (
-                    <FaRegHeart size={20} />
-                  )}
-                </button>
+<button
+  className={styles.wishlistBtn}
+  onClick={() => toggleWishlist(cake.id)}
+>
+  <AnimatePresence mode="wait">
+    {wishlist[cake.id] ? (
+      <motion.div
+        key="filled"
+        initial={{ scale: 0 }}
+        animate={{ scale: 1 }}
+        exit={{ scale: 0 }}
+        transition={{ type: "spring", stiffness: 200 }}
+      >
+        <FaHeart size={27} className={styles.redHeart} />
+      </motion.div>
+    ) : (
+      <motion.div
+        key="outline"
+        initial={{ scale: 0 }}
+        animate={{ scale: 1 }}
+        exit={{ scale: 0 }}
+        transition={{ type: "spring", stiffness: 200 }}
+      >
+        <svg
+          width="27"
+          height="27"
+          viewBox="0 0 24 24"
+          fill="white"
+          stroke="#0E4D65"
+          strokeWidth="1.5"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        >
+          <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+        </svg>
+      </motion.div>
+    )}
+  </AnimatePresence>
+</button>
+
 
                 {/* Veg Badge */}
                 {cake.veg && (
