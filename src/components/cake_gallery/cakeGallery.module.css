@@ -1,0 +1,1196 @@
+/* ==================== BASE STYLES ==================== */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Poppins", sans-serif !important;
+}
+
+.cakeContainer {
+  max-width: 90%;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+.ratingPlaceholder {
+  height: 24px;
+  /* ⭐ Same height as rating section */
+  margin-bottom: 13px;
+  /* ⭐ Same spacing as real rating */
+  display: block;
+  /* Ensure it occupies space */
+  visibility: hidden;
+  /* Invisible but space is kept */
+}
+
+/* ==================== HEADER SECTION ==================== */
+.headerSection {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  gap: 1.5rem;
+}
+
+.headerContent {
+  flex: 1;
+}
+
+.mainTitle {
+  font-size: 26px !important;
+  font-weight: 700;
+  color: #333;
+  margin-bottom: 0.25rem;
+}
+
+.subtitle {
+  color: #666;
+  font-size: 16px;
+  margin: 0;
+}
+
+/* ==================== VIEW ALL BUTTON ==================== */
+.viewAllBtn {
+  height: 45px;
+  min-width: 100px;
+  width: 150px;
+  background-color: #0e4d65;
+  color: white;
+  padding: 10px 0px;
+  border: 1px solid #0e4d65;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 16px !important;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.viewAllBtn:hover {
+  background-color: white;
+  color: #0e4d65;
+  border: 1px solid #0e4d65;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(14, 77, 101, 0.3);
+}
+
+/* ==================== FILTER SECTION ==================== */
+.filterSection {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  gap: 1rem;
+}
+
+.filterChips {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  flex: 1;
+}
+
+.filterChip {
+  padding: 8px 16px;
+  border: 1px solid #ddd;
+  background: white;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  color: #333;
+  transition: all 0.3s ease;
+}
+
+.filterChip:hover {
+  border-color: #0e4d65;
+  color: #0e4d65;
+}
+
+.activeFilter {
+  background-color: #0e4d65;
+  color: white !important;
+  border-color: #0e4d65;
+}
+
+.sortDropdown {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.dropdown {
+  padding: 10px 15px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background: white;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  color: #333;
+}
+
+/* ==================== CAKES GRID ==================== */
+.cakesGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.5rem;
+}
+
+/* ==================== CAKE CARD ==================== */
+.cakeCard {
+  background: white;
+  border: 1px solid #e0e0e0;
+  border-radius: 12px;
+  overflow: hidden;
+  transition: box-shadow 0.3s ease;
+  cursor: pointer;
+}
+
+.cakeCard:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* Image Wrapper */
+.imageWrapper {
+  position: relative;
+  width: 100%;
+  height: 280px;
+  overflow: hidden;
+  background: #f5f5f5;
+}
+
+.cakeImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.4s ease;
+}
+
+.cakeCard:hover .cakeImage {
+  transform: scale(1);
+}
+
+/* Badge Tag */
+.badgeTag {
+  position: absolute;
+  top: 15px;
+  left: 15px;
+  background: #d63384;
+  color: white;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  z-index: 2;
+}
+
+/* Wishlist Button - adjusted for react-animated-heart */
+.wishlistBtn {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  background: transparent !important;
+  border: none;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 3;
+}
+
+/* Remove these if not using custom heart anymore */
+.whiteHeart {
+  color: #ffffff !important;
+  background: transparent !important;
+}
+
+.redHeart {
+  color: red !important;
+}
+
+/* Customize the heart size */
+.wishlistBtn svg {
+  width: 28px;
+  height: 28px;
+}
+
+/* Veg Badge */
+.vegBadge {
+  position: absolute;
+  bottom: 15px;
+  left: 15px;
+  background: white;
+  border: 2px solid #22aa00;
+  border-radius: 4px;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+}
+
+.vegDot {
+  width: 10px;
+  height: 10px;
+  background: #22aa00;
+  border-radius: 50%;
+}
+
+/* Navigation Arrows */
+.navArrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(255, 255, 255, 0.8);
+  border: none;
+  border-radius: 50%;
+  width: 35px;
+  height: 35px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 4;
+  transition: all 0.3s ease;
+}
+
+.navArrow:hover {
+  background: rgba(255, 255, 255, 1);
+  transform: translateY(-50%) scale(1.1);
+}
+
+.arrowLeft {
+  left: 10px;
+}
+
+.arrowRight {
+  right: 10px;
+}
+
+/* Dot Indicators */
+.dotIndicators {
+  position: absolute;
+  bottom: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 8px;
+  z-index: 4;
+  background: rgba(0, 0, 0, 0.3);
+  padding: 8px 12px;
+  border-radius: 20px;
+}
+
+.dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.6);
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.dot.active {
+  background: white !important;
+  transform: scale(1);
+}
+
+/* Card Body */
+.cardBody {
+  padding: 1rem;
+}
+
+.cakeName {
+  font-size: 18px;
+  font-weight: 500;
+  color: #666;
+  margin-bottom: 0.5rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Price Container */
+.priceContainer {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.cakePrice {
+  font-size: 18px;
+  color: #333;
+  margin: 0;
+  font-weight: 600;
+}
+
+.originalPrice {
+  font-size: 14px;
+  color: #999;
+  text-decoration: line-through;
+  margin: 0;
+  font-weight: 400;
+}
+
+.discountBadge {
+  background: #d63384;
+  color: white;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.ratingSection {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+  min-height: 1.75rem;
+}
+
+.ratingBadge {
+  background: #22aa00;
+  color: white;
+  padding: 2px 5px;
+  border-radius: 4px;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.reviewsText {
+  color: #67a6b1;
+  font-size: 14px;
+}
+
+.deliveryText {
+  color: #666;
+  font-size: 14px;
+  margin: 0;
+  min-height: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.deliveryLabel {
+  font-weight: 600;
+  color: #666;
+  font-size: 14px;
+}
+
+.deliveryTime {
+  color: #0e4d65;
+  font-weight: 500;
+  font-size: 14px;
+}
+
+/* ==================== DESKTOP (1440px) ==================== */
+@media (min-width: 1440px) {
+  .cakeContainer {
+    padding: 2rem;
+  }
+
+  .cakesGrid {
+    grid-template-columns: repeat(4, 1fr);
+    max-width: none;
+  }
+
+  .wishlistBtn {
+    width: 50px;
+    height: 50px;
+  }
+
+  .wishlistBtn svg {
+    width: 32px;
+    height: 32px;
+    position: relative;
+    bottom: 10px;
+  }
+
+  .badgeTag {
+    padding: 8px 14px;
+    font-size: 13px !important;
+  }
+}
+
+/* ==================== LAPTOP (1024px - 1439px) ==================== */
+@media (min-width: 1024px) and (max-width: 1439px) {
+  .cakeContainer {
+    padding: 1.5rem;
+  }
+
+  .deliveryText {
+    font-size: 12px !important;
+  }
+
+  .deliveryLabel {
+    font-size: 12px !important;
+  }
+
+  .cakesGrid {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.25rem;
+    max-width: none;
+  }
+
+  .wishlistBtn {
+    width: 45px;
+    height: 45px;
+  }
+
+  .wishlistBtn svg {
+    width: 28px;
+    height: 28px;
+    position: relative;
+    bottom: 10px;
+  }
+
+  .mainTitle {
+    font-size: 24px !important;
+  }
+
+  .filterChips {
+    gap: 0.5rem;
+  }
+
+  .filterChip {
+    padding: 6px 12px;
+    font-size: 13px !important;
+  }
+
+  .cakeName {
+    font-size: 14px !important;
+  }
+
+  .cakePrice {
+    font-size: 14px !important;
+  }
+
+  .deliveryTime {
+    font-size: 12px !important;
+  }
+
+  .deliveryLabel {
+    font-size: 12px !important;
+  }
+}
+
+/* ==================== TABLET LANDSCAPE (1024px) ==================== */
+@media (max-width: 1024px) {
+  .cakeContainer {
+    padding: 1.5rem;
+  }
+
+  .headerSection {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .viewAllBtn {
+    align-self: flex-end;
+  }
+
+  .cakesGrid {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1rem;
+    max-width: none;
+  }
+
+  .filterChips {
+    gap: 0.5rem;
+  }
+
+  .filterChip {
+    padding: 6px 12px;
+    font-size: 13px !important;
+  }
+
+  .imageWrapper {
+    height: 200px;
+  }
+
+  .wishlistBtn {
+    width: 42px;
+    height: 42px;
+  }
+
+  .wishlistBtn svg {
+    width: 26px;
+    height: 26px;
+    position: relative;
+    bottom: 10px;
+  }
+
+  .cakeName {
+    font-size: 14px !important;
+  }
+
+  .cakePrice {
+    font-size: 14px !important;
+  }
+
+  .deliveryText {
+    font-size: 12px !important;
+  }
+
+  .deliveryLabel {
+    font-size: 12px !important;
+  }
+
+  .deliveryTime {
+    font-size: 12px !important;
+  }
+}
+
+/* ==================== TABLET PORTRAIT (768px - 1024px) ==================== */
+@media (max-width: 768px) {
+  .cakeContainer {
+    padding: 1rem;
+  }
+
+  .headerSection {
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .headerContent {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+  }
+
+  .mainTitle {
+    font-size: 22px !important;
+  }
+
+  .subtitle {
+    font-size: 14px !important;
+  }
+
+  .viewAllBtn {
+    width: 100%;
+    max-width: 150px;
+  }
+
+  .filterSection {
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .filterChips {
+    justify-content: center;
+    gap: 0.5rem;
+  }
+
+  .filterChip {
+    padding: 6px 12px;
+    font-size: 12px !important;
+  }
+
+  .sortDropdown {
+    width: 100%;
+  }
+
+  .dropdown {
+    width: 31%;
+    margin-left: 67%;
+  }
+
+  .cakesGrid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+  }
+
+  .imageWrapper {
+    height: 220px;
+  }
+
+  .cakeName {
+    font-size: 16px !important;
+  }
+
+  .priceContainer {
+    gap: 0.4rem;
+  }
+
+  .cakePrice {
+    font-size: 16px !important;
+    margin-bottom: 0.35rem;
+  }
+
+  .originalPrice {
+    font-size: 13px !important;
+  }
+
+  .discountBadge {
+    font-size: 10px !important;
+    padding: 2px 5px;
+  }
+
+  .ratingBadge {
+    padding: 2px 4px;
+    font-size: 12px !important;
+  }
+
+  .reviewsText {
+    font-size: 12px !important;
+  }
+
+  .wishlistBtn {
+    width: 38px;
+    height: 38px;
+  }
+
+  .wishlistBtn svg {
+    width: 24px;
+    height: 24px;
+    position: relative;
+    bottom: 10px;
+  }
+
+  .vegBadge {
+    width: 22px;
+    height: 22px;
+  }
+
+  .badgeTag {
+    padding: 6px 10px;
+    font-size: 11px !important;
+    top: 10px;
+    left: 10px;
+  }
+}
+
+/* ==================== MOBILE LANDSCAPE (700px - 768px) ==================== */
+@media (max-width: 700px) {
+  .cakeContainer {
+    padding: 0.75rem 0.5rem;
+  }
+
+  .headerSection {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .mainTitle {
+    font-size: 20px !important;
+  }
+
+  .subtitle {
+    font-size: 13px !important;
+  }
+
+  .viewAllBtn {
+    height: 35px;
+    font-size: 14px !important;
+    padding: 5px 10px;
+  }
+
+  .filterSection {
+    flex-direction: column;
+    gap: 0.75rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .filterChips {
+    justify-content: center;
+    gap: 0.5rem;
+  }
+
+  .filterChip {
+    padding: 5px 10px;
+    font-size: 11px !important;
+  }
+
+  .dropdown {
+    padding: 8px 12px;
+    font-size: 12px !important;
+  }
+
+  .cakesGrid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.75rem;
+  }
+
+  .imageWrapper {
+    height: 180px;
+  }
+
+  .cakeName {
+    font-size: 14px !important;
+    margin-bottom: 0.35rem;
+    margin-top: 5px;
+  }
+
+  .cakePrice {
+    font-size: 14px !important;
+  }
+
+  .ratingBadge {
+    padding: 2px 3px;
+    font-size: 11px !important;
+  }
+
+  .reviewsText {
+    font-size: 10.9px !important;
+  }
+
+  .deliveryText {
+    font-size: 11px !important;
+  }
+
+  .deliveryLabel {
+    font-size: 11px !important;
+  }
+
+  .deliveryTime {
+    font-size: 11px !important;
+  }
+
+  .cardBody {
+    padding: 3px;
+  }
+
+  .wishlistBtn {
+    width: 32px;
+    height: 32px;
+  }
+
+  .wishlistBtn svg {
+    width: 20px;
+    height: 20px;
+    position: relative;
+    bottom: 10px;
+  }
+
+  .vegBadge {
+    width: 20px;
+    height: 20px;
+  }
+
+  .badgeTag {
+    padding: 4px 8px;
+    font-size: 10px !important;
+    top: 8px;
+    left: 8px;
+  }
+}
+
+/* ==================== MOBILE (481px - 700px) ==================== */
+@media (max-width: 480px) {
+  .cakeContainer {
+    padding: 0.75rem 0.5rem;
+  }
+
+  .headerSection {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .mainTitle {
+    font-size: 18px !important;
+  }
+
+  .subtitle {
+    font-size: 12px !important;
+  }
+
+  .viewAllBtn {
+    height: 32px;
+    font-size: 12px !important;
+    padding: 5px 8px;
+  }
+
+  .filterChips {
+    gap: 0.35rem;
+  }
+
+  .filterChip {
+    padding: 4px 8px;
+    font-size: 9px !important;
+  }
+
+  .cakesGrid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.5rem;
+  }
+
+  .imageWrapper {
+    height: 160px;
+  }
+
+  .cakeName {
+    font-size: 12px !important;
+    margin-top: 4px;
+  }
+
+  .cakePrice {
+    font-size: 13px !important;
+  }
+
+  .ratingBadge {
+    padding: 1px 3px;
+    font-size: 10px !important;
+  }
+
+  .reviewsText {
+    font-size: 10px !important;
+  }
+
+  .deliveryText {
+    font-size: 10px !important;
+  }
+
+  .deliveryLabel {
+    font-size: 10px !important;
+  }
+
+  .deliveryTime {
+    font-size: 10px !important;
+  }
+
+  .cardBody {
+    padding: 2px;
+  }
+
+  .wishlistBtn {
+    width: 28px;
+    height: 28px;
+  }
+
+  .wishlistBtn svg {
+    width: 18px;
+    height: 18px;
+    position: relative;
+    bottom: 10px;
+  }
+
+  .vegBadge {
+    width: 18px;
+    height: 18px;
+  }
+
+  .badgeTag {
+    padding: 3px 6px;
+    font-size: 9px !important;
+  }
+
+  .priceContainer {
+    gap: 0.3rem;
+  }
+
+  .originalPrice {
+    font-size: 10px !important;
+  }
+
+  .discountBadge {
+    font-size: 8px !important;
+    padding: 1px 3px;
+  }
+}
+
+/* ==================== SMALL MOBILE (375px - 480px) ==================== */
+@media (max-width: 375px) {
+  .cakeContainer {
+    padding: 0.5rem 0.25rem;
+  }
+
+  .mainTitle {
+    font-size: 16px !important;
+  }
+
+  .subtitle {
+    font-size: 11px !important;
+  }
+
+  .viewAllBtn {
+    height: 30px;
+    font-size: 11px !important;
+  }
+
+  .filterChip {
+    padding: 3px 6px;
+    font-size: 7px !important;
+    font-weight: 540;
+  }
+
+  .dropdown {
+    width: 47% !important;
+    margin-left: 55%;
+    font-size: 10px !important;
+  }
+
+  .cakesGrid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.4rem;
+  }
+
+  .imageWrapper {
+    height: 140px;
+  }
+
+  .cakeName {
+    font-size: 11px !important;
+    margin-top: 3px;
+  }
+
+  .cakePrice {
+    font-size: 12px !important;
+  }
+
+  .ratingBadge {
+    padding: 1px 2px;
+    font-size: 9px !important;
+  }
+
+  .reviewsText {
+    font-size: 9px !important;
+  }
+
+  .deliveryText {
+    font-size: 9px !important;
+  }
+
+  .deliveryLabel {
+    font-size: 9px !important;
+  }
+
+  .deliveryTime {
+    font-size: 9px !important;
+  }
+
+  .cardBody {
+    padding: 2px;
+  }
+
+  .wishlistBtn {
+    width: 26px;
+    height: 26px;
+  }
+
+  .wishlistBtn svg {
+    width: 18px;
+    height: 18px;
+    position: relative;
+    bottom: 13px;
+  }
+
+  .vegBadge {
+    width: 16px;
+    height: 16px;
+  }
+
+  .vegDot {
+    width: 8px;
+    height: 8px;
+  }
+
+  .badgeTag {
+    padding: 2px 5px;
+    font-size: 8px !important;
+    top: 6px;
+    left: 6px;
+  }
+
+  .priceContainer {
+    gap: 0.25rem;
+  }
+
+  .originalPrice {
+    font-size: 9px !important;
+  }
+
+  .discountBadge {
+    font-size: 7px !important;
+    padding: 1px 3px;
+  }
+}
+
+/* ==================== EXTRA SMALL MOBILE (320px) ==================== */
+@media (max-width: 320px) {
+  .cakeContainer {
+    padding: 0.5rem 0.2rem;
+  }
+    .dropdown {
+    width: 57% !important;
+    margin-left: 61%;
+    font-size: 10px !important;
+  }
+
+
+  .mainTitle {
+    font-size: 14px !important;
+  }
+
+  .subtitle {
+    font-size: 10px !important;
+  }
+
+  .viewAllBtn {
+    height: 28px;
+    font-size: 10px !important;
+  }
+
+  .filterChip {
+    padding: 2px 5px;
+    font-size: 7px !important;
+  }
+
+  .cakesGrid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.3rem;
+  }
+
+  .imageWrapper {
+    height: 120px;
+  }
+
+  .cakeName {
+    font-size: 10px !important;
+    margin-top: 2px;
+  }
+
+  .cakePrice {
+    font-size: 11px !important;
+  }
+
+  .ratingBadge {
+    padding: 1px 2px;
+    font-size: 8px !important;
+  }
+
+  .reviewsText {
+    font-size: 8px !important;
+  }
+
+  .deliveryText {
+    font-size: 8px !important;
+  }
+
+  .deliveryLabel {
+    font-size: 8px !important;
+  }
+
+  .deliveryTime {
+    font-size: 8px !important;
+  }
+
+  .cardBody {
+    padding: 1px;
+  }
+
+  .wishlistBtn {
+    width: 24px;
+    height: 24px;
+  }
+
+  .wishlistBtn svg {
+    width: 16px;
+    height: 16px;
+    position: relative;
+    bottom: 13px;
+  }
+
+  .vegBadge {
+    width: 14px;
+    height: 14px;
+  }
+
+  .vegDot {
+    width: 6px;
+    height: 6px;
+  }
+
+  .badgeTag {
+    padding: 2px 4px;
+    font-size: 7px !important;
+    top: 5px;
+    left: 5px;
+  }
+
+  .priceContainer {
+    gap: 0.2rem;
+  }
+
+  .originalPrice {
+    font-size: 8px !important;
+  }
+
+  .discountBadge {
+    font-size: 6px !important;
+    padding: 1px 2px;
+  }
+}
+
+/* ==================== SWIPER PAGINATION DOTS - GLOBAL STYLES ==================== */
+:global(.swiper-pagination) {
+  bottom: 10px !important;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 10;
+}
+
+:global(.swiper-pagination-bullet) {
+  width: 8px !important;
+  height: 8px !important;
+  background: rgba(14, 77, 101, 0.4) !important;
+  opacity: 1 !important;
+  border-radius: 50% !important;
+  margin: 0 4px !important;
+  transition: all 0.3s ease !important;
+}
+
+:global(.swiper-pagination-bullet-active) {
+  background: #0e4d65 !important;
+  transform: scale(1) !important;
+}
+
+:global(.swiper-pagination-bullet-active-main) {
+  background: #0e4d65 !important;
+}
+
+/* Responsive Swiper Pagination for smaller screens */
+@media (max-width: 768px) {
+  :global(.swiper-pagination-bullet) {
+    width: 7px !important;
+    height: 7px !important;
+    margin: 0 3px !important;
+  }
+}
+
+@media (max-width: 480px) {
+  :global(.swiper-pagination) {
+    bottom: 8px !important;
+  }
+
+  :global(.swiper-pagination-bullet) {
+    width: 6px !important;
+    height: 6px !important;
+    margin: 0 2px !important;
+  }
+}
+
+@media (max-width: 375px) {
+  :global(.swiper-pagination) {
+    bottom: 6px !important;
+  }
+
+  :global(.swiper-pagination-bullet) {
+    width: 5px !important;
+    height: 5px !important;
+    margin: 0 2px !important;
+  }
+}

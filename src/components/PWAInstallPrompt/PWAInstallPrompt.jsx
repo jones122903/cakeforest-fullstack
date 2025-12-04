@@ -50,7 +50,7 @@ const PWAInstallPrompt = () => {
 
     return (
         <div className="pwa-install-prompt">
-            <div className="pwa-install-content">
+            {/* <div className="pwa-install-content">
                 <div className="pwa-install-icon">
                     <img src="/pwa-192x192.png" alt="Cake Forest" />
                 </div>
@@ -66,7 +66,7 @@ const PWAInstallPrompt = () => {
                         Not Now
                     </button>
                 </div>
-            </div>
+            </div> */}
         </div>
     );
 };

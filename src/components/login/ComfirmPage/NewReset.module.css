@@ -1,0 +1,218 @@
+.cardBox {
+  max-width: 470px;
+  /* height: 600px; */
+  /* height: 100%; */
+  width: 100%;
+  padding: 30px 35px;
+  /* padding: 33px 42px 43px; */
+  border-radius: 12px;
+  background-color: #fff;
+  /* border-top-width: 7px;
+  border-bottom-width: 0px;
+  border-right-width: 0px;
+  border-left-width: 0px;
+  border-color: #CF2030;
+  border-style: solid; */
+  box-shadow: rgba(14, 30, 37, 0.12) 0px 2px 4px 0px, rgba(14, 30, 37, 0.32) 0px 2px 16px 0px;
+}
+.infoIcon{
+ /* text-align: end; */
+ /* float: right; */
+ font-size: 20px;
+ color: black;
+ background-color: #e7e7e7;
+ border-radius: 50%;
+ padding: 2px;
+ cursor: pointer;
+}
+.cardBoxMember{
+
+border-top-width: 7px;
+  border-bottom-width: 0px;
+  border-right-width: 0px;
+  border-left-width: 0px;
+  border-color: #CF2030;
+  border-style: solid;
+  border-radius: 13px;
+  box-shadow: rgba(14, 30, 37, 0.12) 0px 2px 4px 0px, rgba(14, 30, 37, 0.32) 0px 2px 16px 0px;
+  width: 950px;
+}
+
+.uploadPhoto {
+  border: 2px dashed #cf2030;
+  border-radius: 50%;
+  height: 150px;
+  width: 150px;
+  background-color: #fcebec;
+  overflow: hidden;
+  
+}
+
+
+colored-toast.swal2-icon-success {
+  background-color: #cf2030 !important;
+}
+
+
+.previewImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;  /* image will fill the box */
+  border-radius: 10px; 
+}
+
+
+.previewImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* fills circle without stretching */
+  border-radius: 50%;
+  /* object-fit: no; */
+}
+
+.custom-placeholder::placeholder {
+  font-size: 16px !important; /* or any size you prefer */
+}
+
+
+
+.formInput {
+  /* width: 80% !important; */
+  height: 48px;
+  
+  background-color: white;
+  border: 2px solid #a7a7a7;
+  width: 100%;
+  z-index: 1;
+  border-radius: 8px;
+  padding-left: 15px;
+  padding-right: 20px;
+  margin-top: 10px;
+  /* box-shadow: rgb(0, 153, 255) 0px 0px 0px 0px inset, rgba(0, 0, 0, 0.04) 0px 2px 4px, rgba(12, 14, 23, 0.12) 0px 0px 0px 1px inset; */
+
+}
+.formInputTextarea {
+  /* width: 80% !important; */
+  height: auto;
+  background-color: white;
+  border: 2px solid #a7a7a7;
+  /* width: 250px; */
+
+  border-radius: 5px;
+  padding-left: 15px;
+  padding-right: 20px;
+  margin-top: 10px;
+  box-shadow: rgb(0, 153, 255) 0px 0px 0px 0px inset, rgba(0, 0, 0, 0.04) 0px 2px 4px, rgba(12, 14, 23, 0.12) 0px 0px 0px 1px inset;
+
+}
+
+.formInput:focus{
+  border-color: #d7091a;
+  box-shadow: 0 0 0 0rem rgba(13,110,253,.25);
+}
+.formInputTextarea:focus{
+  border-color: #d7091a;
+  box-shadow: 0 0 0 0rem rgba(13,110,253,.25);
+}
+
+.formInputDropdown {
+  background-color: white;
+  border: 2px solid #a7a7a7;
+  /* width:150px; */
+  padding: 10px;
+  margin-top: 10px;
+
+  color: black;
+  /* margin-left: 10px; */
+  margin-right: 20px;
+
+  border-radius: 5px;
+  height: 40px;
+  margin-bottom: 10px;
+}
+
+.buttonArrow {
+  background-color: #CF2030;
+  border: none;
+  color: white;
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+}
+
+.marginHfour{
+  /* margin-bottom: 1.8rem; */
+}
+
+.submitButton {
+
+  background-color: #5336AC;
+  border: none;
+  color: white;
+  border-radius: 8px;
+  font-weight: 600;
+  width: 100px;
+  padding: 8px 15px;
+  height: 48px;
+  width: 100%;
+
+
+}
+.submitButton2 {
+
+  background-color: #6c757d;
+  border: none;
+  color: white;
+  border-radius: 5px;
+  font-weight: 600;
+  width: 100px;
+  padding: 8px 15px;
+  height: 40px;
+  
+
+
+}
+
+.fwSemibold {
+  font-weight: bold !important;
+  font-size: 1.1rem !important;
+}
+
+
+/* Media Queries */
+/* 
+@media (max-width:347px) {
+
+  .submitButton {
+
+  background-color: #CF2030;
+  border: none;
+  color: white;
+  border-radius: 5px;
+  font-weight: 600;
+  width: 70px;
+  padding-top: 7px;
+  padding-bottom: 6px;
+
+
+}
+.submitButton2 {
+
+  background-color: #979797;
+  border: none;
+  color: white;
+  border-radius: 5px;
+  font-weight: 600;
+  width: 70px;
+  padding-top: 7px;
+  padding-bottom: 6px;
+
+
+}
+
+}
+
+
+
+
+ */

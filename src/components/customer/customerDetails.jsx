@@ -1,0 +1,411 @@
+import React, { useState } from 'react';
+import styles from './customerDetails.module.css';
+import {
+  User, Phone, Mail, MessageCircle,
+  MapPin, Navigation, Building, Flag,
+  CreditCard, CheckCircle, ShoppingBag,
+  AlignRight
+} from 'lucide-react';
+
+const CustomerDetails = () => {
+  const [formData, setFormData] = useState({
+    fullName: '',
+    phone: '',
+    email: '',
+    whatsapp: '',
+    flatNo: '',
+    street: '',
+    landmark: '',
+    city: '',
+    pincode: '',
+    instructions: '',
+    paymentMethod: 'online'
+  });
+
+  const [errors, setErrors] = useState({});
+
+  // Mock Order Data (would come from props/context in real app)
+  const orderDetails = {
+    cakeName: "Red Velvet Bliss",
+    variant: "Heart Shape",
+    weight: "1 kg",
+    price: 1200,
+    nameOnCake: "Happy Birthday Priya",
+    deliveryDate: "2025-12-25",
+    deliveryTime: "18:00 - 20:00",
+    deliveryCharge: 50
+  };
+
+  const validate = () => {
+    const newErrors = {};
+    if (!formData.fullName.trim()) newErrors.fullName = "Full Name is required";
+    if (!formData.phone.trim()) newErrors.phone = "Phone Number is required";
+    else if (!/^\d{10}$/.test(formData.phone)) newErrors.phone = "Enter a valid 10-digit number";
+
+    if (!formData.flatNo.trim()) newErrors.flatNo = "Flat / Door No is required";
+    if (!formData.street.trim()) newErrors.street = "Street Address is required";
+    if (!formData.city.trim()) newErrors.city = "City is required";
+    if (!formData.pincode.trim()) newErrors.pincode = "Pincode is required";
+    else if (!/^\d{6}$/.test(formData.pincode)) newErrors.pincode = "Enter a valid 6-digit pincode";
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({ ...prev, [name]: value }));
+    // Clear error when user types
+    if (errors[name]) {
+      setErrors(prev => ({ ...prev, [name]: '' }));
+    }
+  };
+
+  const payment =(num)=>{
+   if(num===" "){
+    alert("no value")
+   }else{
+     const options = {
+      key: " ", 
+      amount: num,
+      currency: "INN",
+      name: "CakeForest Shop",
+      description: "Order Payment",
+      handler: async function (response) {
+        const verify = await axios.post("http://localhost:5000/api/payment/verify-payment", response);
+        if (verify.data.success) {
+          alert("Payment Successful!");
+        } else {
+          alert("Payment Failed!");
+        }
+      },
+      prefill: {
+        name: "Pravin",
+        email: "pravinjoshua2@gmail.com",
+        contact: "8870985683",
+      },
+      notes:{
+        address:"releitect"
+      },
+      theme: {
+        color: "#0e4d65",
+      },
+    };
+
+    const rzp1 = new window.Razorpay(options);
+    rzp1.open()
+   }
+    }
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (validate()) {
+      console.log("Form Submitted", formData);
+      alert("Order Placed!");
+      // Navigate to payment logic here
+    }
+  };
+
+  const totalAmount = orderDetails.price + orderDetails.deliveryCharge;
+
+  return (
+    <div className={styles.container}>
+      <header className={styles.header}>
+        <h1 className={styles.headerTitle}>Checkout</h1>
+      </header>
+
+      <div className={styles.content}>
+        {/* Left Column - Form */}
+        <div className={styles.mainSection}>
+          <form onSubmit={handleSubmit}>
+
+            {/* Customer Info Section */}
+            <section className={styles.section}>
+              <div className={styles.sectionTitle}>
+                <User size={18} color="#0e4d65" />
+                <span>Customer Information</span>
+              </div>
+
+              <div className={styles.inputGroup}>
+                <label className={styles.label}>Full Name <span style={{ color: '#ff6161' }}>*</span></label>
+                <div className={styles.inputWrapper}>
+                  <User size={16} className={styles.icon} />
+                  <input
+                    type="text"
+                    name="fullName"
+                    value={formData.fullName}
+                    onChange={handleChange}
+                    className={styles.input}
+                    placeholder="Enter your full name"
+                  />
+                </div>
+                {errors.fullName && <p className={styles.errorMsg}>{errors.fullName}</p>}
+              </div>
+
+              <div className={styles.row}>
+                <div className={styles.col}>
+                  <div className={styles.inputGroup}>
+                    <label className={styles.label}>Delivery Number <span style={{ color: '#ff6161' }}>*</span></label>
+                    <div className={styles.inputWrapper}>
+                      <Phone size={16} className={styles.icon} />
+                      <input
+                        type="tel"
+                        name="phone"
+                        value={formData.phone}
+                        onChange={handleChange}
+                        className={styles.input}
+                        placeholder="10-digit mobile number"
+                        maxLength={10}
+                      />
+                    </div>
+                    {errors.phone && <p className={styles.errorMsg}>{errors.phone}</p>}
+                  </div>
+                </div>
+                <div className={styles.col}>
+                  <div className={styles.inputGroup}>
+                    <label className={styles.label}>WhatsApp Number</label>
+                    <div className={styles.inputWrapper}>
+                      <MessageCircle size={16} className={styles.icon} />
+                      <input
+                        type="tel"
+                        name="whatsapp"
+                        value={formData.whatsapp}
+                        onChange={handleChange}
+                        className={styles.input}
+                        placeholder="Optional"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className={styles.inputGroup}>
+                <label className={styles.label}>Email Address</label>
+                <div className={styles.inputWrapper}>
+                  <Mail size={16} className={styles.icon} />
+                  <input
+                    type="email"
+                    name="email"
+                    value={formData.email}
+                    onChange={handleChange}
+                    className={styles.input}
+                    placeholder="example@email.com"
+                  />
+                </div>
+              </div>
+            </section>
+
+            {/* Delivery Address Section */}
+            <section className={styles.section}>
+              <div className={styles.sectionTitle}>
+                <MapPin size={18} color="#0e4d65" />
+                <span>Delivery Address</span>
+              </div>
+
+              <div className={styles.row}>
+                <div className={styles.col}>
+                  <div className={styles.inputGroup}>
+                    <label className={styles.label}>Flat / Door No <span style={{ color: '#ff6161' }}>*</span></label>
+                    <div className={styles.inputWrapper}>
+                      <Building size={16} className={styles.icon} />
+                      <input
+                        type="text"
+                        name="flatNo"
+                        value={formData.flatNo}
+                        onChange={handleChange}
+                        className={styles.input}
+                        placeholder="House/Flat No."
+                      />
+                    </div>
+                    {errors.flatNo && <p className={styles.errorMsg}>{errors.flatNo}</p>}
+                  </div>
+                </div>
+                <div className={styles.col}>
+                  <div className={styles.inputGroup}>
+                    <label className={styles.label}>Pincode <span style={{ color: '#ff6161' }}>*</span></label>
+                    <div className={styles.inputWrapper}>
+                      <Flag size={16} className={styles.icon} />
+                      <input
+                        type="text"
+                        name="pincode"
+                        value={formData.pincode}
+                        onChange={handleChange}
+                        className={styles.input}
+                        placeholder="6-digit pincode"
+                        maxLength={6}
+                      />
+                    </div>
+                    {errors.pincode && <p className={styles.errorMsg}>{errors.pincode}</p>}
+                  </div>
+                </div>
+              </div>
+
+              <div className={styles.inputGroup}>
+                <label className={styles.label}>Street Address <span style={{ color: '#ff6161' }}>*</span></label>
+                <div className={styles.inputWrapper}>
+                  <Navigation size={16} className={styles.icon} />
+                  <input
+                    type="text"
+                    name="street"
+                    value={formData.street}
+                    onChange={handleChange}
+                    className={styles.input}
+                    placeholder="Street, Area, Colony"
+                  />
+                </div>
+                {errors.street && <p className={styles.errorMsg}>{errors.street}</p>}
+              </div>
+
+              <div className={styles.row}>
+                <div className={styles.col}>
+                  <div className={styles.inputGroup}>
+                    <label className={styles.label}>City <span style={{ color: '#ff6161' }}>*</span></label>
+                    <div className={styles.inputWrapper}>
+                      <MapPin size={16} className={styles.icon} />
+                      <input
+                        type="text"
+                        name="city"
+                        value={formData.city}
+                        onChange={handleChange}
+                        className={styles.input}
+                        placeholder="City/Town"
+                      />
+                    </div>
+                    {errors.city && <p className={styles.errorMsg}>{errors.city}</p>}
+                  </div>
+                </div>
+                <div className={styles.col}>
+                  <div className={styles.inputGroup}>
+                    <label className={styles.label}>Landmark</label>
+                    <div className={styles.inputWrapper}>
+                      <MapPin size={16} className={styles.icon} />
+                      <input
+                        type="text"
+                        name="landmark"
+                        value={formData.landmark}
+                        onChange={handleChange}
+                        className={styles.input}
+                        placeholder="Nearby landmark"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className={styles.inputGroup}>
+                <label className={styles.label}>Delivery Instructions</label>
+                <textarea
+                  name="instructions"
+                  value={formData.instructions}
+                  onChange={handleChange}
+                  className={`${styles.input} ${styles.textarea}`}
+                  placeholder="Any special delivery instructions..."
+                  style={{ paddingLeft: '12px' }}
+                />
+              </div>
+            </section>
+
+            {/* Payment Options Section */}
+            <section className={styles.section}>
+              <div className={styles.sectionTitle}>
+                <CreditCard size={18} color="#0e4d65" />
+                <span>Payment Method</span>
+              </div>
+
+              <label className={`${styles.paymentOption} ${formData.paymentMethod === 'online' ? styles.selected : ''}`}>
+                <input
+                  type="radio"
+                  name="paymentMethod"
+                  value="online"
+                  checked={formData.paymentMethod === 'online'}
+                  onChange={handleChange}
+                  className={styles.radio}
+                />
+                <span className={styles.paymentLabel}>Pay Online (UPI / Card / NetBanking)</span>
+                <CreditCard size={18} color="#67a6b1" />
+              </label>
+
+              <label className={`${styles.paymentOption} ${formData.paymentMethod === 'cod' ? styles.selected : ''}`}>
+                <input
+                  type="radio"
+                  name="paymentMethod"
+                  value="cod"
+                  checked={formData.paymentMethod === 'cod'}
+                  onChange={handleChange}
+                  className={styles.radio}
+                />
+                <span className={styles.paymentLabel}>Cash on Delivery</span>
+                <CheckCircle size={18} color={formData.paymentMethod === 'cod' ? '#0e4d65' : '#aaa'} />
+              </label>
+            </section>
+          </form>
+        </div>
+
+        {/* Right Column - Order Summary (Sticky on Desktop) */}
+        <div className={styles.sideSection}>
+          <div className={styles.stickyOrderSummary}>
+            <section className={styles.section}>
+              <div className={styles.sectionTitle}>
+                <ShoppingBag size={18} color="#0e4d65" />
+                <span>Price Details</span>
+              </div>
+
+              <div className={styles.orderCard}>
+                <div className={styles.orderItem}>
+                  <span className={styles.orderLabel}>Cake Name</span>
+                  <span className={styles.orderValue}>{orderDetails.cakeName}</span>
+                </div>
+                <div className={styles.orderItem}>
+                  <span className={styles.orderLabel}>Variant</span>
+                  <span className={styles.orderValue}>{orderDetails.variant}</span>
+                </div>
+                <div className={styles.orderItem}>
+                  <span className={styles.orderLabel}>Weight</span>
+                  <span className={styles.orderValue}>{orderDetails.weight}</span>
+                </div>
+                <div className={styles.orderItem}>
+                  <span className={styles.orderLabel}>Name on Cake</span>
+                  <span className={styles.orderValue}>{orderDetails.nameOnCake}</span>
+                </div>
+                <div className={styles.orderItem}>
+                  <span className={styles.orderLabel}>Delivery Date</span>
+                  <span className={styles.orderValue}>{orderDetails.deliveryDate}</span>
+                </div>
+                <div className={styles.orderItem}>
+                  <span className={styles.orderLabel}>Time Slot</span>
+                  <span className={styles.orderValue}>{orderDetails.deliveryTime}</span>
+                </div>
+
+                <div className={styles.priceSummary}>
+                  <div className={styles.orderItem}>
+                    <span className={styles.orderLabel}>Price</span>
+                    <span className={styles.orderValue}>₹{orderDetails.price}</span>
+                  </div>
+                  <div className={styles.orderItem}>
+                    <span className={styles.orderLabel}>Delivery Charges</span>
+                    <span className={styles.orderValue}>₹{orderDetails.deliveryCharge}</span>
+                  </div>
+                </div>
+
+                <div className={styles.totalRow}>
+                  <div className={styles.totalAmount}>
+                    <span>Total Amount</span>
+                    <span>₹{totalAmount}</span>
+                  </div>
+                </div>
+              </div>
+            </section>
+          </div>
+        </div>
+      </div>
+
+      {/* Sticky Footer Button */}
+      <footer className={styles.footer}>
+        <button type="button" onClick={handleSubmit} className={styles.submitBtn}>
+          Place Order
+        </button>
+      </footer>
+    </div>
+  );
+}
+
+export default CustomerDetails;

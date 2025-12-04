@@ -2,13 +2,12 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: 'Helvetica Neue', 'HelveticaNeue', Helvetica, Arial, sans-serif !important;
+  font-family: "poppins", sans-serif !important;
 }
 
 .cakeContainer {
-  max-width:100%;
+  max-width: 100%;
   margin: 0 auto;
-   
 }
 
 .headerSection {
@@ -23,7 +22,7 @@
 }
 
 .mainTitle {
-  font-size: 1.75rem;
+  font-size: 26px;
   font-weight: 700;
   color: #333;
   margin-bottom: 0.25rem;
@@ -31,31 +30,42 @@
 
 .subtitle {
   color: #666;
-  font-size: 1rem;
+  font-size: 16px;
   margin: 0;
 }
 
 .viewAllBtn {
-  background: #0c5460;
+  height: 45px;
+  min-width: 100px;
+  max-width: 150px;
+  width: 150px;
+  background-color: #0E4D65;
   color: white;
-  padding: 0.75rem 2rem;
-  border: none;
+  padding: 10px 0px;
+  border: 1px solid #0E4D65;
   border-radius: 8px;
   font-weight: 600;
+  font-size: 16px;
   cursor: pointer;
   transition: all 0.3s ease;
 }
 
 .viewAllBtn:hover {
-  background: #094450;
+  background-color: white;
+  color: #0E4D65;
+  border: 1px solid #0E4D65;
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(12, 84, 96, 0.3);
+  box-shadow: 0 4px 12px rgba(14, 77, 101, 0.3);
 }
 
 .cakesGrid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 1.5rem;
+}
+
+.cakesGrid .viewAllBtn {
+  display: none;
 }
 
 .cakeCard {
@@ -93,7 +103,7 @@
   position: absolute;
   top: 15px;
   right: 15px;
-  background: white;
+  background: transparent !important;
   border: none;
   border-radius: 50%;
   width: 40px;
@@ -102,14 +112,19 @@
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   transition: all 0.3s ease;
-  color: #666;
+  z-index: 3;
+  padding: 0;
 }
 
-.wishlistBtn:hover {
-  color: #e74c3c;
+
+.redHeart {
+  color: red !important;
+}
+.wishlistBtn:hover svg,
+.wishlistBtn:hover .redHeart {
   transform: scale(1.1);
+  transition: 0.2s;
 }
 
 .vegBadge {
@@ -117,7 +132,7 @@
   bottom: 15px;
   left: 15px;
   background: white;
-  border: 2px solid #22c55e;
+  border: 2px solid #22aa00;
   border-radius: 4px;
   width: 24px;
   height: 24px;
@@ -129,28 +144,27 @@
 .vegDot {
   width: 10px;
   height: 10px;
-  background: #22c55e;
+  background: #22aa00;
   border-radius: 50%;
 }
 
 .cardBody {
-  padding: 1.25rem;
+  padding: 1rem;
 }
 
 .cakeName {
-  font-size: 0.95rem;
+  font-size: 18px;
   font-weight: 500;
   color: #666;
   margin-bottom: 0.5rem;
-  
 }
 
 .cakePrice {
-  font-size: 1.25rem;
-  
+  font-size: 18px;
   color: #333;
   margin-bottom: 0.5rem;
   min-height: 1.8rem;
+  font-weight: 600;
 }
 
 .ratingSection {
@@ -162,54 +176,120 @@
 }
 
 .ratingBadge {
-  background: #22c55e;
+  background: #22aa00;
   color: white;
   padding: 2px 5px;
   border-radius: 4px;
-  font-size: 0.875rem;
+  font-size: 14px;
   font-weight: 600;
 }
 
 .reviewsText {
-  color: #6EC1E4;
-  font-size: 0.875rem;
+  color: #67a6b1;
+  font-size: 14px;
 }
 
 .deliveryText {
   color: #666;
-  font-size: 0.875rem;
+  font-size: 14px;
   margin: 0;
   min-height: 1.5rem;
 }
 
-
 .deliveryLabel {
   font-weight: 600;
- color: #666; 
- font-size: 0.775rem; 
+  color: #666;
+  font-size: 14px;
 }
 
 .deliveryTime {
-  color: #1D7FA8;  /* Darker Blue */
+  color: #0E4D65;
   font-weight: 500;
-  font-size: 0.750rem; 
+  font-size: 14px;
 }
 
+/* ==================== DESKTOP (1440px) ==================== */
+@media (min-width: 1440px) {
+  .wishlistBtn {
+    width: 50px;
+    height: 50px;
+  }
+
+  .wishlistBtn svg {
+    width: 28px;
+    height: 28px;
+  }
+}
+
+/* ==================== LAPTOP (1024px) ==================== */
+@media (min-width: 1024px) and (max-width: 1439px) {
+  .wishlistBtn {
+    width: 45px;
+    height: 45px;
+  }
+
+  .wishlistBtn svg {
+    width: 26px;
+    height: 26px;
+  }
+}
+
+/* ==================== TABLET (1024px) ==================== */
 @media (max-width: 1024px) {
   .cakesGrid {
     grid-template-columns: repeat(4, 1fr);
   }
-}
-
-@media (max-width: 768px) {
-  .headerSection {
-    flex-direction: row;
-    align-items: flex-start;
-    gap: 1rem;
-  }
 
   .viewAllBtn {
-    width: 20%;
+    height: 40px;
+    min-width: 100px;
+    max-width: 100px;
+    width: 150px;
+    font-size: 14px;
+  }
+
+  .wishlistBtn {
+    width: 42px;
+    height: 42px;
+  }
+
+  .wishlistBtn svg {
+    width: 24px;
+    height: 24px;
+  }
+}
+
+/* ==================== TABLET (768px) ==================== */
+@media (max-width: 768px) {
+  .cakeContainer {
+    padding: 1rem;
+  }
+
+  .headerSection {
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .headerContent {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .mainTitle {
+    font-size: 22px;
+  }
+
+  .subtitle {
+    font-size: 14px;
+  }
+
+  .headerSection .viewAllBtn {
+    display: none;
   }
 
   .cakesGrid {
@@ -217,34 +297,205 @@
     gap: 1rem;
   }
 
+  .cakeCard:nth-child(n + 5) {
+    display: none;
+  }
+
+  .cakesGrid .viewAllBtn {
+    display: block;
+    grid-column: 1 / -1;
+    margin: 1.5rem auto 0;
+    width: auto;
+  }
+
   .imageWrapper {
     height: 220px;
   }
 
-  .mainTitle {
-    font-size: 1.5rem;
+  .wishlistBtn {
+    width: 38px;
+    height: 38px;
+  }
+
+  .wishlistBtn svg {
+    width: 20px;
+    height: 20px;
   }
 }
 
-@media (max-width: 480px) {
+/* ==================== MOBILE (700px) ==================== */
+@media (max-width: 700px) {
   .cakeContainer {
-    padding: 1rem 0.75rem;
+    padding: 0.75rem 0.5rem;
   }
 
-  .cakesGrid {
-    grid-template-columns: 1fr;
-    gap: 1rem;
-  }
-
-  .imageWrapper {
-    height: 260px;
-  }
-
-  .mainTitle {
-    font-size: 1.35rem;
+  .viewAllBtn {
+    height: 35px;
+    min-width: 100px;
+    max-width: 100px;
+    width: 150px;
+    font-size: 14px;
+    padding: 0px;
   }
 
   .cardBody {
-    padding: 1rem;
+    padding: 3px;
+  }
+
+  .ratingBadge {
+    background: #22aa00;
+    color: white;
+    padding: 2px 2px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 600;
+  }
+
+  .cakesGrid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.75rem;
+  }
+
+  .imageWrapper {
+    height: 180px;
+  }
+
+  .cakeName {
+    font-size: 14px;
+    margin-bottom: 0.35rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: block;
+    margin-top: 5px;
+  }
+
+  .cakePrice {
+    font-size: 14px;
+  }
+
+  .ratingSection {
+    gap: 0.35rem;
+  }
+
+  .deliveryText {
+    color: #666;
+    font-size: 11px;
+    margin: 0;
+    min-height: 1.5rem;
+  }
+
+  .deliveryLabel {
+    font-weight: 600;
+    color: #666;
+    font-size: 11px;
+  }
+
+  .deliveryTime {
+    color: #0E4D65;
+    font-weight: 500;
+    font-size: 11px;
+  }
+
+  .reviewsText {
+    color: #67a6b1;
+    font-size: 10.9px;
+  }
+
+  .wishlistBtn {
+    width: 28px;
+    height: 28px;
+  }
+
+  .vegBadge {
+    width: 20px;
+    height: 20px;
+  }
+}
+
+/* ==================== SMALL MOBILE (480px) ==================== */
+@media (max-width: 480px) {
+  .cakeContainer {
+    padding: 0.75rem 0.5rem;
+  }
+
+  .cardBody {
+    padding: 3px;
+  }
+
+  .cakesGrid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.75rem;
+  }
+
+  .imageWrapper {
+    height: 160px;
+  }
+
+  .cakeName {
+    font-size: 12px;
+    margin-top: 5px;
+  }
+
+  .cakePrice {
+    font-size: 13px;
+  }
+
+  .wishlistBtn {
+    width: 26px;
+    height: 26px;
+  }
+
+  .vegBadge {
+    width: 18px;
+    height: 18px;
+  }
+}
+
+/* ==================== EXTRA SMALL (375px) ==================== */
+@media (max-width: 375px) {
+  .cardBody {
+    padding: 2px;
+  }
+
+  .cakeName {
+    font-size: 11px;
+    margin-top: 4px;
+  }
+
+  .cakePrice {
+    font-size: 12px;
+  }
+
+  .deliveryLabel {
+    font-size: 9px;
+  }
+
+  .deliveryTime {
+    font-size: 9px;
+  }
+
+  .vegBadge {
+    width: 16px;
+    height: 16px;
+  }
+}
+
+/* ==================== EXTRA SMALL (340px) ==================== */
+@media (max-width: 340px) {
+  .deliveryLabel {
+    font-size: 8px;
+  }
+
+  .deliveryTime {
+    font-size: 8px;
+  }
+
+  .cakeName {
+    font-size: 10px;
+  }
+
+  .cakePrice {
+    font-size: 11px;
   }
 }

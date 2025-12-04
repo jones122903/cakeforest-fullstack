@@ -1,0 +1,369 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+* {
+    box-sizing: border-box;
+}
+
+.container {
+    font-family: 'Poppins', sans-serif;
+    background-color: #F4F7F8;
+    min-height: 100vh;
+    padding-bottom: 80px;
+    color: #333;
+}
+
+.header {
+    background-color: #0e4d65;
+    padding: 1rem 1.5rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.headerTitle {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #ffffff;
+    margin: 0;
+    text-align: left;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.content {
+    padding: 1.5rem;
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+}
+
+.mainSection {
+    flex: 1;
+    min-width: 300px;
+}
+
+.sideSection {
+    width: 380px;
+    min-width: 300px;
+}
+
+.section {
+    background-color: #ffffff;
+    border-radius: 12px;
+    padding: 1.75rem;
+    margin-bottom: 1.25rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+    border: 1px solid #ececec;
+}
+
+.sectionTitle {
+    font-size: 1.125rem;
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+    color: #0e4d65;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.inputGroup {
+    margin-bottom: 1.25rem;
+    position: relative;
+}
+
+.label {
+    display: block;
+    font-size: 0.875rem;
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+    color: #555;
+}
+
+.inputWrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.icon {
+    position: absolute;
+    left: 14px;
+    color: #67a6b1;
+    pointer-events: none;
+    z-index: 1;
+}
+
+.input {
+    width: 100%;
+    padding: 12px 14px 12px 42px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 0.9375rem;
+    font-family: 'Poppins', sans-serif;
+    transition: all 0.3s ease;
+    background-color: #fafafa;
+    color: #333;
+}
+
+.input::placeholder {
+    color: #aaa;
+}
+
+.input:focus {
+    outline: none;
+    border-color: #0e4d65;
+    background-color: #fff;
+    box-shadow: 0 0 0 3px rgba(14, 77, 101, 0.08);
+}
+
+.textarea {
+    resize: vertical;
+    min-height: 80px;
+    line-height: 1.5;
+}
+
+.errorMsg {
+    color: #ff0000;
+    font-size: 0.75rem;
+    margin-top: 0.4rem;
+    margin-left: 0.25rem;
+}
+
+.row {
+    display: flex;
+    gap: 1rem;
+}
+
+.col {
+    flex: 1;
+    min-width: 0;
+}
+
+/* Order Details Card */
+.orderCard {
+    background-color: #fffaf2;
+    border-radius: 10px;
+    padding: 1.25rem;
+    border: 1px solid #ffdede;
+}
+
+.orderItem {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 0.875rem;
+    font-size: 0.9375rem;
+}
+
+.orderLabel {
+    color: #666;
+    font-weight: 400;
+}
+
+.orderValue {
+    font-weight: 500;
+    color: #333;
+    text-align: right;
+}
+
+.priceSummary {
+    border-top: 1px solid #e7edef;
+    padding-top: 1rem;
+    margin-top: 1rem;
+}
+
+.totalRow {
+    border-top: 2px solid #0e4d65;
+    padding-top: 1rem;
+    margin-top: 1rem;
+}
+
+.totalAmount {
+    display: flex;
+    justify-content: space-between;
+    font-weight: 700;
+    font-size: 1.25rem;
+    color: #0e4d65;
+    margin-top: 0.75rem;
+}
+
+/* Payment Options */
+.paymentOption {
+    display: flex;
+    align-items: center;
+    padding: 1rem 1.25rem;
+    border: 2px solid #e7edef;
+    border-radius: 10px;
+    margin-bottom: 0.875rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    background-color: #fff;
+}
+
+.paymentOption:hover {
+    border-color: #67a6b1;
+    background-color: #f7fbfc;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.06);
+}
+
+.paymentOption.selected {
+    border-color: #0e4d65;
+    background-color: #f0f7f9;
+    box-shadow: 0 2px 8px rgba(14, 77, 101, 0.1);
+}
+
+.radio {
+    margin-right: 1rem;
+    accent-color: #0e4d65;
+    width: 18px;
+    height: 18px;
+}
+
+.paymentLabel {
+    font-weight: 500;
+    flex: 1;
+    font-size: 0.9375rem;
+    color: #333;
+}
+
+/* Sticky Footer */
+.footer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: #fff;
+    padding: 1rem 1.5rem;
+    box-shadow: 0 -3px 10px rgba(0, 0, 0, 0.08);
+    display: flex;
+    justify-content: center;
+    z-index: 100;
+    border-top: 1px solid #ececec;
+}
+
+.submitBtn {
+    background: #0e4d65;
+    color: white;
+    border: none;
+    padding: 1rem 3rem;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 600;
+    width: 100%;
+    max-width: 1200px;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(14, 77, 101, 0.25);
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.submitBtn::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 30px;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.12);
+  transform: skewX(-15deg);
+  animation: moveShade 1.2s linear infinite;
+}
+
+@keyframes moveShade {
+  0% {
+    left: -100px;
+  }
+
+  100% {
+    left: 100%;
+  }
+}
+
+.submitBtn:hover {
+    background: #0a3d51;
+    box-shadow: 0 6px 16px rgba(14, 77, 101, 0.35);
+    transform: translateY(-2px);
+}
+
+.submitBtn:active {
+    transform: translateY(0);
+}
+
+.submitBtn:disabled {
+    background: #c2c2c2;
+    box-shadow: none;
+    cursor: not-allowed;
+}
+
+/* Sticky Order Summary on Desktop */
+.stickyOrderSummary {
+    position: sticky;
+    top: 90px;
+    align-self: flex-start;
+}
+
+@media (max-width: 768px) {
+    .content {
+        flex-direction: column;
+        padding: 1rem;
+    }
+
+    .sideSection {
+        width: 100%;
+    }
+
+    .row {
+        flex-direction: column;
+        gap: 0;
+    }
+
+    .headerTitle {
+        text-align: center;
+    }
+
+    .submitBtn {
+        padding: 0.875rem 2rem;
+        font-size: 0.9375rem;
+    }
+
+    .stickyOrderSummary {
+        position: static;
+    }
+
+    .section {
+        padding: 1.25rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .header {
+        padding: 0.875rem 1rem;
+    }
+
+    .headerTitle {
+        font-size: 1.125rem;
+    }
+
+    .section {
+        padding: 1rem;
+        border-radius: 10px;
+    }
+
+    .sectionTitle {
+        font-size: 1rem;
+    }
+
+    .input {
+        font-size: 0.875rem;
+        padding: 10px 12px 10px 38px;
+    }
+
+    .submitBtn {
+        font-size: 0.875rem;
+        padding: 0.75rem 1.5rem;
+    }
+}

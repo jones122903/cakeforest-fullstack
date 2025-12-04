@@ -18,6 +18,13 @@ p{
    background-color: #0e4d65 !important;
 }
 
+.voilet-color-text{
+    color: #5336AC;
+}
+.voilet-color-bg{
+    background-color: #5336AC;
+}
+
 .red-color{
     color: #ff0000 !important;
 }
