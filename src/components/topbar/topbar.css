@@ -1,11 +1,12 @@
+/* Desktop Wrapper */
 .navbar-wrapper {
   width: 100%;
   background: #ffffff;
   border-bottom: 1px solid #ececec;
-  font-family: Arial, sans-serif;
+  font-family: Arial;
 }
 
-/* ---------- Top Bar ---------- */
+/* ---------------- DESKTOP NAVBAR ---------------- */
 .topbar {
   display: flex;
   align-items: center;
@@ -13,12 +14,11 @@
   padding: 14px 30px;
 }
 
-/* Logo */
+/* Desktop Logo */
 .logo-area .logo-text {
   font-size: 24px;
   font-weight: 800;
   color: #16c1d4;
-  letter-spacing: 1px;
 }
 
 /* Delivery Box */
@@ -30,77 +30,142 @@
   border: 1px solid #ffdede;
   border-radius: 8px;
   background: #fff7f7;
-  cursor: pointer;
-  transition: 0.3s;
-}
-.delivery-box:hover {
-  background: #ffecec;
-}
-.delivery-box img {
-  width: 28px;
-  height: 18px;
-  border-radius: 3px;
 }
 
-/* SEARCH BAR */
+/* Search Bar */
 .search-area {
   flex: 1;
-  max-width: 500px;
+  max-width: 450px;
   margin: 0 30px;
   position: relative;
 }
+
 .search-area input {
   width: 100%;
   padding: 10px 45px 10px 15px;
-  border: 1px solid #ccc;
   border-radius: 10px;
+  border: 1px solid #ccc;
   background: #fafafa;
 }
+
 .search-btn {
   position: absolute;
   right: 8px;
   top: 6px;
 }
 
-
-/* ---------- Action Buttons ---------- */
+/* Action Icons */
 .action-area {
   display: flex;
   align-items: center;
   gap: 25px;
 }
 
-.action-btn {
-  text-align: center;
-  cursor: pointer;
-  position: relative;
-  transition: 0.3s;
-  padding: 6px 10px;
-  border-radius: 10px;
-}
-.action-btn:hover {
-  background: #f7f7f7;
-  transform: translateY(-2px);
-}
-
-.action-btn p {
-  font-size: 11px;
-  margin-top: 3px;
-  color: #333;
-}
-
-/* Cart Badge */
 .cart-badge {
   position: absolute;
   top: -5px;
-  right: -5px;
-  background: #ff3b30;
-  color: #fff;
+  right: -6px;
+  background: red;
+  color: white;
   font-size: 10px;
-  width: 16px;
-  height: 16px;
   border-radius: 50%;
+  padding: 2px 5px;
+}
+
+/* ---------------- MORE DROPDOWN ---------------- */
+.more-dropdown {
+  position: absolute;
+  right: 10px;
+  top: 70px;
+  width: 180px;
+  background: white;
+  padding: 10px 0;
+  border-radius: 10px;
+  box-shadow: 0px 3px 12px rgba(0,0,0,0.12);
+  z-index: 99;
+}
+
+.dropdown-item {
+  padding: 10px 15px;
+  cursor: pointer;
   display: flex;
   align-items: center;
-  justify-content: center;
+}
+
+/* ---------------- MOBILE HEADER ---------------- */
+.mobile-header {
+  display: none;
+}
+
+/* ---------------- MOBILE VIEW ---------------- */
+@media (max-width: 480px) {
+
+  /* Hide desktop */
+  .topbar {
+    display: none !important;
+  }
+
+  .mobile-header {
+    display: block;
+    padding: 12px;
+    background: #ffffff;
+    border-bottom: 1px solid #ececec;
+  }
+
+  /* Row 1 */
+  .mobile-row-1 {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .mobile-title {
+    font-size: 20px;
+    font-weight: 800;
+    margin: 0;
+    color: #16c1d4;
+  }
+
+  .right-icons {
+    display: flex;
+    gap: 16px;
+    align-items: center;
+  }
+
+  .cart-wrap {
+    position: relative;
+  }
+
+  /* Location */
+  .mobile-location {
+    background: #f1fcff;
+    padding: 10px;
+    margin-top: 12px;
+    border-radius: 8px;
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    align-items: center;
+  }
+
+  .mobile-location img { width: 34px; border-radius: 5px; }
+
+  /* Mobile Search Bar */
+  .mobile-searchbar {
+    position: relative;
+    margin-top: 12px;
+  }
+
+  .mobile-searchbar input {
+    width: 100%;
+    padding: 12px 40px 12px 12px;
+    border-radius: 10px;
+    border: 1px solid #ccc;
+  }
+
+  .m-search-icon {
+    position: absolute;
+    right: 12px;
+    top: 12px;
+  }
 }
