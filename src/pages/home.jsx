@@ -54,11 +54,9 @@ function Home() {
       </motion.button>
  
       <div>
-
         <div className="my-5">
           <FlowerAuraNavbar />
         </div>
-
         <div className="my-5">
           <Category />
         </div>
@@ -87,12 +85,9 @@ function Home() {
       <div>
         <ReviewsSection />
       </div>
-
       <div className="my-5">
         <Footer />
       </div>
-
-
     </div>
   );
 }
