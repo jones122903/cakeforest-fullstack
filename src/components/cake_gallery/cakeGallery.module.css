@@ -3,13 +3,24 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: 'Poppins', sans-serif !important;
+  font-family: "Poppins", sans-serif !important;
 }
 
 .cakeContainer {
   max-width: 90%;
   margin: 0 auto;
   padding: 2rem;
+}
+
+.ratingPlaceholder {
+  height: 24px;
+  /* ⭐ Same height as rating section */
+  margin-bottom: 13px;
+  /* ⭐ Same spacing as real rating */
+  display: block;
+  /* Ensure it occupies space */
+  visibility: hidden;
+  /* Invisible but space is kept */
 }
 
 /* ==================== HEADER SECTION ==================== */
@@ -43,10 +54,10 @@
   height: 45px;
   min-width: 100px;
   width: 150px;
-  background-color: #0E4D65;
+  background-color: #0e4d65;
   color: white;
   padding: 10px 0px;
-  border: 1px solid #0E4D65;
+  border: 1px solid #0e4d65;
   border-radius: 8px;
   font-weight: 600;
   font-size: 16px !important;
@@ -56,8 +67,8 @@
 
 .viewAllBtn:hover {
   background-color: white;
-  color: #0E4D65;
-  border: 1px solid #0E4D65;
+  color: #0e4d65;
+  border: 1px solid #0e4d65;
   transform: translateY(-2px);
   box-shadow: 0 4px 12px rgba(14, 77, 101, 0.3);
 }
@@ -91,8 +102,14 @@
 }
 
 .filterChip:hover {
-  border-color: #0E4D65;
-  color: #0E4D65;
+  border-color: #0e4d65;
+  color: #0e4d65;
+}
+
+.activeFilter {
+  background-color: #0e4d65;
+  color: white !important;
+  border-color: #0e4d65;
 }
 
 .sortDropdown {
@@ -126,6 +143,7 @@
   border-radius: 12px;
   overflow: hidden;
   transition: box-shadow 0.3s ease;
+  cursor: pointer;
 }
 
 .cakeCard:hover {
@@ -166,33 +184,36 @@
   z-index: 2;
 }
 
-/* Wishlist Button */
+/* Wishlist Button - adjusted for react-animated-heart */
 .wishlistBtn {
   position: absolute;
   top: 15px;
   right: 15px;
-  background: white;
+  background: transparent !important;
   border: none;
-  border-radius: 50%;
   width: 40px;
   height: 40px;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: all 0.3s ease;
-  color: #0E4D65;
   z-index: 3;
 }
 
-.wishlistBtn:hover {
-  background: white;
-  color: #ff0000;
-  transform: scale(1.1);
+/* Remove these if not using custom heart anymore */
+.whiteHeart {
+  color: #ffffff !important;
+  background: transparent !important;
 }
 
-.wishlistBtn.liked {
-  color: #ff0000;
+.redHeart {
+  color: red !important;
+}
+
+/* Customize the heart size */
+.wishlistBtn svg {
+  width: 28px;
+  height: 28px;
 }
 
 /* Veg Badge */
@@ -208,7 +229,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 2;
+  z-index: 10;
 }
 
 .vegDot {
@@ -273,8 +294,8 @@
 }
 
 .dot.active {
-  background: white;
-  transform: scale(1.2);
+  background: white !important;
+  transform: scale(1);
 }
 
 /* Card Body */
@@ -292,12 +313,38 @@
   text-overflow: ellipsis;
 }
 
+/* Price Container */
+.priceContainer {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+  flex-wrap: wrap;
+}
+
 .cakePrice {
   font-size: 18px;
   color: #333;
-  margin-bottom: 0.5rem;
-  min-height: 1.8rem;
+  margin: 0;
   font-weight: 600;
+}
+
+.originalPrice {
+  font-size: 14px;
+  color: #999;
+  text-decoration: line-through;
+  margin: 0;
+  font-weight: 400;
+}
+
+.discountBadge {
+  background: #d63384;
+  color: white;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
 }
 
 .ratingSection {
@@ -327,6 +374,9 @@
   font-size: 14px;
   margin: 0;
   min-height: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
 }
 
 .deliveryLabel {
@@ -336,10 +386,9 @@
 }
 
 .deliveryTime {
-  color: #0E4D65;
+  color: #0e4d65;
   font-weight: 500;
   font-size: 14px;
-  margin-left: 0.25rem;
 }
 
 /* ==================== DESKTOP (1440px) ==================== */
@@ -358,6 +407,13 @@
     height: 50px;
   }
 
+  .wishlistBtn svg {
+    width: 32px;
+    height: 32px;
+    position: relative;
+    bottom: 10px;
+  }
+
   .badgeTag {
     padding: 8px 14px;
     font-size: 13px !important;
@@ -368,6 +424,14 @@
 @media (min-width: 1024px) and (max-width: 1439px) {
   .cakeContainer {
     padding: 1.5rem;
+  }
+
+  .deliveryText {
+    font-size: 12px !important;
+  }
+
+  .deliveryLabel {
+    font-size: 12px !important;
   }
 
   .cakesGrid {
@@ -381,6 +445,13 @@
     height: 45px;
   }
 
+  .wishlistBtn svg {
+    width: 28px;
+    height: 28px;
+    position: relative;
+    bottom: 10px;
+  }
+
   .mainTitle {
     font-size: 24px !important;
   }
@@ -392,6 +463,22 @@
   .filterChip {
     padding: 6px 12px;
     font-size: 13px !important;
+  }
+
+  .cakeName {
+    font-size: 14px !important;
+  }
+
+  .cakePrice {
+    font-size: 14px !important;
+  }
+
+  .deliveryTime {
+    font-size: 12px !important;
+  }
+
+  .deliveryLabel {
+    font-size: 12px !important;
   }
 }
 
@@ -426,7 +513,7 @@
   }
 
   .imageWrapper {
-    height: 240px;
+    height: 200px;
   }
 
   .wishlistBtn {
@@ -434,12 +521,31 @@
     height: 42px;
   }
 
+  .wishlistBtn svg {
+    width: 26px;
+    height: 26px;
+    position: relative;
+    bottom: 10px;
+  }
+
   .cakeName {
-    font-size: 16px !important;
+    font-size: 14px !important;
   }
 
   .cakePrice {
-    font-size: 16px !important;
+    font-size: 14px !important;
+  }
+
+  .deliveryText {
+    font-size: 12px !important;
+  }
+
+  .deliveryLabel {
+    font-size: 12px !important;
+  }
+
+  .deliveryTime {
+    font-size: 12px !important;
   }
 }
 
@@ -498,7 +604,8 @@
   }
 
   .dropdown {
-    width: 100%;
+    width: 31%;
+    margin-left: 67%;
   }
 
   .cakesGrid {
@@ -514,9 +621,22 @@
     font-size: 16px !important;
   }
 
+  .priceContainer {
+    gap: 0.4rem;
+  }
+
   .cakePrice {
     font-size: 16px !important;
     margin-bottom: 0.35rem;
+  }
+
+  .originalPrice {
+    font-size: 13px !important;
+  }
+
+  .discountBadge {
+    font-size: 10px !important;
+    padding: 2px 5px;
   }
 
   .ratingBadge {
@@ -531,6 +651,13 @@
   .wishlistBtn {
     width: 38px;
     height: 38px;
+  }
+
+  .wishlistBtn svg {
+    width: 24px;
+    height: 24px;
+    position: relative;
+    bottom: 10px;
   }
 
   .vegBadge {
@@ -637,8 +764,15 @@
   }
 
   .wishlistBtn {
-    width: 28px;
-    height: 28px;
+    width: 32px;
+    height: 32px;
+  }
+
+  .wishlistBtn svg {
+    width: 20px;
+    height: 20px;
+    position: relative;
+    bottom: 10px;
   }
 
   .vegBadge {
@@ -732,8 +866,15 @@
   }
 
   .wishlistBtn {
-    width: 26px;
-    height: 26px;
+    width: 28px;
+    height: 28px;
+  }
+
+  .wishlistBtn svg {
+    width: 18px;
+    height: 18px;
+    position: relative;
+    bottom: 10px;
   }
 
   .vegBadge {
@@ -744,6 +885,19 @@
   .badgeTag {
     padding: 3px 6px;
     font-size: 9px !important;
+  }
+
+  .priceContainer {
+    gap: 0.3rem;
+  }
+
+  .originalPrice {
+    font-size: 10px !important;
+  }
+
+  .discountBadge {
+    font-size: 8px !important;
+    padding: 1px 3px;
   }
 }
 
@@ -771,9 +925,10 @@
     font-size: 7px !important;
     font-weight: 540;
   }
-  .dropdown{
-    width: 31% !important;
-    margin-left: 65%;
+
+  .dropdown {
+    width: 47% !important;
+    margin-left: 55%;
     font-size: 10px !important;
   }
 
@@ -796,8 +951,8 @@
   }
 
   .ratingBadge {
-    font-size: 9px !important;
     padding: 1px 2px;
+    font-size: 9px !important;
   }
 
   .reviewsText {
@@ -817,12 +972,19 @@
   }
 
   .cardBody {
-    padding: 1px;
+    padding: 2px;
   }
 
   .wishlistBtn {
-    width: 24px;
-    height: 24px;
+    width: 26px;
+    height: 26px;
+  }
+
+  .wishlistBtn svg {
+    width: 18px;
+    height: 18px;
+    position: relative;
+    bottom: 13px;
   }
 
   .vegBadge {
@@ -830,17 +992,43 @@
     height: 16px;
   }
 
+  .vegDot {
+    width: 8px;
+    height: 8px;
+  }
+
   .badgeTag {
     padding: 2px 5px;
     font-size: 8px !important;
+    top: 6px;
+    left: 6px;
+  }
+
+  .priceContainer {
+    gap: 0.25rem;
+  }
+
+  .originalPrice {
+    font-size: 9px !important;
+  }
+
+  .discountBadge {
+    font-size: 7px !important;
+    padding: 1px 3px;
   }
 }
 
-/* ==================== EXTRA SMALL (340px) ==================== */
-@media (max-width: 340px) {
+/* ==================== EXTRA SMALL MOBILE (320px) ==================== */
+@media (max-width: 320px) {
   .cakeContainer {
-    padding: 0.35rem 0.15rem;
+    padding: 0.5rem 0.2rem;
   }
+    .dropdown {
+    width: 57% !important;
+    margin-left: 61%;
+    font-size: 10px !important;
+  }
+
 
   .mainTitle {
     font-size: 14px !important;
@@ -853,16 +1041,15 @@
   .viewAllBtn {
     height: 28px;
     font-size: 10px !important;
-    min-width: 80px;
-    width: 100px;
   }
 
   .filterChip {
     padding: 2px 5px;
-    font-size: 8px !important;
+    font-size: 7px !important;
   }
 
   .cakesGrid {
+    grid-template-columns: repeat(2, 1fr);
     gap: 0.3rem;
   }
 
@@ -872,6 +1059,7 @@
 
   .cakeName {
     font-size: 10px !important;
+    margin-top: 2px;
   }
 
   .cakePrice {
@@ -879,6 +1067,7 @@
   }
 
   .ratingBadge {
+    padding: 1px 2px;
     font-size: 8px !important;
   }
 
@@ -903,8 +1092,15 @@
   }
 
   .wishlistBtn {
-    width: 20px;
-    height: 20px;
+    width: 24px;
+    height: 24px;
+  }
+
+  .wishlistBtn svg {
+    width: 16px;
+    height: 16px;
+    position: relative;
+    bottom: 13px;
   }
 
   .vegBadge {
@@ -912,69 +1108,89 @@
     height: 14px;
   }
 
+  .vegDot {
+    width: 6px;
+    height: 6px;
+  }
+
   .badgeTag {
-    padding: 1px 3px;
+    padding: 2px 4px;
     font-size: 7px !important;
     top: 5px;
     left: 5px;
   }
+
+  .priceContainer {
+    gap: 0.2rem;
+  }
+
+  .originalPrice {
+    font-size: 8px !important;
+  }
+
+  .discountBadge {
+    font-size: 6px !important;
+    padding: 1px 2px;
+  }
 }
 
-/* ==================== SWIPER CAROUSEL STYLES ==================== */
-.cakeSwiper {
-  width: 100%;
-  height: 100%;
-}
-
-.cakeSwiper :global(.swiper-slide) {
+/* ==================== SWIPER PAGINATION DOTS - GLOBAL STYLES ==================== */
+:global(.swiper-pagination) {
+  bottom: 10px !important;
   display: flex;
-  align-items: center;
   justify-content: center;
-}
-
-/* Swiper Navigation Arrows - Hidden */
-.cakeSwiper :global(.swiper-button-next),
-.cakeSwiper :global(.swiper-button-prev) {
-  display: none;
-}
-
-/* Swiper Pagination Dots */
-.cakeSwiper :global(.swiper-pagination) {
-  bottom: 15px !important;
-  left: auto !important;
-  right: 15px !important;
-  width: auto !important;
-  display: flex;
-  justify-content: flex-end;
+  align-items: center;
   z-index: 10;
 }
 
-.cakeSwiper :global(.swiper-pagination-bullet) {
-  width: 8px;
-  height: 8px;
-  background: rgba(255, 255, 255, 0.8);
-  opacity: 1;
-  transition: all 0.3s ease;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
-  margin: 0 3px !important;
+:global(.swiper-pagination-bullet) {
+  width: 8px !important;
+  height: 8px !important;
+  background: rgba(14, 77, 101, 0.4) !important;
+  opacity: 1 !important;
+  border-radius: 50% !important;
+  margin: 0 4px !important;
+  transition: all 0.3s ease !important;
 }
 
-.cakeSwiper :global(.swiper-pagination-bullet-active) {
-  background: #0E4D65;
-  transform: scale(1);
+:global(.swiper-pagination-bullet-active) {
+  background: #0e4d65 !important;
+  transform: scale(1) !important;
 }
 
-/* Responsive Swiper Styles */
+:global(.swiper-pagination-bullet-active-main) {
+  background: #0e4d65 !important;
+}
+
+/* Responsive Swiper Pagination for smaller screens */
 @media (max-width: 768px) {
-  .cakeSwiper :global(.swiper-pagination-bullet) {
-    width: 6px;
-    height: 6px;
+  :global(.swiper-pagination-bullet) {
+    width: 7px !important;
+    height: 7px !important;
+    margin: 0 3px !important;
   }
 }
 
 @media (max-width: 480px) {
-  .cakeSwiper :global(.swiper-pagination-bullet) {
-    width: 5px;
-    height: 5px;
+  :global(.swiper-pagination) {
+    bottom: 8px !important;
+  }
+
+  :global(.swiper-pagination-bullet) {
+    width: 6px !important;
+    height: 6px !important;
+    margin: 0 2px !important;
+  }
+}
+
+@media (max-width: 375px) {
+  :global(.swiper-pagination) {
+    bottom: 6px !important;
+  }
+
+  :global(.swiper-pagination-bullet) {
+    width: 5px !important;
+    height: 5px !important;
+    margin: 0 2px !important;
   }
 }

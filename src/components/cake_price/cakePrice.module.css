@@ -101,9 +101,9 @@
 
 .wishlistBtn {
   position: absolute;
-  top: 5px;
+  top: 15px;
   right: 15px;
-  background: white;
+  background: transparent !important;
   border: none;
   border-radius: 50%;
   width: 40px;
@@ -113,22 +113,18 @@
   justify-content: center;
   cursor: pointer;
   transition: all 0.3s ease;
-  color: #0E4D65;
+  z-index: 3;
+  padding: 0;
 }
 
-.wishlistBtn:hover {
-  background: white;
-  color: #ff0000;
+
+.redHeart {
+  color: red !important;
+}
+.wishlistBtn:hover svg,
+.wishlistBtn:hover .redHeart {
   transform: scale(1.1);
-}
-
-.wishlistBtn.liked {
-  background: white;
-  color: #ff0000;
-}
-
-.wishlistBtn.liked:hover {
-  background: white;
+  transition: 0.2s;
 }
 
 .vegBadge {

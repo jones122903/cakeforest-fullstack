@@ -14,6 +14,7 @@ import Footer from "../components/footer/footer.jsx";
 import CakeProductPage from "../components/cakeProductPage/cakeProductPage.jsx";
 
 function Buypage() {
+  
   return (
     <div  className="homeContainer" >
       

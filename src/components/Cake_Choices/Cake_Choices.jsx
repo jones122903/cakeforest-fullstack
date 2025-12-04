@@ -1,19 +1,23 @@
 import React, { useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import styles from '../Cake_Choices/Cake_Choices.module.css';
-
-// 🔹 Import Local Images
-
 import cake1 from "../../assets/category/cakes-with-flowers_3.avif"
 import cake2 from "../../assets/category/kids-cakes_2.avif"
 import cake3 from "../../assets/category/pinata-cakes_2.avif";
 import cake4 from "../../assets/category/pull-me-pp-cakes_2.avif";
 import cake5 from "../../assets/category/bento-cakes_7.avif";
 import cake6 from "../../assets/category/desserts_8.avif";
+import { useNavigate } from 'react-router-dom';
 
 
 const CakeCategory = () => {
   const [hoveredIndex, setHoveredIndex] = useState(null);
+
+  const navigate = useNavigate()
+
+  const gotoCakeALl =()=>{
+     navigate("/gallery")
+  }
 
   // 🔹 Your Cake List with Local Images
   const cakeCategories = [
@@ -40,6 +44,7 @@ const CakeCategory = () => {
                 className={styles.cakeCard}
                 onMouseEnter={() => setHoveredIndex(index)}
                 onMouseLeave={() => setHoveredIndex(null)}
+                onClick={gotoCakeALl}
               >
                 <div className={styles.imageWrapper}>
                   <img 

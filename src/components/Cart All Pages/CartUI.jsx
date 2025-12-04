@@ -1,9 +1,12 @@
 import React, { useState } from 'react';
 import styles from './Cart.module.css';
+import { HiDocumentCurrencyRupee } from "react-icons/hi2";
 import 'bootstrap/dist/css/bootstrap.min.css';
+import LoginModal from './LoginModal';
 
 const OrderSummary = () => {
   const [quantity, setQuantity] = useState(1);
+  const [showModal, setShowModal] = useState(false);
 
   const handleIncrement = () => {
     setQuantity(prev => prev + 1);
@@ -15,7 +18,7 @@ const OrderSummary = () => {
     }
   };
 
-  const itemPrice = 595;
+  const itemPrice = 775;
   const totalPrice = itemPrice * quantity;
 
   return (
@@ -33,20 +36,20 @@ const OrderSummary = () => {
 
           <div className={styles.productCard}>
             <img 
-              src="https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=200&h=200&fit=crop" 
-              alt="Chocolate Truffle Cake" 
+              src="https://images.unsplash.com/photo-1586985289688-ca3cf47d3e6e?w=200&h=200&fit=crop" 
+              alt="Red Velvet Crumb Birthday Cake" 
               className={styles.productImage}
             />
             
             <div className={styles.productDetails}>
               <div className={styles.productHeader}>
                 <div className={styles.productInfo}>
-                  <h3 className={styles.productName}>Chocolate Truffle Cake</h3>
+                  <h3 className={styles.productName}>Red Velvet Crumb Birthday Cake</h3>
                   <p className={styles.productPrice}>₹ {itemPrice}</p>
-                  <p className={styles.productWeight}>Weight: 0.5 Kg</p>
+                  <p className={styles.productWeight}>Weight: 0.5 kg</p>
                 </div>
                 <button className={styles.deleteButton}>
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0b4b62" strokeWidth="2">
                     <polyline points="3 6 5 6 21 6"></polyline>
                     <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
                   </svg>
@@ -91,8 +94,8 @@ const OrderSummary = () => {
 
           <div className={styles.billDetails}>
             <div className={styles.billRow}>
-              <span className={styles.billLabel}>
-                <span className={styles.billIcon}>🧾</span>
+              <span className={`${styles.billLabel}`}>
+                <span className={`${styles.billIcon}`}><HiDocumentCurrencyRupee /></span>
                 Order Total
               </span>
               <span className={styles.billAmount}>₹ {totalPrice}</span>
@@ -104,10 +107,19 @@ const OrderSummary = () => {
             <span className={styles.grandTotalAmount}>₹ {totalPrice}</span>
           </div>
 
-          <button className={styles.placeOrderButton}>
+          <button 
+            className={`btn-buy ${styles.placeOrderButton}`}
+            onClick={() => setShowModal(true)}
+          >
             PLACE ORDER
           </button>
         </div>
+
+        {/* Login Modal */}
+        <LoginModal 
+          isOpen={showModal} 
+          onClose={() => setShowModal(false)} 
+        />
       </div>
     </div>
   );

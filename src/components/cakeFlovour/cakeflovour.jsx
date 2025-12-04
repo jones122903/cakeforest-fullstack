@@ -10,10 +10,18 @@ import cake3 from "../../assets/category/cake3.avif";
 import cake4 from "../../assets/category/cake4.avif";
 import cake5 from "../../assets/category/cake5.avif";
 import cake6 from "../../assets/category/cake6.avif";
+import { useNavigate } from 'react-router-dom';
 
 
 const Cakeflovor = () => {
+
+  const navigate = useNavigate()
+
   const [hoveredIndex, setHoveredIndex] = useState(null);
+
+  const gotoCakeALl =()=>{
+     navigate("/gallery")
+  }
 
   // 🔹 Your Cake List with Local Images
   const cakeCategories = [
@@ -42,6 +50,7 @@ const Cakeflovor = () => {
                 className={styles.cakeCard}
                 onMouseEnter={() => setHoveredIndex(index)}
                 onMouseLeave={() => setHoveredIndex(null)}
+                onClick={gotoCakeALl}
               >
                 <div className={styles.imageWrapper}>
                   <img 

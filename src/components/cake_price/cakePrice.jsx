@@ -12,9 +12,11 @@ import cake_price5 from "../../assets/cake_price/cake_price5.avif";
 import cake_price6 from "../../assets/cake_price/cake_price6.avif";
 import cake_price7 from "../../assets/cake_price/cake_price7.avif";
 import cake_price8 from "../../assets/cake_price/cake_price8.avif";
+import { useNavigate } from "react-router-dom";
 
 const CakePrice = () => {
   const [wishlist, setWishlist] = React.useState({});
+  const navigate = useNavigate()
 
   const toggleWishlist = (cakeId) => {
     setWishlist((prev) => ({
@@ -22,6 +24,14 @@ const CakePrice = () => {
       [cakeId]: !prev[cakeId],
     }));
   };
+
+  const gotoCakebuy =()=>{
+     navigate("/buypage")
+  }
+
+  const gotoCakeALl =()=>{
+     navigate("/gallery")
+  }
 
   const cakes = [
     {
@@ -107,12 +117,12 @@ const CakePrice = () => {
             Delectably Delicious in Every Layers!
           </p>
         </div>
-        <button className={styles.viewAllBtn}>View All</button>
+        <button className={styles.viewAllBtn} onClick={gotoCakeALl}>View All</button>
       </div>
 
       <div className={styles.cakesGrid}>
         {cakes.map((cake) => (
-          <div key={cake.id} className={styles.cakeCard}>
+          <div key={cake.id} className={styles.cakeCard} onClick={gotoCakebuy}>
             <div className={styles.imageWrapper}>
               <img
                 src={cake.image}
@@ -161,7 +171,7 @@ const CakePrice = () => {
             </div>
           </div>
         ))}
-        <button className={styles.viewAllBtn}>View All</button>
+        <button className={styles.viewAllBtn} onClick={gotoCakeALl}>View All</button>
       </div>
     </div>
   );

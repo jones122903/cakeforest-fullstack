@@ -11,7 +11,7 @@ body {
 /* Header Section */
 .headerSection {
   text-align: center;
-  margin-bottom: 50px;
+  margin-bottom: 30px;
 }
 
 .mainTitle {
@@ -118,7 +118,7 @@ body {
 /* ==================== EXTRA LARGE SCREENS (1400px+) ==================== */
 @media (min-width: 1400px) {
   .cakeDeliveryContainer {
-    padding: 60px 0px;
+    padding: 20px 0px;
   }
 
   .mainTitle {
@@ -164,7 +164,7 @@ body {
 /* ==================== MEDIUM SCREENS (768px - 991px) ==================== */
 @media (min-width: 768px) and (max-width: 991px) {
   .cakeDeliveryContainer {
-    padding: 35px 0px;
+    padding:15px 0px;
   }
 
   .mainTitle {
@@ -191,7 +191,7 @@ body {
 /* ==================== SMALL SCREENS (576px - 767px) ==================== */
 @media (min-width: 576px) and (max-width: 767px) {
   .cakeDeliveryContainer {
-    padding: 30px 0px;
+    padding: 10px 0px;
   }
 
   .mainTitle {
@@ -219,7 +219,7 @@ body {
 /* ==================== EXTRA SMALL SCREENS (below 576px) ==================== */
 @media (max-width: 575px) {
   .cakeDeliveryContainer {
-    padding: 25px 0px;
+    padding: 10px 0px;
   }
 
   .headerSection {

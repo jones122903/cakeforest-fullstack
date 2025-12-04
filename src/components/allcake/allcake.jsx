@@ -1,6 +1,7 @@
 import React from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import style from './allcake.module.css';
+import { useNavigate } from 'react-router-dom';
 
 export default function AllCake() {
   const cakeCategories = [
@@ -36,6 +37,12 @@ export default function AllCake() {
     }
   ];
 
+  const navigate = useNavigate()
+
+  const gotoCakeALl =()=>{
+     navigate("/gallery")
+  }
+
   return (
 
     <div className="">
@@ -50,7 +57,7 @@ export default function AllCake() {
             />
             <div className={`card-body d-flex justify-content-between align-items-center ${style.cardBody}`}>
               <h4 className={style.cardTitle}>Birthday Cakes</h4>
-              <button className="btn-viewall">VIEW ALL</button>
+              <button className="btn-viewall" onClick={gotoCakeALl}>VIEW ALL</button>
             </div>
           </div>
         </div>
@@ -63,7 +70,7 @@ export default function AllCake() {
             />
             <div className={`card-body d-flex justify-content-between align-items-center ${style.cardBody}`}>
               <h4 className={style.cardTitle}>Anniversary Cakes</h4>
-              <button className="btn-viewall">VIEW ALL</button>
+              <button className="btn-viewall" onClick={gotoCakeALl}>VIEW ALL</button>
             </div>
           </div>
         </div>
