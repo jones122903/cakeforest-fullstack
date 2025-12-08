@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { TextField } from "@mui/material";
 import InputAdornment from "@mui/material/InputAdornment";
-import PersonIcon from "@mui/icons-material/PersonOutlined";
+import { LuUser } from "react-icons/lu";
 import { LuLock } from "react-icons/lu";
 import { LuMail } from "react-icons/lu";
 
@@ -37,7 +37,7 @@ const Login = () => {
               InputProps={{
                 startAdornment: (
                   <InputAdornment position="start">
-                    <PersonIcon />
+                    <LuUser size={20} color="#2C5F7C" />
                   </InputAdornment>
                 ),
               }}
@@ -68,7 +68,7 @@ const Login = () => {
               InputProps={{
                 startAdornment: (
                   <InputAdornment position="start">
-                    <LuLock color="#0e4d65"/>
+                    <LuLock color="#0e4d65" />
                   </InputAdornment>
                 ),
               }}
@@ -101,7 +101,7 @@ const Login = () => {
               InputProps={{
                 startAdornment: (
                   <InputAdornment position="start">
-                    <LuMail color="#0e4d65"/>
+                    <LuMail color="#0e4d65" />
                   </InputAdornment>
                 ),
               }}
@@ -117,7 +117,7 @@ const Login = () => {
               InputProps={{
                 startAdornment: (
                   <InputAdornment position="start">
-                    <LuLock color="#0e4d65"/>
+                    <LuLock color="#0e4d65" />
                   </InputAdornment>
                 ),
               }}

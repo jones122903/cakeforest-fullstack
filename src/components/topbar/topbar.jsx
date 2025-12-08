@@ -114,6 +114,7 @@ import {
   X,
   Edit,
 } from "lucide-react";
+import { IndianRupee } from "lucide-react";
 import styles from "./topbar.module.css";
 
 const Topbar = () => {

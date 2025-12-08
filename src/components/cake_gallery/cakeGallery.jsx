@@ -6,6 +6,9 @@ import 'swiper/css';
 import 'swiper/css/pagination';
 import styles from './cakeGallery.module.css';
 import { motion, AnimatePresence } from 'framer-motion';
+import Footer from "../footer/footer.jsx";
+import ReviewsSection from "../reviewsection/reviewsection.jsx";
+import FlowerAuraNavbar from "../topbar/topbar.jsx";
 
 // Import cake images from assets/cake folder
 // Chocolate Truffle Cake images
@@ -349,6 +352,9 @@ const CakeGallery = () => {
 
   return (
     <div className={styles.cakeContainer}>
+            <div className="">
+                <FlowerAuraNavbar />
+              </div>
       {/* Filter Section */}
       <div className={styles.filterSection}>
         <div className={styles.filterChips}>
@@ -532,6 +538,13 @@ const CakeGallery = () => {
           );
         })}
       </div>
+              <div>
+                <ReviewsSection />
+              </div>
+      
+              <div className="my-4">
+                <Footer />
+              </div>
     </div>
   );
 };
