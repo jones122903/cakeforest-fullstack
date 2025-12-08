@@ -93,13 +93,27 @@ function Home() {
         <div>
           <ReviewsSection />
         </div>
-
-        <div className="my-4">
-          <Footer />
-        </div>
-
-
       </div>
+      <div className="my-5">
+        <CakePrice />
+      </div>
+      <div className="my-5">
+        <AllCake />
+      </div>
+      <div className="my-5">
+        <CakeCategory />
+      </div>
+      <div className="my-5">
+        <Cakeforher />
+      </div>
+      <div className="my-5">
+         <BlogSection/>
+      </div>
+      <div>
+        <ReviewsSection />
+      </div>
+      <div className="my-5">
+        <Footer />
       </div>
     </div>
   );
