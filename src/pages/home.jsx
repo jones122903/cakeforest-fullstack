@@ -14,6 +14,7 @@ import BlogSection from "../components/Blogs/Blogs.jsx";
 import ReviewsSection from "../components/reviewsection/reviewsection.jsx";
 import FlowerAuraNavbar from "../components/topbar/topbar.jsx";
 import Footer from "../components/footer/footer.jsx";
+import Topbar from "../components/topbar/topbar.jsx";
 
 function Home() {
   const navigate = useNavigate();
@@ -23,7 +24,7 @@ function Home() {
 
       <div>
         <div className="">
-            <FlowerAuraNavbar />
+            <Topbar />
           </div>
 
       <div className="homeContainer" >
