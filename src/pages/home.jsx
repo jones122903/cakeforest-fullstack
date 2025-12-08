@@ -7,12 +7,11 @@ import CakePrice from "../components/cake_price/cakePrice.jsx";
 import Category from "../components/categories/category.jsx";
 import Cakeflovor from "../components/cakeFlovour/cakeflovour.jsx";
 import CakeCategory from "../components/Cake_Choices/Cake_Choices.jsx";
-import "../app/App.css"
+import "../app/App.css";
 import AllCake from "../components/allcake/allcake.jsx";
 import Cakeforher from "../components/cakeforher/cakeforher.jsx";
 import BlogSection from "../components/Blogs/Blogs.jsx";
 import ReviewsSection from "../components/reviewsection/reviewsection.jsx";
-import FlowerAuraNavbar from "../components/topbar/topbar.jsx";
 import Footer from "../components/footer/footer.jsx";
 import Topbar from "../components/topbar/topbar.jsx";
 
@@ -21,13 +20,11 @@ function Home() {
 
   return (
     <div>
-
       <div>
-        <div className="">
-            <Topbar />
-          </div>
+        <Topbar />
+      </div>
 
-      <div className="homeContainer" >
+      <div className="homeContainer">
         {/* Admin Panel Access Button */}
         <motion.button
           onClick={() => navigate('/admin/dashboard')}
@@ -60,58 +57,44 @@ function Home() {
         >
           <Settings size={28} color="white" />
         </motion.button>
-  
-        <div>
 
-          
-
-          <div className="mb-4 mt-2">
-            <Category />
-          </div>
-          <div className="my-4">
-            <Carousel />
-          </div>
-          <div className="my-5">
-            <Cakeflovor />
-          </div>
+        <div className="mb-4 mt-2">
+          <Category />
         </div>
+        
+        <div className="my-4">
+          <Carousel />
+        </div>
+        
+        <div className="my-5">
+          <Cakeflovor />
+        </div>
+        
         <div className="my-5">
           <CakePrice />
         </div>
+        
         <div className="my-5">
           <AllCake />
         </div>
+        
         <div className="my-4">
           <CakeCategory />
         </div>
+        
         <div className="my-5">
           <Cakeforher />
         </div>
+        
         <div className="my-5">
-          <BlogSection/>
+          <BlogSection />
         </div>
+        
         <div>
           <ReviewsSection />
         </div>
       </div>
-      <div className="my-5">
-        <CakePrice />
-      </div>
-      <div className="my-5">
-        <AllCake />
-      </div>
-      <div className="my-5">
-        <CakeCategory />
-      </div>
-      <div className="my-5">
-        <Cakeforher />
-      </div>
-      <div className="my-5">
-         <BlogSection/>
-      </div>
-      <div>
-        <ReviewsSection />
-      </div>
+
       <div className="my-5">
         <Footer />
       </div>
