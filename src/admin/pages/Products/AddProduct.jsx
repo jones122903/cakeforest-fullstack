@@ -3,33 +3,28 @@ import { useNavigate } from "react-router-dom";
 import { Save, X, Upload, Plus, Minus } from "lucide-react";
 import "./AddProduct.css";
 import styles from "./AddProduct.module.css";
+import axios from "axios";
 
 const AddProduct = () => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
-    name: "",
-    category: "",
-    description: "",
-    ingredients: "",
-    eggType: "egg",
-    stockQuantity: "",
-    basePrice: "",
-    status: "active",
-    images: [],
-  });
+  cakeName: "",
+  flavor: "",
+  category: "",
+  description: "",
+  price: "",
+  discount: "",
+  weight: "",
+  availability: "available",
+  stock: 0,
+  images: [], // after upload → URL array
+});
 
-  const [variants, setVariants] = useState([
-    { weight: "0.5", price: "" },
-    { weight: "1", price: "" },
-    { weight: "1.5", price: "" },
-    { weight: "2", price: "" },
-  ]);
 
-  const [addOns, setAddOns] = useState([
-    { name: "Rose", price: "50", selected: false },
-    { name: "Teddy Bear", price: "200", selected: false },
-    { name: "Chocolates", price: "150", selected: false },
-  ]);
+  const token =
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5MzkwZmRkMzg2NjFjOWEwYjU2YTMzNiIsImlhdCI6MTc2NTM1MTk4MSwiZXhwIjoxNzY1OTU2NzgxfQ.qIapHLuh8Ww2WIy_wO74S8rOtBiWOWuABgFFfDgs7No";
+  const api_url = import.meta.env.VITE_API_URL;
+ 
 
   const [imagePreview, setImagePreview] = useState([]);
 
@@ -53,32 +48,79 @@ const AddProduct = () => {
     setVariants(newVariants);
   };
 
- const handleImageUpload = (e) => {
-  const files = Array.from(e.target.files);
+  const handleImageUpload = (e) => {
+    const files = Array.from(e.target.files);
 
-  const newImages = files.map((file) => ({
-    file,
-    preview: URL.createObjectURL(file),
-  }));
+    const newImages = files.map((file) => ({
+      file,
+      preview: URL.createObjectURL(file),
+    }));
 
-  setFormData((prev) => ({
-    ...prev,
-    images: [...prev.images, ...newImages],
-  }));
-};
-
+    setFormData((prev) => ({
+      ...prev,
+      images: [...prev.images, ...newImages],
+    }));
+  };
 
   const removeImage = (index) => {
     const newImages = formData.images.filter((_, i) => i !== index);
     setFormData({ ...formData, images: newImages });
   };
 
-  const handleSubmit = (e) => {
+  // ⬇️ UPLOAD ALL IMAGES TO BACKEND AND RETURN URL ARRAY
+const uploadImages = async () => {
+  const imgForm = new FormData();  // REAL FormData
+
+  formData.images.forEach((imgObj) => {
+    imgForm.append("images", imgObj.file);
+  });
+
+  const res = await axios.post(
+    `${api_url}/upload-images`,
+    imgForm,
+    {
+      headers: { "Content-Type": "multipart/form-data" }
+    }
+  );
+
+  return res.data.images;   // returns array of URLs
+};
+
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Product Data:", { ...formData, variants, addOns });
-    // Here you would typically send data to backend
-    alert("Product added successfully!");
-    navigate("/admin/products");
+
+    try {
+
+      const imageUrls = await uploadImages();
+      // 2️⃣ Build final product data
+      const productData = {
+  cakeName: formData.cakeName,
+  flavor: formData.flavor,
+  category: formData.category,
+  description: formData.description,
+  price: Number(formData.price),
+  discount: Number(formData.discount || 0),
+  weight: formData.weight,
+  availability: formData.availability,
+  stock: Number(formData.stock || 0),
+
+  images: imageUrls, // from multer upload
+ 
+};
+
+
+      // 3️⃣ POST product to backend
+      const res = await axios.post(`${api_url}/products`, productData, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      console.log("SUCCESS:", res.data);
+    } catch (error) {
+      console.error("UPLOAD ERROR:", error);
+    }
   };
 
   return (
@@ -105,42 +147,39 @@ const AddProduct = () => {
           {/* LEFT: IMAGE UPLOAD */}
           <div className="col-12 col-md-12 mb-3">
             <div className="image-upload-section">
+              <label htmlFor="images" className="upload-area">
+                <Upload size={32} />
+                <p>Click to upload images</p>
+                <span>PNG, JPG up to 5MB</span>
 
-  <label htmlFor="images" className="upload-area">
-    <Upload size={32} />
-    <p>Click to upload images</p>
-    <span>PNG, JPG up to 5MB</span>
+                <input
+                  type="file"
+                  id="images"
+                  accept="image/*"
+                  multiple
+                  onChange={handleImageUpload}
+                  style={{ display: "none" }}
+                />
+              </label>
 
-    <input
-      type="file"
-      id="images"
-      accept="image/*"
-      multiple
-      onChange={handleImageUpload}
-      style={{ display: "none" }}
-    />
-  </label>
+              {formData.images.length > 0 && (
+                <div className="image-preview-grid">
+                  {formData.images.map((img, index) => (
+                    <div key={index} className="image-preview">
+                      <img src={img.preview} alt={`Preview ${index + 1}`} />
 
-  {formData.images.length > 0 && (
-    <div className="image-preview-grid">
-      {formData.images.map((img, index) => (
-        <div key={index} className="image-preview">
-          <img src={img.preview} alt={`Preview ${index + 1}`} />
-
-          <button
-            type="button"
-            className="remove-image"
-            onClick={() => removeImage(index)}
-          >
-            <X size={16} />
-          </button>
-        </div>
-      ))}
-    </div>
-  )}
-
-</div>
-
+                      <button
+                        type="button"
+                        className="remove-image"
+                        onClick={() => removeImage(index)}
+                      >
+                        <X size={16} />
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
           </div>
 
           {/* RIGHT: MAIN FORM (6 FIELDS) */}
