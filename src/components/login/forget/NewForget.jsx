@@ -12,6 +12,9 @@ import axios from "axios";
   const [loading, setLoading] = useState(false);
   const api_url = import.meta.env.VITE_API_URL
 
+  console.log("ENV VALUE →", import.meta.env.VITE_API_URL);
+
+
 
   const [formData, setFormData] = useState({
     email: "",
@@ -73,13 +76,13 @@ import axios from "axios";
     // 🔥 FRONTEND-ONLY — simulate delay
      try {
     // 🔥 Backend API
-    const res = await axios.post(`${api_url}/auth/forgot-password`, {
+    const res = await axios.post(`${api_url}/forgot-password`, {
       email: value,
     });
 
     await showToast("success", res.data.message || "OTP sent successfully");
 
-    // otp expiry from backend
+     
     navigate("/otp", {
       state: {
         email: value,
