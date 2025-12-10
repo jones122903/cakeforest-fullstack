@@ -3,28 +3,47 @@ import { useNavigate } from "react-router-dom";
 import { Save, X, Upload, Plus, Minus } from "lucide-react";
 import "./AddProduct.css";
 import styles from "./AddProduct.module.css";
+import { TextField } from "@mui/material";
+import MenuItem from "@mui/material/MenuItem";
+import InputAdornment from "@mui/material/InputAdornment";
+import { Sparkles } from "lucide-react";
+import { Tag } from "lucide-react";
+import { Scale } from "lucide-react";
+import { IndianRupee } from "lucide-react";
 import axios from "axios";
+import { Cake } from "lucide-react";
+import { Percent } from "lucide-react";
+import { FileText } from "lucide-react";
+import {
+  Radio,
+  RadioGroup,
+  FormControl,
+  FormControlLabel,
+  FormLabel,
+} from "@mui/material";
+import { CheckCircle, XCircle } from "lucide-react";
+import Swal from "sweetalert2";
+import { Popconfirm, Button } from "antd";
+
 
 const AddProduct = () => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
-  cakeName: "",
-  flavor: "",
-  category: "",
-  description: "",
-  price: "",
-  discount: "",
-  weight: "",
-  availability: "available",
-  stock: 0,
-  images: [], // after upload → URL array
-});
-
+    cakeName: "",
+    flavor: "",
+    category: "",
+    description: "",
+    price: "",
+    discount: "",
+    weight: "",
+    availability: "available",
+    stock: 0,
+    images: [], // after upload → URL array
+  });
 
   const token =
     "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5MzkwZmRkMzg2NjFjOWEwYjU2YTMzNiIsImlhdCI6MTc2NTM1MTk4MSwiZXhwIjoxNzY1OTU2NzgxfQ.qIapHLuh8Ww2WIy_wO74S8rOtBiWOWuABgFFfDgs7No";
   const api_url = import.meta.env.VITE_API_URL;
- 
 
   const [imagePreview, setImagePreview] = useState([]);
 
@@ -40,12 +59,6 @@ const AddProduct = () => {
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
-  };
-
-  const handleVariantChange = (index, field, value) => {
-    const newVariants = [...variants];
-    newVariants[index][field] = value;
-    setVariants(newVariants);
   };
 
   const handleImageUpload = (e) => {
@@ -67,70 +80,108 @@ const AddProduct = () => {
     setFormData({ ...formData, images: newImages });
   };
 
-  // ⬇️ UPLOAD ALL IMAGES TO BACKEND AND RETURN URL ARRAY
-// const uploadImages = async () => {
-//   const imgForm = new FormData();  // REAL FormData
 
-//   formData.images.forEach((imgObj) => {
-//     imgForm.append("images", imgObj.file);
-//   });
+  const validateForm = () => {
+  if (!formData.cakeName.trim()) return "Cake Name is required";
+  if (!formData.flavor) return " Select a Flavor";
+  if (!formData.category) return "Select a Category";
+  if (!formData.weight) return "Select a Weight";
+  if (!formData.price) return "Price is required";
+  if (formData.price <= 0) return "Price must be greater than 0";
+  if (formData.images.length === 0) return "Please upload at least one image";
 
-//   const res = await axios.post(
-//     `${api_url}/upload-images`,
-//     imgForm,
-//     {
-//       headers: { "Content-Type": "multipart/form-data" }
-//     }
-//   );
-
-//   return res.data.images;   // returns array of URLs
-// };
-
-const uploadImages = async () => {
-  const imgForm = new FormData();
-
-  // ✅ SEND CAKENAME FIRST!
-  imgForm.append("cakeName", formData.cakeName);
-
-  // Then append images
-  formData.images.forEach((imgObj) => {
-    imgForm.append("images", imgObj.file);
-  });
-
-  const res = await axios.post(
-    `${api_url}/upload-images`,
-    imgForm,
-    {
-      headers: { "Content-Type": "multipart/form-data" }
-    }
-  );
-
-  return res.data.images;
+  return null; // Everything correct
 };
 
+const showToast = async (icon, title) => {
+  let timerInterval;
+
+  const Toast = Swal.mixin({
+    toast: true,
+    position: "top-right",
+    showConfirmButton: false,
+    timer: 2500,
+    timerProgressBar: true,
+
+    // Progress bar color change based on success / error
+    didOpen: (toast) => {
+      // change progress bar color
+      const progressBar = toast.querySelector(".swal2-timer-progress-bar");
+      progressBar.style.background =
+        icon === "success" ? "green" : "red";
+
+      // Pause on hover
+      toast.addEventListener("mouseenter", () => {
+        Swal.stopTimer();
+      });
+
+      // Resume on mouse leave
+      toast.addEventListener("mouseleave", () => {
+        Swal.resumeTimer();
+      });
+    },
+
+    // Custom popup color classes
+    customClass: {
+      popup: icon === "success" ? "colored-toast" : "colored-toast-error",
+    },
+
+    iconColor: icon === "success" ? "green" : "red",
+  });
+
+  await Toast.fire({ icon, title });
+};
+
+
+  const uploadImages = async () => {
+    const imgForm = new FormData();
+
+    // ✅ SEND CAKENAME FIRST!
+    imgForm.append("cakeName", formData.cakeName);
+
+    // Then append images
+    formData.images.forEach((imgObj) => {
+      imgForm.append("images", imgObj.file);
+    });
+    try {
+      const res = await axios.post(`${api_url}/upload-images`, imgForm, {
+      headers: { "Content-Type": "multipart/form-data" },
+      });
+      return res.data.images;
+    } catch (error) {
+      showToast("error", error.response?.data?.message || "Image upload failed");
+    }
+
+    
+
+    
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    
+  const errorMessage = validateForm();
+  if (errorMessage) {
+    showToast("error", errorMessage);
+    return;
+  }
 
     try {
-
       const imageUrls = await uploadImages();
       // 2️⃣ Build final product data
       const productData = {
-  cakeName: formData.cakeName,
-  flavor: formData.flavor,
-  category: formData.category,
-  description: formData.description,
-  price: Number(formData.price),
-  discount: Number(formData.discount || 0),
-  weight: formData.weight,
-  availability: formData.availability,
-  stock: Number(formData.stock || 0),
+        cakeName: formData.cakeName,
+        flavor: formData.flavor,
+        category: formData.category,
+        description: formData.description,
+        price: Number(formData.price),
+        discount: Number(formData.discount || 0),
+        weight: formData.weight,
+        availability: formData.availability,
+        stock: Number(formData.stock || 0),
 
-  images: imageUrls, // from multer upload
- 
-};
-
+        images: imageUrls, // from multer upload
+      };
 
       // 3️⃣ POST product to backend
       const res = await axios.post(`${api_url}/products`, productData, {
@@ -139,9 +190,23 @@ const uploadImages = async () => {
         },
       });
 
-      console.log("SUCCESS:", res.data);
+      showToast("success", res.data.message || "Product added successfully");
+     
+      setFormData({
+      cakeName: "",
+      flavor: "",
+      category: "",
+      description: "",
+      price: "",
+      discount: "",
+      weight: "",
+      availability: "available",
+      stock: 0,
+      images: [],
+    });
+      
     } catch (error) {
-      console.error("UPLOAD ERROR:", error);
+      showToast("error", error.response?.data?.message || "Something went wrong");
     }
   };
 
@@ -149,23 +214,13 @@ const uploadImages = async () => {
     <div className="add-product">
       <div className="page-header">
         <h1>Add New Cake</h1>
-        <div className="header-actions">
-          <button
-            className="btn-secondary"
-            onClick={() => navigate("/admin/products")}
-          >
-            <X size={18} />
-            Cancel
-          </button>
-          <button className="btn-primary" onClick={handleSubmit}>
-            <Save size={18} />
-            Save Product
-          </button>
-        </div>
+        
       </div>
 
       <form className="product-form" onSubmit={handleSubmit}>
-        <div className="row mt-3 form-section">
+        <div className="form-section">
+
+        <div className="row mt-3 ">
           {/* LEFT: IMAGE UPLOAD */}
           <div className="col-12 col-md-12 mb-3">
             <div className="image-upload-section">
@@ -211,18 +266,21 @@ const uploadImages = async () => {
               <div className="col-12 col-md-6">
                 <div className={styles.formBox}>
                   <div className={styles.floatingGroup}>
-                    <input
-                      type="text"
+                    <TextField
+                      label="Cake Name"
                       name="cakeName"
                       value={formData.cakeName}
                       onChange={handleInputChange}
-                      placeholder=" "
-                      className={styles.floatingInput}
-                      required
+                      variant="outlined"
+                      fullWidth
+                      InputProps={{
+                        startAdornment: (
+                          <InputAdornment position="start">
+                            <Cake size={20} color="#2C5F7C" />
+                          </InputAdornment>
+                        ),
+                      }}
                     />
-                    <label className={styles.floatingLabel}>
-                      Cake Name <span className={styles.required}>*</span>
-                    </label>
                   </div>
                 </div>
               </div>
@@ -231,26 +289,32 @@ const uploadImages = async () => {
               <div className="col-12 col-md-6">
                 <div className={styles.formBox}>
                   <div className={styles.floatingGroup}>
-                    <select
+                    <TextField
+                      select
+                      label="Flavor"
                       name="flavor"
                       value={formData.flavor}
                       onChange={handleInputChange}
-                      className={styles.floatingInput}
-                      required
+                      fullWidth
+                      variant="outlined"
+                      InputProps={{
+                        startAdornment: (
+                          <InputAdornment position="start">
+                            <Sparkles size={20} color="#2c5f7c" />
+                          </InputAdornment>
+                        ),
+                      }}
                     >
-                      <option value="">Select Flavor</option>
-                      <option value="chocolate">🍫 Chocolate</option>
-                      <option value="vanilla">🍦 Vanilla</option>
-                      <option value="strawberry">🍓 Strawberry</option>
-                      <option value="red-velvet">❤️ Red Velvet</option>
-                      <option value="butterscotch">🍮 Butterscotch</option>
-                      <option value="black-forest">🌲 Black Forest</option>
-                      <option value="pineapple">🍍 Pineapple</option>
-                      <option value="mango">🥭 Mango</option>
-                    </select>
-                    <label className={styles.floatingLabel}>
-                      Flavor <span className={styles.required}>*</span>
-                    </label>
+                      <MenuItem value="">Select Flavor</MenuItem>
+                      <MenuItem value="chocolate"> Chocolate</MenuItem>
+                      <MenuItem value="vanilla"> Vanilla</MenuItem>
+                      <MenuItem value="strawberry"> Strawberry</MenuItem>
+                      <MenuItem value="red-velvet"> Red Velvet</MenuItem>
+                      <MenuItem value="butterscotch"> Butterscotch</MenuItem>
+                      <MenuItem value="black-forest"> Black Forest</MenuItem>
+                      <MenuItem value="pineapple">Pineapple</MenuItem>
+                      <MenuItem value="mango">Mango</MenuItem>
+                    </TextField>
                   </div>
                 </div>
               </div>
@@ -259,24 +323,30 @@ const uploadImages = async () => {
               <div className="col-12 col-md-6">
                 <div className={styles.formBox}>
                   <div className={styles.floatingGroup}>
-                    <select
+                    <TextField
+                      select
+                      label="Category"
                       name="category"
                       value={formData.category}
                       onChange={handleInputChange}
-                      className={styles.floatingInput}
-                      required
+                      fullWidth
+                      variant="outlined"
+                      InputProps={{
+                        startAdornment: (
+                          <InputAdornment position="start">
+                            <Tag size={20} color="#2C5F7C" />
+                          </InputAdornment>
+                        ),
+                      }}
                     >
-                      <option value="">Select Category</option>
-                      <option value="birthday">🎉 Birthday Cake</option>
-                      <option value="wedding">💍 Wedding Cake</option>
-                      <option value="anniversary">💕 Anniversary Cake</option>
-                      <option value="kids">👶 Kids Special</option>
-                      <option value="premium">✨ Premium Collection</option>
-                      <option value="celebration">🎊 Celebration</option>
-                    </select>
-                    <label className={styles.floatingLabel}>
-                      Category <span className={styles.required}>*</span>
-                    </label>
+                      <MenuItem value="">Select Category</MenuItem>
+                      <MenuItem value="birthday">Birthday Cake</MenuItem>
+                      <MenuItem value="wedding"> Wedding Cake</MenuItem>
+                      <MenuItem value="anniversary"> Anniversary Cake</MenuItem>
+                      <MenuItem value="kids"> Kids Special</MenuItem>
+                      <MenuItem value="premium"> Premium Collection</MenuItem>
+                      <MenuItem value="celebration"> Celebration</MenuItem>
+                    </TextField>
                   </div>
                 </div>
               </div>
@@ -285,26 +355,43 @@ const uploadImages = async () => {
               <div className="col-12 col-md-6">
                 <div className={styles.formBox}>
                   <div className={styles.floatingGroup}>
-                    <select
+                    <TextField
+                      select
+                      label="Weight"
                       name="weight"
                       value={formData.weight}
                       onChange={handleInputChange}
-                      className={styles.floatingInput}
-                      required
+                      fullWidth
+                      variant="outlined"
+                      // SelectProps={{
+                      //   displayEmpty: true,
+                      //   renderValue: (selected) => {
+                      //     if (selected === "") {
+                      //       return <span style={{ color: "#888" }}>Select Weight</span>;
+                      //     }
+                      //     return selected + " Kg";
+                      //   },
+                      // }}
+                      InputProps={{
+                        startAdornment: (
+                          <InputAdornment position="start">
+                            <Scale size={20} color="#2C5F7C" />
+                          </InputAdornment>
+                        ),
+                      }}
                     >
-                      <option value="">Select Weight</option>
-                      <option value="0.5">0.5 Kg</option>
-                      <option value="1">1 Kg</option>
-                      <option value="1.5">1.5 Kg</option>
-                      <option value="2">2 Kg</option>
-                      <option value="2.5">2.5 Kg</option>
-                      <option value="3">3 Kg</option>
-                      <option value="4">4 Kg</option>
-                      <option value="5">5 Kg</option>
-                    </select>
-                    <label className={styles.floatingLabel}>
-                      Weight <span className={styles.required}>*</span>
-                    </label>
+                      <MenuItem value="" selected>
+                        Select Weight
+                      </MenuItem>
+                      <MenuItem value="0.5">0.5 Kg</MenuItem>
+                      <MenuItem value="1">1 Kg</MenuItem>
+                      <MenuItem value="1.5">1.5 Kg</MenuItem>
+                      <MenuItem value="2">2 Kg</MenuItem>
+                      <MenuItem value="2.5">2.5 Kg</MenuItem>
+                      <MenuItem value="3">3 Kg</MenuItem>
+                      <MenuItem value="4">4 Kg</MenuItem>
+                      <MenuItem value="5">5 Kg</MenuItem>
+                    </TextField>
                   </div>
                 </div>
               </div>
@@ -313,18 +400,22 @@ const uploadImages = async () => {
               <div className="col-12 col-md-6">
                 <div className={styles.formBox}>
                   <div className={styles.floatingGroup}>
-                    <input
-                      type="number"
+                    <TextField
+                      type="tel"
+                      label="Price (₹)"
                       name="price"
                       value={formData.price}
                       onChange={handleInputChange}
-                      placeholder=" "
-                      className={styles.floatingInput}
-                      required
+                      fullWidth
+                      variant="outlined"
+                      InputProps={{
+                        startAdornment: (
+                          <InputAdornment position="start">
+                            <IndianRupee size={20} color="#2C5F7C" />
+                          </InputAdornment>
+                        ),
+                      }}
                     />
-                    <label className={styles.floatingLabel}>
-                      Price (₹) <span className={styles.required}>*</span>
-                    </label>
                   </div>
                 </div>
               </div>
@@ -333,17 +424,23 @@ const uploadImages = async () => {
               <div className="col-12 col-md-6">
                 <div className={styles.formBox}>
                   <div className={styles.floatingGroup}>
-                    <input
-                      type="number"
+                    <TextField
+                      type="tel"
+                      label="Discount (%)"
                       name="discount"
                       value={formData.discount}
                       onChange={handleInputChange}
-                      placeholder=" "
-                      className={styles.floatingInput}
-                      min="0"
-                      max="100"
+                      variant="outlined"
+                      fullWidth
+                      inputProps={{ min: 0, max: 100 }}
+                      InputProps={{
+                        startAdornment: (
+                          <InputAdornment position="start">
+                            <Percent size={20} color="#2C5F7C" />
+                          </InputAdornment>
+                        ),
+                      }}
                     />
-                    <label className={styles.floatingLabel}>Discount (%)</label>
                   </div>
                 </div>
               </div>
@@ -351,63 +448,76 @@ const uploadImages = async () => {
               <div className="col-12 col-md-6">
                 <div className={styles.formBox}>
                   <div className={styles.floatingGroup}>
-                    <textarea
+                    <TextField
+                      label="Description"
                       name="description"
                       value={formData.description}
                       onChange={handleInputChange}
-                      placeholder=" "
-                      rows="3"
-                      className={styles.floatingInput}
+                      multiline
+                      rows={2}
+                      fullWidth
+                      variant="outlined"
+                      // InputProps={{
+                      //   startAdornment: (
+                      //     <InputAdornment position="top">
+                      //       <FileText size={20} className="mb-4 " color="#2C5F7C" />
+                      //     </InputAdornment>
+                      //   ),
+                      // }}
                     />
-                    <label className={styles.floatingLabel}>Description</label>
                   </div>
                 </div>
               </div>
 
               {/* Availability */}
-              <div className="col-12 col-md-6">
+              <div className="col-12 col-md-6 pt-2 ps-3">
                 <div className={styles.formBox}>
-                  <label className={styles.staticLabel}>
-                    Availability Status
-                  </label>
+                  <FormControl>
+                    <FormLabel sx={{ fontWeight: 600, marginBottom: 1 }}>
+                      Availability Status
+                    </FormLabel>
 
-                  <div className={styles.radioGroup}>
-                    <label className={styles.radioLabel}>
-                      <input
-                        type="radio"
-                        name="availability"
+                    <RadioGroup
+                      name="availability"
+                      value={formData.availability}
+                      onChange={handleInputChange}
+                      row
+                    >
+                      <FormControlLabel
                         value="available"
-                        checked={formData.availability === "available"}
-                        onChange={handleInputChange}
-                        className={styles.radio}
+                        control={<Radio />}
+                        label={
+                          <span
+                            style={{
+                              display: "flex",
+                              alignItems: "center",
+                              gap: "6px",
+                            }}
+                          >
+                            <CheckCircle size={18} color="green" />
+                            Available
+                          </span>
+                        }
                       />
-                      <span className={styles.radioText}>
-                        <span
-                          className={styles.statusDot}
-                          data-status="available"
-                        ></span>
-                        Available
-                      </span>
-                    </label>
 
-                    <label className={styles.radioLabel}>
-                      <input
-                        type="radio"
-                        name="availability"
+                      <FormControlLabel
                         value="out-of-stock"
-                        checked={formData.availability === "out-of-stock"}
-                        onChange={handleInputChange}
-                        className={styles.radio}
+                        control={<Radio />}
+                        label={
+                          <span
+                            style={{
+                              display: "flex",
+                              alignItems: "center",
+                              gap: "6px",
+                            }}
+                          >
+                            <XCircle size={18} color="red" />
+                            Out of Stock
+                          </span>
+                        }
                       />
-                      <span className={styles.radioText}>
-                        <span
-                          className={styles.statusDot}
-                          data-status="out-of-stock"
-                        ></span>
-                        Out of Stock
-                      </span>
-                    </label>
-                  </div>
+                    </RadioGroup>
+                  </FormControl>
                 </div>
               </div>
             </div>
@@ -416,6 +526,61 @@ const uploadImages = async () => {
           {/* BOTTOM ROW (Price / Description / Availability) */}
           <div className="row mt-4 g-3">{/* Description */}</div>
         </div>
+        <div className="header-actions mt-3 ">
+          <div className="mx-auto d-flex gap-3">
+
+          <button
+            className="btn-secondary "
+            onClick={() => navigate("/admin/products")}
+          >
+            <X size={18} />
+            Cancel
+          </button>
+          <Popconfirm
+   
+  description="Are you sure save this product?"
+  onConfirm={handleSubmit}
+  onCancel={() => showToast("error", "Save cancelled")}
+  okText="Yes"
+  cancelText="No"
+    icon={null}
+  placement="top"
+   okButtonProps={{
+    style: {
+      backgroundColor: "#2C5F7C",   // Dark Blue (your form icons color)
+      color: "white",
+      borderRadius: "6px",
+      padding: "4px 15px",
+       
+      border: "none",
+    },
+  }}
+  descriptionProps={{
+    style:{
+      fontSize: "16px",
+    }
+  }}
+  cancelButtonProps={{
+    style: {
+      backgroundColor: "#e0e0e0",
+      color: "#444",
+      borderRadius: "6px",
+      padding: "4px 15px",
+       
+      border: "none",
+    },
+  }}
+>
+  <button className="btn-primary" type="button">
+    <Save size={18} />
+    Save Product
+  </button>
+</Popconfirm>
+
+          </div>
+        </div>
+        </div>
+        
       </form>
     </div>
   );
