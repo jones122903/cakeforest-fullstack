@@ -1,15 +1,17 @@
 import React, { useState } from "react";
 import { RiShieldUserLine } from "react-icons/ri";
 import "./NewForget.css";
-import { MdOutlineEmail } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
 import { TextField } from "@mui/material";
 import Swal from "sweetalert2";
 import { MdOutlineKeyboardBackspace } from "react-icons/md";
+import axios from "axios";
 
   const NewForget = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
+  const api_url = import.meta.env.VITE_API_URL
+
 
   const [formData, setFormData] = useState({
     email: "",
@@ -17,6 +19,8 @@ import { MdOutlineKeyboardBackspace } from "react-icons/md";
     isEmailValid: false,
     showOtp: false,
   });
+
+  console.log(api_url,"formdata");
 
   // Email Handler
   const handleEmailChange = (e) => {
@@ -67,21 +71,30 @@ import { MdOutlineKeyboardBackspace } from "react-icons/md";
     }
 
     // 🔥 FRONTEND-ONLY — simulate delay
-    setTimeout(async () => {
-      await showToast("success", "OTP sent to your Email ID");
+     try {
+    // 🔥 Backend API
+    const res = await axios.post(`${api_url}/auth/forgot-password`, {
+      email: value,
+    });
 
-      // fake OTP expiry
-      const fakeExpire = new Date(Date.now() + 2 * 60000).toISOString();
+    await showToast("success", res.data.message || "OTP sent successfully");
 
-      navigate("/otp", {
-        state: {
-          email: value,
-          otp_expires: fakeExpire,
-        },
-      });
+    // otp expiry from backend
+    navigate("/otp", {
+      state: {
+        email: value,
+        otp_expires: res.data.otp_expires, // backend must return expiry
+      },
+    });
 
-      setLoading(false);
-    }, 1200);
+  } catch (error) {
+    await showToast(
+      "error",
+      error.response?.data?.message || "Something went wrong"
+    );
+  }
+
+  setLoading(false);
   };
 
   const goToLogin = () => {
