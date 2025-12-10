@@ -38,19 +38,44 @@ import axios from "axios";
   };
 
   // Sweetalert Toast
-  const showToast = async (icon, title) => {
-    const Toast = Swal.mixin({
-      toast: true,
-      position: "top-right",
-      iconColor: icon === "success" ? "green" : "red",
-      customClass: {
-        popup: icon === "success" ? "colored-toast" : "colored-toast-error",
-      },
-      showConfirmButton: false,
-      timer: 1500,
-    });
-    await Toast.fire({ icon, title });
-  };
+const showToast = async (icon, title) => {
+  let timerInterval;
+
+  const Toast = Swal.mixin({
+    toast: true,
+    position: "top-right",
+    showConfirmButton: false,
+    timer: 2500,
+    timerProgressBar: true,
+
+    // Progress bar color change based on success / error
+    didOpen: (toast) => {
+      // change progress bar color
+      const progressBar = toast.querySelector(".swal2-timer-progress-bar");
+      progressBar.style.background =
+        icon === "success" ? "green" : "red";
+
+      // Pause on hover
+      toast.addEventListener("mouseenter", () => {
+        Swal.stopTimer();
+      });
+
+      // Resume on mouse leave
+      toast.addEventListener("mouseleave", () => {
+        Swal.resumeTimer();
+      });
+    },
+
+    // Custom popup color classes
+    customClass: {
+      popup: icon === "success" ? "colored-toast" : "colored-toast-error",
+    },
+
+    iconColor: icon === "success" ? "green" : "red",
+  });
+
+  await Toast.fire({ icon, title });
+};
 
   // Handle "Confirm" Without Integration
   const handleConfirmClick = async (e) => {
