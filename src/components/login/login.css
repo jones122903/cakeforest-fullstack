@@ -303,24 +303,156 @@
   }
 }
 
-/* ==================== MOBILE (480px) ==================== */
-@media (max-width: 480px) {
+/* ==================== MOBILE VERTICAL LAYOUT (500px and below) ==================== */
+@media (max-width: 500px) {
   .login-1 {
     padding: 10px;
+    overflow-y: auto;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
   }
 
   .container-login {
+    display: flex;
+    flex-direction: column;
     width: 100%;
-    min-height: 380px;
-    border-radius: 16px;
+    min-height: auto;
+    max-height: 90vh;
+    border-radius: 24px;
+    overflow: hidden;
+    margin: auto;
+  }
+
+  /* TOGGLE MOVES TO TOP */
+  .toggle-container {
+    position: relative;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 150px;
+    border-radius: 10px 10px 35px 35px !important;
+    z-index: 1;
+    transform: none !important;
+    order: 1;
+    transition: none !important;
+  }
+
+  .container-login.active .toggle-container {
+    transform: none !important;
+    border-radius: 10px 10px 35px 35px !important;
+  }
+
+  .toggle {
+    position: relative;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    transform: none !important;
+    transition: none !important;
+  }
+
+  .container-login.active .toggle {
+    transform: none !important;
+  }
+
+  .toggle-panel {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    padding: 20px 20px;
+    transform: none !important;
+    transition: none !important;
+  }
+
+  .toggle-panel h1 {
+    font-size: 22px !important;
+    margin-bottom: 6px !important;
+  }
+
+  .toggle-panel p {
+    font-size: 12px !important;
+    margin-bottom: 12px !important;
+  }
+
+  .toggle-panel button {
+    padding: 8px 32px !important;
+    font-size: 11px !important;
+  }
+
+  .toggle-left,
+  .toggle-right {
+    opacity: 0;
+    display: none;
+  }
+
+  /* Show only the active toggle panel */
+  .container-login:not(.active) .toggle-right {
+    display: flex;
+    opacity: 1;
+  }
+
+  .container-login.active .toggle-left {
+    display: flex;
+    opacity: 1;
+  }
+
+  /* FORM MOVES TO BOTTOM */
+  .form-container {
+    position: relative;
+    width: 100% !important;
+    height: 420px;
+    margin-top: 0 !important;
+    transform: none !important;
+    z-index: 2 !important;
+    order: 2;
+    transition: none !important;
+    background-color: #fff;
+    border-radius: 0 0 24px 24px !important;
+    overflow-y: auto;
+  }
+
+  .container-login.active .form-container {
+    border-radius: 0 0 24px 24px !important;
+  }
+
+  .container-login:not(.active) .form-container {
+    border-radius: 0 0 24px 24px !important;
+  }
+
+  .sign-in,
+  .sign-up {
+    position: relative;
+    left: 0;
+    width: 100%;
+    opacity: 0;
+    display: none;
+    min-height: auto;
+  }
+
+  /* Show only active form */
+  .container-login:not(.active) .sign-in {
+    display: block;
+    opacity: 1;
+    position: relative;
+  }
+
+  .container-login.active .sign-up {
+    display: block;
+    opacity: 1;
+    position: relative;
   }
 
   .container-login form {
-    padding: 0 18px;
+    padding: 25px 20px;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
   }
 
   .container-login h1 {
-    font-size: 18px !important;
+    font-size: 20px !important;
     margin-bottom: 6px;
   }
 
@@ -334,120 +466,65 @@
 
   .container-login a {
     font-size: 10px !important;
-    margin: 8px 0;
   }
 
   .social-icons {
-    margin: 10px 0;
+    margin: 12px 0;
   }
 
   .social-icons a {
-    width: 32px;
-    height: 32px;
-    margin: 0 2px;
-  }
-
-  .social-icons i {
-    font-size: 13px !important;
+    width: 36px;
+    height: 36px;
   }
 
   .container-login button {
-    padding: 7px 25px;
-    font-size: 10px !important;
-    margin-top: 8px;
-  }
-
-  .toggle-container {
-    border-radius: 60px 0 0 60px;
-  }
-
-  .container-login.active .toggle-container {
-    border-radius: 0 60px 60px 0;
-  }
-
-  .toggle-panel {
-    padding: 0 15px;
+    padding: 9px 32px;
+    font-size: 11px !important;
   }
 
   .MuiTextField-root {
     margin: 6px 0 !important;
   }
-
-  .MuiInputBase-input {
-    font-size: 13px !important;
-  }
-
-  .MuiInputLabel-root {
-    font-size: 14px !important;
-  }
 }
 
 /* ==================== SMALL MOBILE (375px) ==================== */
 @media (max-width: 375px) {
-  .login-1 {
-    padding: 8px;
-  }
-
   .container-login {
-    border-radius: 14px;
-    min-height: 360px;
-  }
-
-  .container-login form {
-    padding: 0 15px;
-  }
-
-  .container-login h1 {
-    font-size: 16px !important;
-    margin-bottom: 4px;
-  }
-
-  .container-login p {
-    font-size: 10px !important;
-  }
-
-  .container-login span {
-    font-size: 9px !important;
-  }
-
-  .container-login a {
-    font-size: 9px !important;
-  }
-
-  .social-icons {
-    margin: 8px 0;
-  }
-
-  .social-icons a {
-    width: 32px;
-    height: 32px;
-    margin: 0 2px;
-  }
-
-  .social-icons i {
-    font-size: 13px !important;
-  }
-
-  .container-login button {
-    padding: 7px 25px;
-    font-size: 10px !important;
-    margin-top: 8px;
+    border-radius: 20px;
   }
 
   .toggle-container {
-    border-radius: 50px 0 0 50px;
+    height: 180px;
+    border-radius: 10px 10px 35px 35px !important;
   }
 
   .container-login.active .toggle-container {
-    border-radius: 0 50px 50px 0;
+    border-radius: 10px 10px 35px 35px !important;
   }
 
   .toggle-panel {
-    padding: 0 12px;
+    padding: 25px 15px;
   }
 
-  .MuiTextField-root {
-    margin: 5px 0 !important;
+  .container-login form {
+    padding: 25px 15px;
+  }
+
+  .container-login h1 {
+    font-size: 18px !important;
+  }
+
+  .container-login p {
+    font-size: 11px !important;
+  }
+
+  .container-login span {
+    font-size: 10px !important;
+  }
+
+  .social-icons a {
+    width: 36px;
+    height: 36px;
   }
 
   .MuiInputBase-input {
@@ -462,71 +539,47 @@
 
 /* ==================== EXTRA SMALL MOBILE (320px) ==================== */
 @media (max-width: 320px) {
-  .login-1 {
-    padding: 5px;
-  }
-
   .container-login {
-    border-radius: 12px;
-    min-height: 340px;
-  }
-
-  .container-login form {
-    padding: 0 12px;
-  }
-
-  .container-login h1 {
-    font-size: 14px !important;
-    margin-bottom: 3px;
-  }
-
-  .container-login p {
-    font-size: 9px !important;
-  }
-
-  .container-login span {
-    font-size: 8px !important;
-  }
-
-  .container-login a {
-    font-size: 8px !important;
-    margin: 6px 0;
-  }
-
-  .social-icons {
-    margin: 6px 0;
-  }
-
-  .social-icons a {
-    width: 30px;
-    height: 30px;
-    margin: 0 1px;
-  }
-
-  .social-icons i {
-    font-size: 12px !important;
-  }
-
-  .container-login button {
-    padding: 6px 20px;
-    font-size: 9px !important;
-    margin-top: 6px;
+    border-radius: 16px;
   }
 
   .toggle-container {
-    border-radius: 40px 0 0 40px;
+    height: 160px;
+    border-radius: 10px 10px 35px 35px !important;
   }
 
   .container-login.active .toggle-container {
-    border-radius: 0 40px 40px 0;
+    border-radius: 10px 10px 35px 35px !important;
   }
 
   .toggle-panel {
-    padding: 0 10px;
+    padding: 20px 12px;
   }
 
-  .MuiTextField-root {
-    margin: 4px 0 !important;
+  .container-login form {
+    padding: 20px 12px;
+  }
+
+  .container-login h1 {
+    font-size: 16px !important;
+  }
+
+  .container-login p {
+    font-size: 10px !important;
+  }
+
+  .container-login span {
+    font-size: 9px !important;
+  }
+
+  .social-icons a {
+    width: 34px;
+    height: 34px;
+  }
+
+  .container-login button {
+    padding: 8px 30px;
+    font-size: 10px !important;
   }
 
   .MuiInputBase-input {
