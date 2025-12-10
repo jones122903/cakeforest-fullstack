@@ -4,6 +4,7 @@ import InputAdornment from "@mui/material/InputAdornment";
 import { LuUser } from "react-icons/lu";
 import { LuLock } from "react-icons/lu";
 import { LuMail } from "react-icons/lu";
+import { FaGoogle, FaFacebookF, FaGithub, FaLinkedinIn } from "react-icons/fa";
 
 import "./login.css";
 
@@ -20,10 +21,10 @@ const Login = () => {
             <h1>Create Account</h1>
 
             <div className="social-icons">
-              <a href="#" className="icon"><i className="fa-brands fa-google-plus-g"></i></a>
-              <a href="#" className="icon"><i className="fa-brands fa-facebook-f"></i></a>
-              <a href="#" className="icon"><i className="fa-brands fa-github"></i></a>
-              <a href="#" className="icon"><i className="fa-brands fa-linkedin-in"></i></a>
+              <a href="https://accounts.google.com" target="_blank" rel="noopener noreferrer" className="icon"><FaGoogle /></a>
+              <a href="https://www.facebook.com/login" target="_blank" rel="noopener noreferrer" className="icon"><FaFacebookF /></a>
+              <a href="https://github.com/login" target="_blank" rel="noopener noreferrer" className="icon"><FaGithub /></a>
+              <a href="https://www.linkedin.com/login" target="_blank" rel="noopener noreferrer" className="icon"><FaLinkedinIn /></a>
             </div>
 
             <span>or use your email for registration</span>
@@ -84,10 +85,10 @@ const Login = () => {
             <h1>Sign In</h1>
 
             <div className="social-icons">
-              <a href="#" className="icon"><i className="fa-brands fa-google-plus-g"></i></a>
-              <a href="#" className="icon"><i className="fa-brands fa-facebook-f"></i></a>
-              <a href="#" className="icon"><i className="fa-brands fa-github"></i></a>
-              <a href="#" className="icon"><i className="fa-brands fa-linkedin-in"></i></a>
+              <a href="https://accounts.google.com" target="_blank" rel="noopener noreferrer" className="icon"><FaGoogle /></a>
+              <a href="https://www.facebook.com/login" target="_blank" rel="noopener noreferrer" className="icon"><FaFacebookF /></a>
+              <a href="https://github.com/login" target="_blank" rel="noopener noreferrer" className="icon"><FaGithub /></a>
+              <a href="https://www.linkedin.com/login" target="_blank" rel="noopener noreferrer" className="icon"><FaLinkedinIn /></a>
             </div>
 
             <span>or use your email password</span>
