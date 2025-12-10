@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { TextField } from "@mui/material";
 import Swal from "sweetalert2";
 import { MdOutlineKeyboardBackspace } from "react-icons/md";
-import axios from "axios"
+import axios from "axios";
 
   const NewForget = () => {
   const navigate = useNavigate();
