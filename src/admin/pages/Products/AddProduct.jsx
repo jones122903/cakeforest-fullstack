@@ -68,9 +68,31 @@ const AddProduct = () => {
   };
 
   // ⬇️ UPLOAD ALL IMAGES TO BACKEND AND RETURN URL ARRAY
-const uploadImages = async () => {
-  const imgForm = new FormData();  // REAL FormData
+// const uploadImages = async () => {
+//   const imgForm = new FormData();  // REAL FormData
 
+//   formData.images.forEach((imgObj) => {
+//     imgForm.append("images", imgObj.file);
+//   });
+
+//   const res = await axios.post(
+//     `${api_url}/upload-images`,
+//     imgForm,
+//     {
+//       headers: { "Content-Type": "multipart/form-data" }
+//     }
+//   );
+
+//   return res.data.images;   // returns array of URLs
+// };
+
+const uploadImages = async () => {
+  const imgForm = new FormData();
+
+  // ✅ SEND CAKENAME FIRST!
+  imgForm.append("cakeName", formData.cakeName);
+
+  // Then append images
   formData.images.forEach((imgObj) => {
     imgForm.append("images", imgObj.file);
   });
@@ -83,7 +105,7 @@ const uploadImages = async () => {
     }
   );
 
-  return res.data.images;   // returns array of URLs
+  return res.data.images;
 };
 
 
