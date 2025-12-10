@@ -117,10 +117,22 @@
   padding: 0;
 }
 
+/* Remove these if not using custom heart anymore */
+.whiteHeart {
+  color: #ffffff !important;
+  background: transparent !important;
+}
 
 .redHeart {
   color: red !important;
 }
+
+/* Customize the heart size */
+.wishlistBtn svg {
+  width: 28px;
+  height: 28px;
+}
+
 .wishlistBtn:hover svg,
 .wishlistBtn:hover .redHeart {
   transform: scale(1.1);
@@ -218,6 +230,8 @@
   .wishlistBtn svg {
     width: 28px;
     height: 28px;
+    position: relative;
+    bottom: 10px;
   }
 }
 
@@ -231,6 +245,8 @@
   .wishlistBtn svg {
     width: 26px;
     height: 26px;
+    position: relative;
+    bottom: 10px;
   }
 }
 
@@ -256,6 +272,8 @@
   .wishlistBtn svg {
     width: 24px;
     height: 24px;
+    position: relative;
+    bottom: 10px;
   }
 }
 
@@ -320,6 +338,8 @@
   .wishlistBtn svg {
     width: 20px;
     height: 20px;
+    position: relative;
+    bottom: 10px;
   }
 }
 
@@ -407,6 +427,13 @@
     height: 28px;
   }
 
+  .wishlistBtn svg {
+    width: 20px;
+    height: 20px;
+    position: relative;
+    bottom: 10px;
+  }
+
   .vegBadge {
     width: 20px;
     height: 20px;
@@ -444,6 +471,13 @@
   .wishlistBtn {
     width: 26px;
     height: 26px;
+  }
+
+  .wishlistBtn svg {
+    width: 18px;
+    height: 18px;
+    position: relative;
+    bottom: 10px;
   }
 
   .vegBadge {

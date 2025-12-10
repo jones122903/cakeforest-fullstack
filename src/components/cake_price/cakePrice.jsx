@@ -1,6 +1,7 @@
 import React from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
-import { FaRegHeart, FaHeart } from "react-icons/fa";
+import { FaHeart } from "react-icons/fa";
+import { motion, AnimatePresence } from "framer-motion";
 import styles from "./cakePrice.module.css";
 
 // 🔹 Import Local Images
@@ -25,12 +26,12 @@ const CakePrice = () => {
     }));
   };
 
-  const gotoCakebuy =()=>{
-     navigate("/buypage")
+  const gotoCakebuy = () => {
+    navigate("/buypage")
   }
 
-  const gotoCakeALl =()=>{
-     navigate("/gallery")
+  const gotoCakeALl = () => {
+    navigate("/gallery")
   }
 
   const cakes = [
@@ -131,17 +132,46 @@ const CakePrice = () => {
               />
 
               <button
-                className={`${styles.wishlistBtn} ${
-                  wishlist[cake.id] ? styles.liked : ""
-                }`}
-                onClick={() => toggleWishlist(cake.id)}
-                aria-label="Add to wishlist"
+                className={styles.wishlistBtn}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  toggleWishlist(cake.id);
+                }}
               >
-                {wishlist[cake.id] ? (
-                  <FaHeart size={20} />
-                ) : (
-                  <FaRegHeart size={20} />
-                )}
+                <AnimatePresence mode="wait">
+                  {wishlist[cake.id] ? (
+                    <motion.div
+                      key="filled"
+                      initial={{ scale: 0 }}
+                      animate={{ scale: 1 }}
+                      exit={{ scale: 0 }}
+                      transition={{ type: "spring", stiffness: 200 }}
+                    >
+                      <FaHeart size={27} className={styles.redHeart} />
+                    </motion.div>
+                  ) : (
+                    <motion.div
+                      key="outline"
+                      initial={{ scale: 0 }}
+                      animate={{ scale: 1 }}
+                      exit={{ scale: 0 }}
+                      transition={{ type: "spring", stiffness: 200 }}
+                    >
+                      <svg
+                        width="27"
+                        height="27"
+                        viewBox="0 0 24 24"
+                        fill="white"
+                        stroke="#0E4D65"
+                        strokeWidth="1.5"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      >
+                        <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
+                      </svg>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
               </button>
 
               <span className={styles.vegBadge}>
