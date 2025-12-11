@@ -12,6 +12,9 @@ import axios from "axios";
   const [loading, setLoading] = useState(false);
   const api_url = import.meta.env.VITE_API_URL
 
+  console.log("ENV VALUE →", import.meta.env.VITE_API_URL);
+
+
 
   const [formData, setFormData] = useState({
     email: "",
@@ -35,19 +38,44 @@ import axios from "axios";
   };
 
   // Sweetalert Toast
-  const showToast = async (icon, title) => {
-    const Toast = Swal.mixin({
-      toast: true,
-      position: "top-right",
-      iconColor: icon === "success" ? "green" : "red",
-      customClass: {
-        popup: icon === "success" ? "colored-toast" : "colored-toast-error",
-      },
-      showConfirmButton: false,
-      timer: 1500,
-    });
-    await Toast.fire({ icon, title });
-  };
+const showToast = async (icon, title) => {
+  let timerInterval;
+
+  const Toast = Swal.mixin({
+    toast: true,
+    position: "top-right",
+    showConfirmButton: false,
+    timer: 2500,
+    timerProgressBar: true,
+
+    // Progress bar color change based on success / error
+    didOpen: (toast) => {
+      // change progress bar color
+      const progressBar = toast.querySelector(".swal2-timer-progress-bar");
+      progressBar.style.background =
+        icon === "success" ? "green" : "red";
+
+      // Pause on hover
+      toast.addEventListener("mouseenter", () => {
+        Swal.stopTimer();
+      });
+
+      // Resume on mouse leave
+      toast.addEventListener("mouseleave", () => {
+        Swal.resumeTimer();
+      });
+    },
+
+    // Custom popup color classes
+    customClass: {
+      popup: icon === "success" ? "colored-toast" : "colored-toast-error",
+    },
+
+    iconColor: icon === "success" ? "green" : "red",
+  });
+
+  await Toast.fire({ icon, title });
+};
 
   // Handle "Confirm" Without Integration
   const handleConfirmClick = async (e) => {
@@ -73,13 +101,13 @@ import axios from "axios";
     // 🔥 FRONTEND-ONLY — simulate delay
      try {
     // 🔥 Backend API
-    const res = await axios.post(`${api_url}/auth/forgot-password`, {
+    const res = await axios.post(`${api_url}/forgot-password`, {
       email: value,
     });
 
     await showToast("success", res.data.message || "OTP sent successfully");
 
-    // otp expiry from backend
+     
     navigate("/otp", {
       state: {
         email: value,

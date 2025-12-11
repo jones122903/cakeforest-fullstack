@@ -4,11 +4,13 @@ import "./Otp.css";
 import { MdOutlineKeyboardBackspace } from "react-icons/md";
 import { useNavigate, useLocation } from "react-router-dom";
 import Swal from "sweetalert2";
+import axios from "axios"
 
 const Otp = () => {
   const navigate = useNavigate();
   const inputRefs = useRef([]);
   const location = useLocation();
+  const api_url = import.meta.env.VITE_API_URL
 
   const emailFromState = location.state?.email || "";
   const otpExpireTime = location.state?.otp_expires || "";
@@ -20,6 +22,20 @@ const Otp = () => {
     email: emailFromState,
     otp: ["", "", "", ""],
   });
+
+  const showToast = async (icon, title) => {
+      const Toast = Swal.mixin({
+        toast: true,
+        position: "top-right",
+        iconColor: icon === "success" ? "green" : "red",
+        customClass: {
+          popup: icon === "success" ? "colored-toast" : "colored-toast-error",
+        },
+        showConfirmButton: false,
+        timer: 1500,
+      });
+      await Toast.fire({ icon, title });
+    };
 
   // ===========================
   // OTP Input Change
@@ -43,59 +59,58 @@ const Otp = () => {
     }
   };
 
-  // ===========================
-  // FRONTEND Verify OTP
-  // ===========================
+ 
   const handleConfirmClick = async () => {
     const otpValue = formData.otp.join("");
 
     if (otpValue.length < 4) {
-      await Swal.fire({
-        icon: "error",
-        title: "Enter your 4-digit OTP",
-        timer: 1200,
-        showConfirmButton: false,
-      });
+      await showToast("error","Enter your 4-digit OTP");
       return;
     }
-
-    // 🔥 FRONTEND simulate success
-    await Swal.fire({
-      icon: "success",
-      title: "OTP Verified Successfully",
-      timer: 1200,
-      showConfirmButton: false,
+ try {
+    const res = await axios.post(`${api_url}/verify-otp`, {
+      email: formData.email,
+      otp: otpValue,
     });
+
+    await showToast("success","OTP Verified Successfully");
 
     navigate("/comfirm", {
-      state: { email: formData.email, otp: otpValue },
+      state: {
+        email: formData.email,
+        otp: otpValue,
+      },
     });
+
+  } catch (error) {
+    await showToast("error",error.response?.data?.message || "Invalid OTP");
+  }
   };
 
-  // ===========================
-  // FRONTEND Resend OTP
-  // ===========================
-  const handleResendClick = async () => {
-    if (!canResend) return;
+  
+const handleResendClick = async () => {
+  if (!canResend) return;
 
-    // FRONTEND mock resend with fake expiry
-    await Swal.fire({
-      icon: "success",
-      title: "OTP resent successfully!",
-      timer: 1200,
-      showConfirmButton: false,
+  try {
+    const res = await axios.post(`${api_url}/auth/resend-otp`, {
+      email: formData.email,
     });
 
-    const newExpire = Date.now() + 60000; // +60 seconds
+    await showToast("success",res.data.message || "OTP resent!");
+
+    const newExpire = Date.now() + 60000;
     localStorage.setItem("otp_timer_end", newExpire);
 
     setTimeLeft(60);
     setCanResend(false);
-  };
 
-  // ===========================
-  // TIMER + LOCALSTORAGE
-  // ===========================
+  } catch (error) {
+    await showToast("error",error.response?.data?.message || "Failed to resend OTP");
+  }
+};
+
+
+ 
   useEffect(() => {
     const storedEnd = localStorage.getItem("otp_timer_end");
 
