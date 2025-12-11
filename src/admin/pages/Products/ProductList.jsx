@@ -1,13 +1,18 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Plus, Search, Edit, Trash2, Eye } from 'lucide-react';
 import './ProductList.css';
+import axios from 'axios';
+import { Popconfirm, Button } from "antd";
+import Swal from "sweetalert2";
 
 const ProductList = () => {
     const navigate = useNavigate();
     const [searchTerm, setSearchTerm] = useState('');
     const [selectedCategory, setSelectedCategory] = useState('all');
     const [currentPage, setCurrentPage] = useState(1);
+    const [allCakes,SetAllCakes] = useState([])
+    const api_url = import.meta.env.VITE_API_URL
     const itemsPerPage = 10;
 
     // Sample product data
@@ -27,16 +32,93 @@ const ProductList = () => {
         return matchesSearch && matchesCategory;
     });
 
+  const token ="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5MzkwZmRkMzg2NjFjOWEwYjU2YTMzNiIsImlhdCI6MTc2NTM1MTk4MSwiZXhwIjoxNzY1OTU2NzgxfQ.qIapHLuh8Ww2WIy_wO74S8rOtBiWOWuABgFFfDgs7No";
+
     const indexOfLastItem = currentPage * itemsPerPage;
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
     const currentProducts = filteredProducts.slice(indexOfFirstItem, indexOfLastItem);
     const totalPages = Math.ceil(filteredProducts.length / itemsPerPage);
 
-    const handleDelete = (id) => {
-        if (window.confirm('Are you sure you want to delete this product?')) {
-            console.log('Deleting product:', id);
+   const showToast = async (icon, title) => {
+     let timerInterval;
+   
+     const Toast = Swal.mixin({
+       toast: true,
+       position: "top-right",
+       showConfirmButton: false,
+       timer: 2500,
+       timerProgressBar: true,
+   
+       // Progress bar color change based on success / error
+       didOpen: (toast) => {
+         // change progress bar color
+         const progressBar = toast.querySelector(".swal2-timer-progress-bar");
+         progressBar.style.background =
+           icon === "success" ? "green" : "red";
+   
+         // Pause on hover
+         toast.addEventListener("mouseenter", () => {
+           Swal.stopTimer();
+         });
+   
+         // Resume on mouse leave
+         toast.addEventListener("mouseleave", () => {
+           Swal.resumeTimer();
+         });
+       },
+   
+       // Custom popup color classes
+       customClass: {
+         popup: icon === "success" ? "colored-toast" : "colored-toast-error",
+       },
+   
+       iconColor: icon === "success" ? "green" : "red",
+     });
+   
+     await Toast.fire({ icon, title });
+   };
+
+    useEffect(()=>{
+        getALLCakes()
+    },[])
+
+    const getALLCakes = async()=>{
+            
+        try {
+            const response = await axios.get(`${api_url}/products`)
+            console.log(response.data.products)
+            SetAllCakes(response.data.products)
+        } catch (error) {
+            console.log(error)
         }
-    };
+    }
+    const handleDelete = async(id)=>{
+
+        console.log(id,"id")
+            
+        try {
+            const response=await axios.delete(`${api_url}/products/${id}`,{
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+            showToast("success",response.data.message || "product deleted successfully")
+            getALLCakes()
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
+const currentProduct = allCakes.map((p) => ({
+    id: p._id,
+    image: `${p.images[0].trim()}`,
+    name: p.cakeName,
+    category: p.category,
+    price: p.price,
+    stock: p.stock,
+    status: p.availability
+}));
+
 
     return (
         <div className="product-list">
@@ -90,54 +172,82 @@ const ProductList = () => {
                         </tr>
                     </thead>
                     <tbody>
-                        {currentProducts.map((product) => (
-                            <tr key={product.id}>
-                                <td>
-                                    <div className="product-cell">
-                                        <img src={product.image} alt={product.name} className="product-image" />
-                                        <span className="product-name">{product.name}</span>
-                                    </div>
-                                </td>
-                                <td>
-                                    <span className="category-badge">
-                                        {product.category}
-                                    </span>
-                                </td>
-                                <td className="price-cell">₹{product.price}</td>
-                                <td>
-                                    <span className={`stock-badge ${product.stock < 10 ? 'low' : 'normal'}`}>
-                                        {product.stock} units
-                                    </span>
-                                </td>
-                                <td>
-                                    <span className={`status-badge ${product.status}`}>
-                                        {product.status}
-                                    </span>
-                                </td>
-                                <td>
-                                    <div className="action-buttons">
-                                        <button className="action-btn view" title="View">
-                                            <Eye size={16} />
-                                        </button>
-                                        <button
-                                            className="action-btn edit"
-                                            title="Edit"
-                                            onClick={() => navigate(`/admin/products/edit/${product.id}`)}
-                                        >
-                                            <Edit size={16} />
-                                        </button>
-                                        <button
-                                            className="action-btn delete"
-                                            title="Delete"
-                                            onClick={() => handleDelete(product.id)}
-                                        >
-                                            <Trash2 size={16} />
-                                        </button>
-                                    </div>
-                                </td>
-                            </tr>
-                        ))}
-                    </tbody>
+  {currentProduct.map((product) => (
+    <tr key={product.id}>
+      <td>
+        <div className="product-cell">
+          <img src={product.image} alt={product.name} className="product-image" />
+          <span className="product-name">{product.name}</span>
+        </div>
+      </td>
+
+      <td><span className="category-badge">{product.category}</span></td>
+
+      <td className="price-cell">₹{product.price}</td>
+
+      <td>
+        <span className={`stock-badge ${product.stock < 10 ? "low" : "normal"}`}>
+          {product.stock} units
+        </span>
+      </td>
+
+      <td>
+        <span className={`status-badge ${product.status}`}>
+          {product.status}
+        </span>
+      </td>
+
+      <td>
+        <div className="action-buttons">
+           <button className="action-btn edit" onClick={() => navigate(`/admin/products/edit/${product.id}`,{state:{id:product.id}})}>
+            <Edit size={16} />
+          </button>
+           <Popconfirm
+   
+  description="Are you sure delete this product?"
+  onConfirm={() => handleDelete(product.id)}
+//   onCancel={() => showToast("error", "delete cancelled")}
+  okText="Yes"
+  cancelText="No"
+    icon={null}
+  placement="top"
+   okButtonProps={{
+    style: {
+      backgroundColor: "#2C5F7C",   // Dark Blue (your form icons color)
+      color: "white",
+      borderRadius: "6px",
+      padding: "4px 15px",
+       
+      border: "none",
+    },
+  }}
+  descriptionProps={{
+    style:{
+      fontSize: "16px",
+    }
+  }}
+  cancelButtonProps={{
+    style: {
+      backgroundColor: "#e0e0e0",
+      color: "#444",
+      borderRadius: "6px",
+      padding: "4px 15px",
+       
+      border: "none",
+    },
+  }}
+>
+  <button className="action-btn delete" >
+            <Trash2 size={16} />
+          </button>
+</Popconfirm>
+          
+        </div>
+      </td>
+    </tr>
+  ))}
+</tbody>
+
                 </table>
             </div>
 
