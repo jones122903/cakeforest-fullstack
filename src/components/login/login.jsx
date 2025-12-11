@@ -1,15 +1,164 @@
 import React, { useState } from "react";
 import { TextField } from "@mui/material";
 import InputAdornment from "@mui/material/InputAdornment";
-import { LuUser } from "react-icons/lu";
-import { LuLock } from "react-icons/lu";
-import { LuMail } from "react-icons/lu";
+import { LuUser, LuLock, LuMail } from "react-icons/lu";
+import { IoEye, IoEyeOff } from "react-icons/io5";
 import { FaGoogle, FaFacebookF, FaGithub, FaLinkedinIn } from "react-icons/fa";
+import Swal from "sweetalert2";
+import axios from "axios";
+import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { setToken } from "../../redux/slice/authSlice";
 
 import "./login.css";
 
 const Login = () => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
   const [active, setActive] = useState(false);
+
+  // Sign Up Form State
+  const [signUpData, setSignUpData] = useState({
+    name: "",
+    email: "",
+    password: ""
+  });
+
+  // Sign In Form State
+  const [signInData, setSignInData] = useState({
+    email: "",
+    password: ""
+  });
+
+  // Loading states
+  const [signUpLoading, setSignUpLoading] = useState(false);
+  const [signInLoading, setSignInLoading] = useState(false);
+
+  // Password visibility states
+  const [showSignUpPassword, setShowSignUpPassword] = useState(false);
+  const [showSignInPassword, setShowSignInPassword] = useState(false);
+
+  // Show Toast Notification (same as AddProduct.jsx)
+  const showToast = async (icon, title) => {
+    const Toast = Swal.mixin({
+      toast: true,
+      position: "top-right",
+      showConfirmButton: false,
+      timer: 2500,
+      timerProgressBar: true,
+
+      didOpen: (toast) => {
+        const progressBar = toast.querySelector(".swal2-timer-progress-bar");
+        progressBar.style.background = icon === "success" ? "green" : "red";
+
+        toast.addEventListener("mouseenter", () => {
+          Swal.stopTimer();
+        });
+
+        toast.addEventListener("mouseleave", () => {
+          Swal.resumeTimer();
+        });
+      },
+
+      customClass: {
+        popup: icon === "success" ? "colored-toast" : "colored-toast-error",
+      },
+
+      iconColor: icon === "success" ? "green" : "red",
+    });
+
+    await Toast.fire({ icon, title });
+  };
+
+  // Handle Sign Up form changes
+  const handleSignUpChange = (e) => {
+    setSignUpData({
+      ...signUpData,
+      [e.target.name]: e.target.value
+    });
+  };
+
+  // Handle Sign In form changes
+  const handleSignInChange = (e) => {
+    setSignInData({
+      ...signInData,
+      [e.target.name]: e.target.value
+    });
+  };
+
+
+
+  // Handle Sign Up submission
+  const handleSignUp = async (e) => {
+    e.preventDefault();
+
+    // Validation
+    if (!signUpData.name || !signUpData.email || !signUpData.password) {
+      showToast("error", "Please fill all fields");
+      return;
+    }
+
+    if (signUpData.password.length < 6) {
+      showToast("error", "Password must be at least 6 characters");
+      return;
+    }
+
+    setSignUpLoading(true);
+
+    try {
+      const response = await axios.post(`${import.meta.env.VITE_API_URL}/register`, signUpData);
+
+      if (response.data.success) {
+        showToast("success", response.data.message || "Registration successful!");
+        // Clear form
+        setSignUpData({ name: "", email: "", password: "" });
+        // Switch to sign in
+        setTimeout(() => setActive(false), 3500);
+      }
+    } catch (error) {
+      const errorMessage = error.response?.data?.message || "Registration failed. Please try again.";
+      showToast("error", errorMessage);
+    } finally {
+      setSignUpLoading(false);
+    }
+  };
+
+  // Handle Sign In submission
+  const handleSignIn = async (e) => {
+    e.preventDefault();
+
+    // Validation
+    if (!signInData.email || !signInData.password) {
+      showToast("error", "Please fill all fields");
+      return;
+    }
+
+    setSignInLoading(true);
+
+    try {
+      const response = await axios.post(`${import.meta.env.VITE_API_URL}/login`, signInData);
+
+      if (response.data.success) {
+        // Store token and user in Redux
+        dispatch(setToken({
+          token: response.data.token,
+          user: response.data.user
+        }));
+
+        // Clear form
+        setSignInData({ email: "", password: "" });
+
+        // Show success toast and navigate immediately
+        showToast("success", response.data.message || "Login successful!");
+        navigate("/");
+      }
+    } catch (error) {
+      const errorMessage = error.response?.data?.message || "Login failed. Please try again.";
+      showToast("error", errorMessage);
+    } finally {
+      setSignInLoading(false);
+    }
+  };
 
   return (
     <div className="login-1">
@@ -17,7 +166,7 @@ const Login = () => {
 
         {/* SIGN UP FORM */}
         <div className="form-container sign-up">
-          <form>
+          <form onSubmit={handleSignUp} autoComplete="off">
             <h1>Create Account</h1>
 
             <div className="social-icons">
@@ -32,9 +181,14 @@ const Login = () => {
             {/* Name */}
             <TextField
               label="Name"
+              name="name"
               variant="outlined"
               fullWidth
               margin="normal"
+              value={signUpData.name}
+              onChange={handleSignUpChange}
+              autoComplete="off"
+              inputProps={{ autoComplete: 'off' }}
               InputProps={{
                 startAdornment: (
                   <InputAdornment position="start">
@@ -47,13 +201,19 @@ const Login = () => {
             {/* Email */}
             <TextField
               label="Email"
+              name="email"
+              type="email"
               variant="outlined"
               fullWidth
               margin="normal"
+              value={signUpData.email}
+              onChange={handleSignUpChange}
+              autoComplete="off"
+              inputProps={{ autoComplete: 'off' }}
               InputProps={{
                 startAdornment: (
                   <InputAdornment position="start">
-                    <LuMail color="#0e4d65" />
+                    <LuMail size={20} color="#0e4d65" />
                   </InputAdornment>
                 ),
               }}
@@ -62,26 +222,48 @@ const Login = () => {
             {/* Password */}
             <TextField
               label="Password"
-              type="password"
+              name="password"
+              type={showSignUpPassword ? "text" : "password"}
               variant="outlined"
               fullWidth
               margin="normal"
+              value={signUpData.password}
+              onChange={handleSignUpChange}
+              autoComplete="new-password"
+              inputProps={{ autoComplete: 'new-password' }}
               InputProps={{
                 startAdornment: (
                   <InputAdornment position="start">
                     <LuLock color="#0e4d65" />
                   </InputAdornment>
                 ),
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <div
+                      onClick={() => setShowSignUpPassword(!showSignUpPassword)}
+                      style={{ cursor: 'pointer', display: 'flex', alignItems: 'center' }}
+                    >
+                      {showSignUpPassword ? <IoEyeOff size={20} color="#0e4d65" /> : <IoEye size={20} color="#0e4d65" />}
+                    </div>
+                  </InputAdornment>
+                ),
               }}
             />
 
-            <button type="button">Sign Up</button>
+            <button type="submit" disabled={signUpLoading}>
+              {signUpLoading ? (
+                <>
+                  <span className="spinner"></span>
+                  Signing Up...
+                </>
+              ) : "Sign Up"}
+            </button>
           </form>
         </div>
 
         {/* SIGN IN FORM */}
         <div className="form-container sign-in">
-          <form>
+          <form onSubmit={handleSignIn} autoComplete="off">
             <h1>Sign In</h1>
 
             <div className="social-icons">
@@ -96,13 +278,23 @@ const Login = () => {
             {/* Email */}
             <TextField
               label="Email"
+              name="email"
+              type="email"
               variant="outlined"
               fullWidth
               margin="normal"
+              value={signInData.email}
+              onChange={handleSignInChange}
+              autoComplete="off"
+              inputProps={{
+                autoComplete: 'off',
+                readOnly: true,
+                onFocus: (e) => e.target.removeAttribute('readonly')
+              }}
               InputProps={{
                 startAdornment: (
                   <InputAdornment position="start">
-                    <LuMail color="#0e4d65" />
+                    <LuMail size={20} color="#0e4d65" />
                   </InputAdornment>
                 ),
               }}
@@ -111,14 +303,33 @@ const Login = () => {
             {/* Password */}
             <TextField
               label="Password"
-              type="password"
+              name="password"
+              type={showSignInPassword ? "text" : "password"}
               variant="outlined"
               fullWidth
               margin="normal"
+              value={signInData.password}
+              onChange={handleSignInChange}
+              autoComplete="off"
+              inputProps={{
+                autoComplete: 'off',
+                readOnly: true,
+                onFocus: (e) => e.target.removeAttribute('readonly')
+              }}
               InputProps={{
                 startAdornment: (
                   <InputAdornment position="start">
                     <LuLock color="#0e4d65" />
+                  </InputAdornment>
+                ),
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <div
+                      onClick={() => setShowSignInPassword(!showSignInPassword)}
+                      style={{ cursor: 'pointer', display: 'flex', alignItems: 'center' }}
+                    >
+                      {showSignInPassword ? <IoEyeOff size={20} color="#0e4d65" /> : <IoEye size={20} color="#0e4d65" />}
+                    </div>
                   </InputAdornment>
                 ),
               }}
@@ -126,7 +337,14 @@ const Login = () => {
 
             <a href="#">Forgot Password?</a>
 
-            <button type="button">Sign In</button>
+            <button type="submit" disabled={signInLoading}>
+              {signInLoading ? (
+                <>
+                  <span className="spinner"></span>
+                  Signing In...
+                </>
+              ) : "Sign In"}
+            </button>
           </form>
         </div>
 
