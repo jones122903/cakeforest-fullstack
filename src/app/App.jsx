@@ -29,6 +29,9 @@ import  NewForget  from "../components/login/forget/NewForget.jsx";
 import  Otp  from "../components/login/OtpPage/Otp.jsx";
 import  NewReset  from "../components/login/ComfirmPage/NewReset.jsx";
 import CustomerDetails from "../components/customer/customerDetails.jsx";
+
+
+
  
 
 // import CakeGallery from "../components/cake_gallery/CakeGallery.jsx";
@@ -52,6 +55,7 @@ import CustomerDetails from "../components/customer/customerDetails.jsx";
 
         <Route path="/carousel" element={<Carousel/>} />
         <Route path="/cake_flovor" element={<Cakeflovour/>} /> */}
+      
   
 function App() {
   return (

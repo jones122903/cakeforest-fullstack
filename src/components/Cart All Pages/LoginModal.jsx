@@ -1,18 +1,55 @@
 import React, { useState } from 'react';
 import styles from './LoginModal.module.css';
 import { FcGoogle } from 'react-icons/fc';
-import { MdClose, MdEmail, MdLock } from 'react-icons/md';
+import { MdClose} from 'react-icons/md';
 import { LuLockKeyhole } from "react-icons/lu";
 import { LuMail } from "react-icons/lu";
 import { useNavigate } from 'react-router-dom';
+import { setToken } from "../../redux/slice/authSlice";
+import axios from 'axios';
+import { useDispatch } from 'react-redux';
+import { useGoogleLogin } from "@react-oauth/google";
+
 
 const LoginModal = ({ isOpen, onClose }) => {
    const navigate = useNavigate();
+   const dispatch = useDispatch();
+
+ const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isSignUp, setIsSignUp] = useState(false);
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
+
+  
+const handleGoogleLogin = useGoogleLogin({
+  onSuccess: async (tokenResponse) => {
+    try {
+      const res = await axios.post(`${import.meta.env.VITE_API_URL}/auth/google`, {
+        access_token: tokenResponse.access_token
+      });
+
+      // Backend gives you user + JWT
+      dispatch(setToken({
+        token: res.data.token,
+        user: res.data.user
+      }));
+
+      alert("Login successful!");
+      onClose();
+      navigate("/details");
+    } catch (error) {
+      console.error(error);
+      alert("Google Login Failed");
+    }
+  },
+  onError: () => {
+    alert("Google Login Error");
+  },
+});
+
+  
 
   if (!isOpen) return null;
 
@@ -23,6 +60,10 @@ const LoginModal = ({ isOpen, onClose }) => {
 
   const validateForm = () => {
     const newErrors = {};
+
+     if (isSignUp && !name.trim()) {
+      newErrors.name = 'Name is required';
+    }
     
     if (!email) {
       newErrors.email = 'Email is required';
@@ -49,50 +90,78 @@ const LoginModal = ({ isOpen, onClose }) => {
 
     setLoading(true);
 
-    // Simulate API call
-    setTimeout(() => {
-      // Store user data in localStorage (in real app, use proper authentication)
-      const userData = {
-        email: email,
-        loggedIn: true,
-        loginTime: new Date().toISOString()
-      };
+    try {
+      const API_URL = import.meta.env.VITE_API_URL;
+      const endpoint = isSignUp ? '/register' : '/login';
       
-      localStorage.setItem('cakeUser', JSON.stringify(userData));
-      
+      const payload = isSignUp 
+        ? { name, email, password }
+        : { email, password };
+
+      const response = await axios.post(`${API_URL}${endpoint}`, payload);
+      console.log("ghjkl;lkjhghjkjhghjk",response)
+
+      // Success response
+      if (response.data.success) {
+        // Store token and user in Redux
+       dispatch(setToken({
+        token: response.data.token,
+        user: {
+          id: response.data.user._id,
+          name: response.data.user.name,
+          email: response.data.user.email
+        }
+      }));
+
+
+        // Show success message
+        alert(isSignUp ? 'Account created successfully!' : 'Login successful!');
+        
+        // Reset form
+        setEmail('');
+        setPassword('');
+        setName('');
+        setErrors({});
+        
+        // Close modal
+        onClose();
+
+        // Navigate to details page
+        navigate("/details");
+        // goToChapter()
+      }
+    } catch (error) {
       setLoading(false);
       
-      // Show success message
-      alert(isSignUp ? 'Account created successfully!' : 'Login successful!');
+      // Handle errors
+      if (error.response) {
+        // Server responded with error
+        const errorMsg = error.response.data.message || 'An error occurred';
+        
+        if (error.response.status === 401) {
+          setErrors({ password: 'Invalid email or password' });
+        } else if (error.response.status === 409) {
+          setErrors({ email: 'Email already exists' });
+        } else {
+          alert(errorMsg);
+        }
+      } else if (error.request) {
+        // Request made but no response
+        alert('Unable to connect to server. Please check your connection.');
+      } else {
+        // Other errors
+        alert('An error occurred. Please try again.');
+      }
       
-      // Close modal
-      onClose();
-
-      navigate("/details");
-      
-      // In a real app, you would redirect or update app state here
-    }, 1500);
+      console.error('Login/Signup error:', error);
+    } finally {
+      setLoading(false);
+    }
   };
+  
 
-   const goToChapter = () => {
-    
-  };
 
-  const handleGoogleLogin = () => {
-    // In a real app, this would trigger Google OAuth flow
-    alert('Google OAuth would be implemented here with backend support');
-    
-    // Simulate successful Google login
-    const userData = {
-      email: 'user@gmail.com',
-      loggedIn: true,
-      loginMethod: 'google',
-      loginTime: new Date().toISOString()
-    };
-    
-    localStorage.setItem('cakeUser', JSON.stringify(userData));
-    onClose();
-  };
+
 
   const handleBackdropClick = (e) => {
     if (e.target === e.currentTarget) {
@@ -132,18 +201,18 @@ const LoginModal = ({ isOpen, onClose }) => {
                   <input
                     type="text"
                     placeholder="Your Name.."
-                    value={email}
+                    value={name}
                     onChange={(e) => {
-                      setEmail(e.target.value);
-                      if (errors.email) {
-                        setErrors({ ...errors, email: '' });
+                      setName(e.target.value);
+                      if (errors.name) {
+                        setErrors({ ...errors, name: '' });
                       }
                     }}
-                    className={`${styles.input} ${errors.email ? styles.inputError : ''}`}
+                    className={`${styles.input} ${errors.name ? styles.inputError : ''}`}
                   />
                 </div>
-                {errors.email && (
-                  <span className={styles.errorText}>{errors.email}</span>
+                {errors.name && (
+                  <span className={styles.errorText}>{errors.name}</span>
                 )}
               </div>}
               <div className={styles.inputGroup}>
@@ -198,6 +267,7 @@ const LoginModal = ({ isOpen, onClose }) => {
               >
                 {loading ? 'PLEASE WAIT...' : isSignUp ? 'SIGN UP' : 'CONTINUE'}
               </button>
+              
             </form>
 
             <div className={styles.divider}>
@@ -216,20 +286,19 @@ const LoginModal = ({ isOpen, onClose }) => {
             <div className={styles.footer}>
               <p className={`mb-0 ${styles.toggleText}`}>
                 {isSignUp ? 'Already have an account?' : "Don't have an account?"}{' '}
+                
                 <button
                   type="button"
                   onClick={() => {
-                   
                     setIsSignUp(!isSignUp);
                     setErrors({});
-                     
-                      goToChapter()
-                    
+                    setEmail('');
+                    setPassword('');
+                    setName('');
                   }}
                   className={styles.toggleButton}
                 >
                   {isSignUp ? 'Login' : 'Sign Up'}
-
                 </button>
               </p>
               {/* <p className={styles.termsText}>
