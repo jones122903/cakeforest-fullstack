@@ -6,6 +6,8 @@ import { registerSW } from "virtual:pwa-register";
 import store from "./redux/store.jsx";
 import { Provider } from "react-redux";
 import { GoogleOAuthProvider } from "@react-oauth/google";
+import { PersistGate } from "redux-persist/integration/react";
+import { persistor } from "./redux/store";
 
 
 // Register service worker with auto-update
@@ -22,10 +24,14 @@ const updateSW = registerSW({
 
 createRoot(document.getElementById("root")).render(
   <Provider store={store}>
-    <StrictMode>
-      <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}>
-        <App />
-      </GoogleOAuthProvider>
-    </StrictMode>
+    <PersistGate loading={null} persistor={persistor}>
+       
+
+      <StrictMode>
+        <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}>
+          <App />
+        </GoogleOAuthProvider>
+      </StrictMode>
+    </PersistGate>
   </Provider>
 );
