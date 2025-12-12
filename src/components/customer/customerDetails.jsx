@@ -30,6 +30,7 @@ const CustomerDetails = () => {
   const [errors, setErrors] = useState({});
    const [loading, setLoading] = useState(false); 
    const { token, user } = useSelector((state) => state.auth);
+   console.log("fklasdjfjklasjdfklasajdflkajsdkfjasdklfjkl",user.id)
   const navigate = useNavigate();
 
     useEffect(() => {
@@ -59,11 +60,11 @@ const CustomerDetails = () => {
 
   useEffect(() => {
   const fetchUserDetails = async () => {
-    if (!user?._id) return;
+    if (!user?.id) return;
     
     try {
       const response = await axios.get(
-        `${import.meta.env.VITE_API_URL}/details/${user._id}`,
+        `${import.meta.env.VITE_API_URL}/details/${user.id}`,
         { headers: { Authorization: `Bearer ${token}` } }
       );
       
@@ -170,15 +171,17 @@ const CustomerDetails = () => {
     await axios.post(
       `${import.meta.env.VITE_API_URL}/details`,
       {
-        userId: user._id,
+        userId: user.id,
         ...formData
       },
       { headers: { Authorization: `Bearer ${token}` } }
     );
+
+    
     
     // Step 2: Place order
     const orderPayload = {
-      userId: user._id,
+      userId: user.id,
       cartItems: [
         {
           cakeName: orderDetails.cakeName,
@@ -215,6 +218,8 @@ const CustomerDetails = () => {
       orderPayload,
       { headers: { Authorization: `Bearer ${token}` } }
     );
+
+    
     
     if (orderResponse.data.success) {
       // Success message
