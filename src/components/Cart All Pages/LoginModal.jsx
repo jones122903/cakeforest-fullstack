@@ -9,6 +9,7 @@ import { setToken } from "../../redux/slice/authSlice";
 import axios from 'axios';
 import { useDispatch } from 'react-redux';
 import { useGoogleLogin } from "@react-oauth/google";
+import Swal from "sweetalert2";
 
 
 const LoginModal = ({ isOpen, onClose }) => {
@@ -22,6 +23,45 @@ const LoginModal = ({ isOpen, onClose }) => {
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
 
+
+  const showToast = async (icon, title) => {
+    let timerInterval;
+  
+    const Toast = Swal.mixin({
+      toast: true,
+      position: "top-right",
+      showConfirmButton: false,
+      timer: 2500,
+      timerProgressBar: true,
+  
+      // Progress bar color change based on success / error
+      didOpen: (toast) => {
+        // change progress bar color
+        const progressBar = toast.querySelector(".swal2-timer-progress-bar");
+        progressBar.style.background =
+          icon === "success" ? "green" : "red";
+  
+        // Pause on hover
+        toast.addEventListener("mouseenter", () => {
+          Swal.stopTimer();
+        });
+  
+        // Resume on mouse leave
+        toast.addEventListener("mouseleave", () => {
+          Swal.resumeTimer();
+        });
+      },
+  
+      // Custom popup color classes
+      customClass: {
+        popup: icon === "success" ? "colored-toast" : "colored-toast-error",
+      },
+  
+      iconColor: icon === "success" ? "green" : "red",
+    });
+  
+    await Toast.fire({ icon, title });
+  };
   
 const handleGoogleLogin = useGoogleLogin({
   onSuccess: async (tokenResponse) => {
@@ -36,16 +76,16 @@ const handleGoogleLogin = useGoogleLogin({
         user: res.data.user
       }));
 
-      alert("Login successful!");
+      showToast("success", "Login successful!");
       onClose();
       navigate("/details");
     } catch (error) {
       console.error(error);
-      alert("Google Login Failed");
+      showToast("error", "Google Login Failed");
     }
   },
   onError: () => {
-    alert("Google Login Error");
+    showToast("error", "Google Login Error");
   },
 });
 
@@ -115,7 +155,7 @@ const handleGoogleLogin = useGoogleLogin({
 
 
         // Show success message
-        alert(isSignUp ? 'Account created successfully!' : 'Login successful!');
+        showToast("success", isSignUp ? 'Account created successfully!' : 'Login successful!');
         
         // Reset form
         setEmail('');
@@ -143,14 +183,14 @@ const handleGoogleLogin = useGoogleLogin({
         } else if (error.response.status === 409) {
           setErrors({ email: 'Email already exists' });
         } else {
-          alert(errorMsg);
+          showToast("error", errorMsg);
         }
       } else if (error.request) {
         // Request made but no response
-        alert('Unable to connect to server. Please check your connection.');
+        showToast("error", 'Unable to connect to server. Please check your connection.');
       } else {
         // Other errors
-        alert('An error occurred. Please try again.');
+        showToast("error", 'An error occurred. Please try again.');
       }
       
       console.error('Login/Signup error:', error);
