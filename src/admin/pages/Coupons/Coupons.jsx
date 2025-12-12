@@ -50,37 +50,133 @@ const Coupons = () => {
                     </div>
                     <form onSubmit={handleSubmit}>
                         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '1rem' }}>
-                            <div className="form-group">
-                                <label>Coupon Code *</label>
-                                <input
-                                    type="text"
-                                    value={formData.code}
-                                    onChange={(e) => setFormData({ ...formData, code: e.target.value.toUpperCase() })}
-                                    placeholder="e.g., SAVE20"
-                                    required
-                                />
-                            </div>
-                            <div className="form-group">
-                                <label>Discount Type *</label>
-                                <select
-                                    value={formData.discountType}
-                                    onChange={(e) => setFormData({ ...formData, discountType: e.target.value })}
-                                    required
-                                >
-                                    <option value="percentage">Percentage (%)</option>
-                                    <option value="fixed">Fixed Amount (₹)</option>
-                                </select>
-                            </div>
-                            <div className="form-group">
-                                <label>Discount Value *</label>
-                                <input
-                                    type="number"
-                                    value={formData.discountValue}
-                                    onChange={(e) => setFormData({ ...formData, discountValue: e.target.value })}
-                                    placeholder={formData.discountType === 'percentage' ? '50' : '100'}
-                                    required
-                                />
-                            </div>
+                          <div className="form-group">
+  <label>Coupon Code *</label>
+  
+  <div style={{ position: "relative", width: "100%" }}>
+    {/* Coupon Icon */}
+    <svg
+      style={{
+        position: "absolute",
+        left: "10px",
+        top: "50%",
+        transform: "translateY(-50%)",
+        width: "20px",
+        height: "20px",
+        pointerEvents: "none",
+      }}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="#031008ff"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <path d="M3 7v2a3 3 0 1 1 0 6v2c0 1.1.9 2 2 2h14a2 2 0 0 0 2-2v-2a3 3 0 1 1 0-6V7a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2z"></path>
+      <path d="M13 5v2"></path>
+      <path d="M13 17v2"></path>
+      <path d="M13 11v2"></path>
+    </svg>
+    
+    <input
+      type="text"
+      value={formData.code}
+      onChange={(e) => setFormData({ ...formData, code: e.target.value.toUpperCase() })}
+      placeholder="e.g., SAVE20"
+      required
+      style={{
+        width: "100%",
+        paddingLeft: "40px",
+      }}
+      onFocus={(e) => {
+        e.target.style.boxShadow = "0 0 8px rgba(105, 108, 136, 0.6)";
+      }}
+      onBlur={(e) => {
+        e.target.style.boxShadow = "none";
+      }}
+    />
+  </div>
+</div>
+
+<div className="form-group">
+  <label>Discount Type *</label>
+  
+  <div style={{ position: "relative", width: "100%" }}>
+    {/* Discount Icon */}
+    <svg
+      style={{
+        position: "absolute",
+        left: "10px",
+        top: "50%",
+        transform: "translateY(-50%)",
+        width: "20px",
+        height: "20px",
+        pointerEvents: "none",
+        zIndex: 1
+      }}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="#3b82f6"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <line x1="19" y1="5" x2="5" y2="19"></line>
+      <circle cx="6.5" cy="6.5" r="2.5"></circle>
+      <circle cx="17.5" cy="17.5" r="2.5"></circle>
+    </svg>
+    
+    <select
+      value={formData.discountType}
+      onChange={(e) => setFormData({ ...formData, discountType: e.target.value })}
+      required
+      style={{
+        width: "100%",
+        paddingLeft: "40px",
+        appearance: "none",
+        WebkitAppearance: "none",
+        MozAppearance: "none",
+        backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23333' d='M6 9L1 4h10z'/%3E%3C/svg%3E")`,
+        backgroundRepeat: "no-repeat",
+        backgroundPosition: "right 12px center",
+        paddingRight: "40px"
+      }}
+      onFocus={(e) => {
+        e.target.style.boxShadow = "0 0 8px rgba(59,130,246,0.6)";
+      }}
+      onBlur={(e) => {
+        e.target.style.boxShadow = "none";
+      }}
+    >
+      <option value="percentage">Percentage</option>
+      <option value="fixed"></option>
+    </select>
+  </div>
+</div>
+                            <div className="form-group" style={{ position: 'relative' }}>
+    <label>Discount Value *</label>
+    <div style={{ position: 'relative' }}>
+        <span style={{
+            position: 'absolute',
+            left: '12px',
+            top: '50%',
+            transform: 'translateY(-50%)',
+            fontSize: '18px',
+            opacity: 0.7,
+            pointerEvents: 'none'
+        }}>
+            🔖
+        </span>
+        <input
+            type="number"
+            value={formData.discountValue}
+            onChange={(e) => setFormData({ ...formData, discountValue: e.target.value })}
+            placeholder={formData.discountType === 'percentage' ? '50' : '100'}
+            style={{ paddingLeft: '38px' }}
+            required
+        />
+    </div>
+</div>
                             <div className="form-group">
                                 <label>Expiry Date *</label>
                                 <input
