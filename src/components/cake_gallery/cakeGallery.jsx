@@ -87,10 +87,10 @@ const CakeGallery = () => {
               "All",
               "Birthday",
               "Anniversary",
-              "Chocolate",
-              "Butterscotch",
-              "Photo Cakes",
-              "Designer",
+              "Kids",
+              "Love",
+              "Wedding",
+              
             ].map((filter) => (
               <button
                 key={filter}

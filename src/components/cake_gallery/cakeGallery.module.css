@@ -391,6 +391,32 @@
   font-size: 14px;
 }
 
+/* ==================== NO CAKES FOUND MESSAGE ==================== */
+.noCakesMessage {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 50vh;
+  font-size: 1.5rem;
+  color: #555;
+  text-align: center;
+}
+
+@media (max-width: 768px) {
+  .noCakesMessage {
+    font-size: 1.2rem;
+    height: 40vh;
+  }
+}
+
+@media (max-width: 480px) {
+  .noCakesMessage {
+    font-size: 1rem;
+    height: 30vh;
+    padding: 0 1rem;
+  }
+}
+
 /* ==================== DESKTOP (1440px) ==================== */
 @media (min-width: 1440px) {
   .cakeContainer {
@@ -1023,7 +1049,8 @@
   .cakeContainer {
     padding: 0.5rem 0.2rem;
   }
-    .dropdown {
+
+  .dropdown {
     width: 57% !important;
     margin-left: 61%;
     font-size: 10px !important;

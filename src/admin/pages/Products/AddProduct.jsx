@@ -55,7 +55,7 @@ const AddProduct = () => {
     "Kids",
     "Love",
     "Wedding",
-    "Corporate",
+   
   ];
 
   useEffect(() => {
@@ -468,8 +468,8 @@ const AddProduct = () => {
                           Anniversary Cake
                         </MenuItem>
                         <MenuItem value="kids"> Kids Special</MenuItem>
-                        <MenuItem value="premium"> Premium Collection</MenuItem>
-                        <MenuItem value="celebration"> Celebration</MenuItem>
+                        <MenuItem value="love"> love Collection</MenuItem>
+                        {/* <MenuItem value="celebration"> Celebration</MenuItem> */}
                       </TextField>
                     </div>
                   </div>
