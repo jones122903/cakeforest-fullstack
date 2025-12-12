@@ -3,6 +3,7 @@ import styles from './Cart.module.css';
 import { HiDocumentCurrencyRupee } from "react-icons/hi2";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import LoginModal from './LoginModal';
+import Topbar from '../topbar/topbar';
 
 const OrderSummary = () => {
   const [quantity, setQuantity] = useState(1);
@@ -22,7 +23,10 @@ const OrderSummary = () => {
   const totalPrice = itemPrice * quantity;
 
   return (
-    <div className={styles.container}>
+    <div>
+
+     <Topbar/>
+    <div className={`${styles.container}  my-5`}>
       <div className={styles.mainLayout}>
         {/* Delivery Section */}
         <div className={styles.deliverySection}>
@@ -121,6 +125,7 @@ const OrderSummary = () => {
           onClose={() => setShowModal(false)} 
         />
       </div>
+    </div>
     </div>
   );
 };

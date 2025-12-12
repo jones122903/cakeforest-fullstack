@@ -12,17 +12,29 @@ import ReviewsSection from "../components/reviewsection/reviewsection.jsx";
 import FlowerAuraNavbar from "../components/topbar/topbar.jsx";
 import Footer from "../components/footer/footer.jsx";
 import CakeProductPage from "../components/cakeProductPage/cakeProductPage.jsx";
+import Topbar from "../components/topbar/topbar.jsx";
 
 function Buypage() {
   
   return (
-    <div  className="homeContainer" >
-      
+
+    <div>
       <div>
+        <Topbar />
+      </div>
+
+    <div  className="homeContainer" >
+       
+       
         <div className="my-5">
            <CakeProductPage/>
         </div>
-      </div>
+
+        <div>
+          <Footer/>
+        </div>
+       
+    </div>
 
       
     </div>
