@@ -9,6 +9,7 @@ import axios from "axios";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { setToken } from "../../redux/slice/authSlice";
+import { useGoogleLogin } from "@react-oauth/google";
 
 import "./login.css";
 
@@ -37,6 +38,37 @@ const Login = () => {
   // Password visibility states
   const [showSignUpPassword, setShowSignUpPassword] = useState(false);
   const [showSignInPassword, setShowSignInPassword] = useState(false);
+
+  // Google Login Hook
+  const handleGoogleLogin = useGoogleLogin({
+    onSuccess: async (tokenResponse) => {
+      try {
+        const response = await axios.post(`${import.meta.env.VITE_API_URL}/auth/google`, {
+          access_token: tokenResponse.access_token,
+        });
+
+        if (response.data.success) {
+          dispatch(setToken({
+            token: response.data.token,
+            // user: response.data.user
+            user: {
+              id: response.data.user._id,
+              name: response.data.user.name,
+              email: response.data.user.email
+            }
+          }));
+          showToast("success", "Google Login Successful");
+          setTimeout(() => {
+            navigate("/");
+          }, 1600);
+        }
+      } catch (error) {
+        console.error(error);
+        showToast("error", "Google Login Failed");
+      }
+    },
+    onError: () => showToast("error", "Google Login Failed"),
+  });
 
   // Show Toast Notification (same as AddProduct.jsx)
   const showToast = async (icon, title) => {
@@ -200,7 +232,7 @@ const Login = () => {
             <h1>Create Account</h1>
 
             <div className="social-icons">
-              <a href="https://accounts.google.com" target="_blank" rel="noopener noreferrer" className="icon"><FaGoogle /></a>
+              <a href="#" onClick={(e) => { e.preventDefault(); handleGoogleLogin() }} className="icon"><FaGoogle /></a>
               <a href="https://www.facebook.com/login" target="_blank" rel="noopener noreferrer" className="icon"><FaFacebookF /></a>
               <a href="https://github.com/login" target="_blank" rel="noopener noreferrer" className="icon"><FaGithub /></a>
               <a href="https://www.linkedin.com/login" target="_blank" rel="noopener noreferrer" className="icon"><FaLinkedinIn /></a>
@@ -297,7 +329,7 @@ const Login = () => {
             <h1>Sign In</h1>
 
             <div className="social-icons">
-              <a href="https://accounts.google.com" target="_blank" rel="noopener noreferrer" className="icon"><FaGoogle /></a>
+              <a href="#" onClick={(e) => { e.preventDefault(); handleGoogleLogin() }} className="icon"><FaGoogle /></a>
               <a href="https://www.facebook.com/login" target="_blank" rel="noopener noreferrer" className="icon"><FaFacebookF /></a>
               <a href="https://github.com/login" target="_blank" rel="noopener noreferrer" className="icon"><FaGithub /></a>
               <a href="https://www.linkedin.com/login" target="_blank" rel="noopener noreferrer" className="icon"><FaLinkedinIn /></a>
