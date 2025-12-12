@@ -6,3 +6,8 @@
   transition: 0.2s;
   cursor: pointer;
 }
+
+/* Toast message-க்கு higher z-index (topbar-விட அதிகம்) */
+/* .toast-high-zindex {
+  z-index: 999999 !important;
+} */

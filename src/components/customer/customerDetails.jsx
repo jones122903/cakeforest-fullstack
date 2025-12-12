@@ -6,6 +6,11 @@ import {
   CreditCard, CheckCircle, ShoppingBag,
   AlignRight
 } from 'lucide-react';
+import { useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
+import { useEffect } from 'react';
+import Swal from 'sweetalert2';
 
 const CustomerDetails = () => {
   const [formData, setFormData] = useState({
@@ -23,7 +28,22 @@ const CustomerDetails = () => {
   });
 
   const [errors, setErrors] = useState({});
+   const [loading, setLoading] = useState(false); 
+   const { token, user } = useSelector((state) => state.auth);
+  const navigate = useNavigate();
 
+    useEffect(() => {
+    if (!token) {
+      Swal.fire({
+        icon: 'warning',
+        title: 'Please Login',
+        text: 'You need to login first to place an order'
+      });
+      navigate('/');
+    }
+  }, [token, navigate]);
+
+  
   // Mock Order Data (would come from props/context in real app)
   const orderDetails = {
     cakeName: "Red Velvet Bliss",
@@ -35,6 +55,44 @@ const CustomerDetails = () => {
     deliveryTime: "18:00 - 20:00",
     deliveryCharge: 50
   };
+  
+
+  useEffect(() => {
+  const fetchUserDetails = async () => {
+    if (!user?._id) return;
+    
+    try {
+      const response = await axios.get(
+        `${import.meta.env.VITE_API_URL}/details/${user._id}`,
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      
+      if (response.data.success && response.data.details) {
+        // Pre-fill form with saved data
+        setFormData({
+          fullName: response.data.details.fullName || '',
+          phone: response.data.details.phone || '',
+          email: response.data.details.email || user.email || '',
+          whatsapp: response.data.details.whatsapp || '',
+          flatNo: response.data.details.flatNo || '',
+          street: response.data.details.street || '',
+          landmark: response.data.details.landmark || '',
+          city: response.data.details.city || '',
+          pincode: response.data.details.pincode || '',
+          instructions: response.data.details.instructions || '',
+          paymentMethod: response.data.details.paymentMethod || 'online'
+        });
+      }
+    } catch (error) {
+      // Details இல்லனா empty form காட்டும் (first time user)
+      console.log('No saved details found - New user');
+    }
+  };
+  
+  fetchUserDetails();
+}, [user, token]);
+
+  
 
   const validate = () => {
     const newErrors = {};
@@ -96,14 +154,99 @@ const CustomerDetails = () => {
     rzp1.open()
    }
     }
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    if (validate()) {
-      console.log("Form Submitted", formData);
-      alert("Order Placed!");
-      // Navigate to payment logic here
+ 
+    const handleSubmit = async (e) => {
+  e.preventDefault();
+  
+  // Form validation
+  if (!validate()) {
+    return;
+  }
+  
+  setLoading(true);
+  
+  try {
+    // Step 1: Save user details
+    await axios.post(
+      `${import.meta.env.VITE_API_URL}/details`,
+      {
+        userId: user._id,
+        ...formData
+      },
+      { headers: { Authorization: `Bearer ${token}` } }
+    );
+    
+    // Step 2: Place order
+    const orderPayload = {
+      userId: user._id,
+      cartItems: [
+        {
+          cakeName: orderDetails.cakeName,
+          variant: orderDetails.variant,
+          weight: orderDetails.weight,
+          price: orderDetails.price,
+          nameOnCake: orderDetails.nameOnCake,
+          quantity: 1
+        }
+      ],
+      deliveryDetails: {
+        fullName: formData.fullName,
+        phone: formData.phone,
+        email: formData.email,
+        whatsapp: formData.whatsapp,
+        address: {
+          flatNo: formData.flatNo,
+          street: formData.street,
+          landmark: formData.landmark,
+          city: formData.city,
+          pincode: formData.pincode
+        },
+        instructions: formData.instructions
+      },
+      deliveryDate: orderDetails.deliveryDate,
+      deliveryTime: orderDetails.deliveryTime,
+      paymentMethod: formData.paymentMethod,
+      totalAmount: totalAmount,
+      deliveryCharge: orderDetails.deliveryCharge
+    };
+    
+    const orderResponse = await axios.post(
+      `${import.meta.env.VITE_API_URL}/orders`,
+      orderPayload,
+      { headers: { Authorization: `Bearer ${token}` } }
+    );
+    
+    if (orderResponse.data.success) {
+      // Success message
+      await Swal.fire({
+        icon: 'success',
+        title: 'Order Placed Successfully!',
+        text: `Order ID: ${orderResponse.data.orderId}`,
+        confirmButtonColor: '#0e4d65'
+      });
+      
+      // Handle payment
+      if (formData.paymentMethod === 'online') {
+        payment(totalAmount * 100);  // Razorpay expects amount in paise
+      } else {
+        // COD - Navigate to order confirmation
+        navigate('/');  // Or navigate to orders page
+      }
     }
-  };
+    
+  } catch (error) {
+    console.error('Order placement error:', error);
+    
+    Swal.fire({
+      icon: 'error',
+      title: 'Order Failed',
+      text: error.response?.data?.message || 'Something went wrong. Please try again.',
+      confirmButtonColor: '#0e4d65'
+    });
+  } finally {
+    setLoading(false);
+  }
+};
 
   const totalAmount = orderDetails.price + orderDetails.deliveryCharge;
 
@@ -400,9 +543,14 @@ const CustomerDetails = () => {
 
       {/* Sticky Footer Button */}
       <footer className={styles.footer}>
-        <button type="button" onClick={handleSubmit} className={styles.submitBtn}>
-          Place Order
-        </button>
+       <button 
+  type="button" 
+  onClick={handleSubmit} 
+  className={styles.submitBtn}
+  disabled={loading}  // ← Add this
+>
+  {loading ? 'Placing Order...' : 'Place Order'}  {/* ← Update text */}
+</button>
       </footer>
     </div>
   );

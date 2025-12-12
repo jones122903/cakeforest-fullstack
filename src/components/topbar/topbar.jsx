@@ -55,7 +55,7 @@
 //         <div className="search-area">
 //           <input
 //             type="text"
-            // placeholder="Search for flowers, cakes, gifts, etc."
+// placeholder="Search for flowers, cakes, gifts, etc."
 //             value={searchQuery}
 //             onChange={(e) => setSearchQuery(e.target.value)}
 //           />
@@ -96,10 +96,10 @@
 //             </div>
 //           ))}
 //         </div>
-        
+
 //       )}
 //     </div>
-    
+
 //   );
 // }
 import React, { useState } from "react";
@@ -113,15 +113,72 @@ import {
   Menu,
   X,
   Edit,
+  LogOut,
 } from "lucide-react";
 import { IndianRupee } from "lucide-react";
 import styles from "./topbar.module.css";
+// Redux imports add பண்ணுங்க
+import { useSelector, useDispatch } from "react-redux";
+import { clearToken } from "../../redux/slice/authSlice";
+import { useNavigate } from "react-router-dom";
+import Swal from "sweetalert2"; // Toast message-க்கு
 
 const Topbar = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
+  // Redux hooks add பண்ணுங்க
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const { token, user } = useSelector((state) => state.auth);
+
   const toggleMobileMenu = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
+  };
+
+  // Show Toast Notification (same as AddProduct.jsx)
+    const showToast = async (icon, title) => {
+      const Toast = Swal.mixin({
+        toast: true,
+        position: "top-right",
+        showConfirmButton: false,
+        timer: 2500,
+        timerProgressBar: true,
+  
+        didOpen: (toast) => {
+          const progressBar = toast.querySelector(".swal2-timer-progress-bar");
+          progressBar.style.background = icon === "success" ? "green" : "red";
+  
+          toast.addEventListener("mouseenter", () => {
+            Swal.stopTimer();
+          });
+  
+          toast.addEventListener("mouseleave", () => {
+            Swal.resumeTimer();
+          });
+        },
+  
+        customClass: {
+          popup: icon === "success" ? "colored-toast" : "colored-toast-error",
+          container: 'toast-high-zindex', // Higher z-index க்கு
+        },
+  
+        iconColor: icon === "success" ? "green" : "red",
+      });
+  
+      await Toast.fire({ icon, title });
+    };
+
+  // Logout handler add பண்ணுங்க
+  const handleLogout = () => {
+    dispatch(clearToken());
+    showToast("success","You’ve successfully logged out");
+    navigate("/");
+    setIsMobileMenuOpen(false); // Close mobile menu if open
+  };
+
+  const handleLogin = () => {
+    navigate("/login");
+    setIsMobileMenuOpen(false);
   };
 
   return (
@@ -137,38 +194,35 @@ const Topbar = () => {
       <div className={styles.topbar}>
         <div className={styles.container}>
           <nav className={`${styles.navbar} navbar navbar-expand-lg`}>
-
             {/* MOBILE MENU BUTTON */}
-           
 
             {/* LOGO */}
             <div className="navbar-brand d-flex align-items-center">
-             <svg
-  className={styles.logo}
-  viewBox="0 0 350 80"
-  preserveAspectRatio="xMidYMid meet"
-  xmlns="http://www.w3.org/2000/svg"
->
-  <path d="M30 20 L40 35 L50 20 L40 28 L30 20 Z" fill="#244B64" />
-  <path d="M22 28 L40 45 L58 28 L40 36 L22 28 Z" fill="#2C5F7C" />
-  <path d="M15 36 L40 57 L65 36 L40 46 L15 36 Z" fill="#387C9D" />
+              <svg
+                className={styles.logo}
+                viewBox="0 0 350 80"
+                preserveAspectRatio="xMidYMid meet"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path d="M30 20 L40 35 L50 20 L40 28 L30 20 Z" fill="#244B64" />
+                <path d="M22 28 L40 45 L58 28 L40 36 L22 28 Z" fill="#2C5F7C" />
+                <path d="M15 36 L40 57 L65 36 L40 46 L15 36 Z" fill="#387C9D" />
 
-  <text
-    x="85"
-    y="52"
-    fill="#2C5F7C"
-    fontSize="35"
-    fontWeight="800"
-    fontFamily="Poppins, sans-serif"
-    letterSpacing="1px"
-  >
-    Cake Forest
-  </text>
-</svg>
-
+                <text
+                  x="85"
+                  y="52"
+                  fill="#2C5F7C"
+                  fontSize="35"
+                  fontWeight="800"
+                  fontFamily="Poppins, sans-serif"
+                  letterSpacing="1px"
+                >
+                  Cake Forest
+                </text>
+              </svg>
             </div>
 
-             <button
+            <button
               className="navbar-toggler d-lg-none border-0 p-0 me-4"
               type="button"
               onClick={toggleMobileMenu}
@@ -178,7 +232,9 @@ const Topbar = () => {
             </button>
 
             {/* SEARCH BAR (DESKTOP) */}
-            <div className={`d-none mx-auto d-lg-block ${styles.searchContainer}`}>
+            <div
+              className={`d-none mx-auto d-lg-block ${styles.searchContainer}`}
+            >
               <input
                 type="text"
                 placeholder="Search for products..."
@@ -202,10 +258,40 @@ const Topbar = () => {
                 <span className={styles.badge}>2</span>
               </div>
 
-              <div className={styles.iconItem}>
+              {/* <div className={styles.iconItem}>
                 <User size={24} />
                 <span className={styles.iconText}>My Account</span>
-              </div>
+              </div> */}
+
+              {/* Conditional Login/Logout - Desktop */}
+              {token ? (
+                <>
+                  <div className={styles.iconItem}>
+                    <User size={24} />
+                    <span className={styles.iconText}>
+                      {user?.name || user?.email?.split("@")[0] || "Account"}
+                    </span>
+                  </div>
+
+                  <div
+                    className={styles.iconItem}
+                    onClick={handleLogout}
+                    style={{ cursor: "pointer" }}
+                  >
+                    <LogOut size={24} />
+                    <span className={styles.iconText}>Logout</span>
+                  </div>
+                </>
+              ) : (
+                <div
+                  className={styles.iconItem}
+                  onClick={handleLogin}
+                  style={{ cursor: "pointer" }}
+                >
+                  <User size={24} />
+                  <span className={styles.iconText}>Login</span>
+                </div>
+              )}
 
               <div className={styles.iconItem}>
                 <MoreVertical size={24} />
@@ -230,58 +316,59 @@ const Topbar = () => {
         </div>
       </div>
 
-      {/* OVERLAY */}
-      <div
-        className={`${styles.overlay} ${
-          isMobileMenuOpen ? styles.overlayOpen : ""
-        }`}
-        onClick={toggleMobileMenu}
-      ></div>
-
+       {/* OVERLAY */}
+      <div className={`${styles.overlay} ${isMobileMenuOpen ? styles.overlayOpen : ""}`} onClick={toggleMobileMenu}></div>
       {/* SIDE DRAWER */}
-      <div
-        className={`${styles.sideDrawer} ${
-          isMobileMenuOpen ? styles.sideDrawerOpen : ""
-        }`}
-      >
+      <div className={`${styles.sideDrawer} ${isMobileMenuOpen ? styles.sideDrawerOpen : ""}`}>
         <div className={styles.drawerHeader}>
           <span className={styles.drawerTitle}>Menu</span>
-          <button
-            onClick={toggleMobileMenu}
-            style={{ background: "none", border: "none", cursor: "pointer" }}
-          >
+          <button onClick={toggleMobileMenu} style={{ background: "none", border: "none", cursor: "pointer" }}>
             <X size={24} color="#2C5F7C" />
           </button>
         </div>
-
         <div className={styles.drawerMenu}>
           <div className={styles.deliverSection}>
             <span className={styles.flag}>🇮🇳</span>
             <span className={styles.deliverText}>Deliver To ?</span>
             <Edit size={16} color="#2C5F7C" />
           </div>
-
-          <div className={styles.drawerMenuItem}>
+          {token && user && (
+            <div className={styles.userInfoSection}>
+              <User size={24} color="#2C5F7C" />
+              <div>
+                <div className={styles.userName}>{user.name || 'User'}</div>
+                <div className={styles.userEmail}>{user.email}</div>
+              </div>
+            </div>
+          )}
+          <div className={styles.drawerMenuItem} onClick={() => navigate('/order')}>
             <MapPin size={22} color="#2C5F7C" />
             <span className={styles.drawerMenuText}>Track Order</span>
           </div>
-
-          <div className={styles.drawerMenuItem}>
+          <div className={styles.drawerMenuItem} onClick={() => navigate('/order')}>
             <ShoppingCart size={22} color="#2C5F7C" />
             <span className={styles.drawerMenuText}>Cart</span>
             <span className={styles.badge}>2</span>
           </div>
-
-          <div className={styles.drawerMenuItem}>
-            <User size={22} color="#2C5F7C" />
-            <span className={styles.drawerMenuText}>My Account</span>
-          </div>
-
+          {token ? (
+            <div 
+              className={styles.drawerMenuItem} 
+              onClick={handleLogout}
+              style={{ borderTop: '1px solid #e0e0e0', marginTop: '10px', paddingTop: '10px' }}
+            >
+              <LogOut size={22} color="#e74c3c" />
+              <span className={styles.drawerMenuText} style={{ color: '#e74c3c' }}>Logout</span>
+            </div>
+          ) : (
+            <div className={styles.drawerMenuItem} onClick={handleLogin}>
+              <User size={22} color="#2C5F7C" />
+              <span className={styles.drawerMenuText}>Login</span>
+            </div>
+          )}
           <div className={styles.drawerMenuItem}>
             <Search size={22} color="#2C5F7C" />
             <span className={styles.drawerMenuText}>Search Products</span>
           </div>
-
           <div className={styles.drawerMenuItem}>
             <IndianRupee size={22} color="#2C5F7C" />
             <span className={styles.drawerMenuText}>Currency: INR</span>

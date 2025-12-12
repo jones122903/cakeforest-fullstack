@@ -4,10 +4,26 @@ import { HiDocumentCurrencyRupee } from "react-icons/hi2";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import LoginModal from './LoginModal';
 import Topbar from '../topbar/topbar';
+import { useNavigate } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 
 const OrderSummary = () => {
   const [quantity, setQuantity] = useState(1);
   const [showModal, setShowModal] = useState(false);
+
+   const navigate = useNavigate();
+  const { token } = useSelector((state) => state.auth);
+
+  const handlePlaceOrder = () => {
+    
+    if (token) {
+      
+      navigate('/details');
+    } else {
+      
+      setShowModal(true);
+    }
+  };
 
   const handleIncrement = () => {
     setQuantity(prev => prev + 1);
@@ -113,7 +129,7 @@ const OrderSummary = () => {
 
           <button 
             className={`btn-buy ${styles.placeOrderButton}`}
-            onClick={() => setShowModal(true)}
+            onClick={handlePlaceOrder}
           >
             PLACE ORDER
           </button>
