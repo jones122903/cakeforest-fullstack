@@ -47,6 +47,7 @@ const AddProduct = () => {
   console.log(id);
 
   const [imagePreview, setImagePreview] = useState([]);
+  const [replaceTarget, setReplaceTarget] = useState(null);
 
   const categories = [
     "Birthday",
@@ -95,9 +96,31 @@ const AddProduct = () => {
     setFormData({ ...formData, [name]: value });
   };
 
-  const handleImageUpload = (e) => {
+  const handleImageUpload = async (e) => {
     const files = Array.from(e.target.files);
+    const newFile = files[0];
 
+    // 🔥 1️⃣ If replaceTarget is set → REPLACE MODE
+    if (replaceTarget && id) {
+      const newImageName = await replaceOldImage(
+        replaceTarget.preview,
+        newFile
+      );
+
+      setFormData((prev) => ({
+        ...prev,
+        images: prev.images.map((img) =>
+          img.preview === replaceTarget.preview
+            ? { preview: newImageName, file: null }
+            : img
+        ),
+      }));
+
+      setReplaceTarget(null); // reset replace mode
+      return;
+    }
+
+    // 🔥 2️⃣ ADD MODE (normal upload)
     const newImages = files.map((file) => ({
       file,
       preview: URL.createObjectURL(file),
@@ -109,9 +132,30 @@ const AddProduct = () => {
     }));
   };
 
-  const removeImage = (index) => {
-    const newImages = formData.images.filter((_, i) => i !== index);
-    setFormData({ ...formData, images: newImages });
+  const handleRemoveImage = async (imgObj) => {
+    // If it is an old image (existing in database)
+    if (!imgObj.file) {
+      await deleteImageFromServer(imgObj.preview); // send filename
+    }
+
+    // Remove from frontend
+    setFormData((prev) => ({
+      ...prev,
+      images: prev.images.filter((i) => i.preview !== imgObj.preview),
+    }));
+  };
+
+  const handleReplaceImage = async (oldImgObj, newFile) => {
+    const newImageName = await replaceOldImage(oldImgObj.preview, newFile);
+
+    setFormData((prev) => ({
+      ...prev,
+      images: prev.images.map((img) =>
+        img.preview === oldImgObj.preview
+          ? { preview: newImageName, file: null }
+          : img
+      ),
+    }));
   };
 
   const validateForm = () => {
@@ -124,6 +168,34 @@ const AddProduct = () => {
     if (formData.images.length === 0) return "Please upload at least one image";
 
     return null; // Everything correct
+  };
+
+  const replaceOldImage = async (oldImageName, newFile) => {
+    try {
+      const form = new FormData();
+      form.append("oldImage", oldImageName);
+      form.append("cakeName", formData.cakeName);
+      form.append("weight", formData.weight); // 🔥 REQUIRED
+      form.append("image", newFile);
+
+      const res = await axios.put(`${api_url}/update-image`, form, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+
+      return res.data.image;
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const deleteImageFromServer = async (imageName) => {
+    try {
+      await axios.delete(`${api_url}/delete-image`, {
+        data: { imageName },
+      });
+    } catch (err) {
+      console.log("Delete failed:", err);
+    }
   };
 
   const showToast = async (icon, title) => {
@@ -167,24 +239,18 @@ const AddProduct = () => {
   const uploadImages = async () => {
     const imgForm = new FormData();
 
-    // ✅ SEND CAKENAME FIRST!
     imgForm.append("cakeName", formData.cakeName);
+    imgForm.append("weight", formData.weight); // 🔥 ADD HERE
 
-    // Then append images
     formData.images.forEach((imgObj) => {
       imgForm.append("images", imgObj.file);
     });
-    try {
-      const res = await axios.post(`${api_url}/upload-images`, imgForm, {
-        headers: { "Content-Type": "multipart/form-data" },
-      });
-      return res.data.images;
-    } catch (error) {
-      showToast(
-        "error",
-        error.response?.data?.message || "Image upload failed"
-      );
-    }
+
+    const res = await axios.post(`${api_url}/upload-images`, imgForm, {
+      headers: { "Content-Type": "multipart/form-data" },
+    });
+
+    return res.data.images;
   };
 
   const handleSubmit = async (e) => {
@@ -196,27 +262,38 @@ const AddProduct = () => {
     try {
       let imageUrls = [];
 
-      // 👉 ADD only: upload new images
+      // 👉 Identify new files (in edit mode)
+      const newFiles = formData.images.filter((img) => img.file);
+
       if (!id) {
+        // 🔥 ADD MODE
         imageUrls = await uploadImages();
       } else {
-        // 👉 EDIT: keep old images + upload only new ones
-        const newFiles = formData.images.filter((img) => img.file);
+        // 🔥 EDIT MODE
+
         if (newFiles.length > 0) {
           const imgForm = new FormData();
           imgForm.append("cakeName", formData.cakeName);
+          imgForm.append("weight", formData.weight); // 🔥 ADD HERE
+
           newFiles.forEach((i) => imgForm.append("images", i.file));
 
-          const res = await axios.post(`${api_url}/upload-images`, imgForm);
+          const res = await axios.post(`${api_url}/upload-images`, imgForm, {
+            headers: { "Content-Type": "multipart/form-data" },
+          });
+
           imageUrls = [
-            ...formData.images.map((i) => i.preview),
+            ...formData.images.filter((i) => !i.file).map((i) => i.preview),
             ...res.data.images,
           ];
         } else {
-          imageUrls = formData.images.map((i) => i.preview);
+          imageUrls = formData.images
+            .filter((i) => !i.file)
+            .map((i) => i.preview);
         }
       }
 
+      // Final product object
       const productData = {
         cakeName: formData.cakeName,
         flavor: formData.flavor,
@@ -232,19 +309,17 @@ const AddProduct = () => {
 
       let res;
 
-      // 🔥 If ID exists → EDIT
       if (id) {
+        // 🔥 UPDATE PRODUCT
         res = await axios.put(`${api_url}/products/${id}`, productData, {
           headers: { Authorization: `Bearer ${token}` },
         });
-
         showToast("success", "Product updated successfully");
       } else {
-        // 🔥 ADD MODE
+        // 🔥 ADD PRODUCT
         res = await axios.post(`${api_url}/products`, productData, {
           headers: { Authorization: `Bearer ${token}` },
         });
-
         showToast("success", "Product added successfully");
       }
 
@@ -263,7 +338,7 @@ const AddProduct = () => {
         <h1>{id ? "Edit Cake" : "Add New Cake"}</h1>
       </div>
 
-      <form className="product-form" onSubmit={handleSubmit}>
+      <div className="product-form"  >
         <div className="form-section">
           <div className="row mt-3 ">
             {/* LEFT: IMAGE UPLOAD */}
@@ -284,23 +359,24 @@ const AddProduct = () => {
                   />
                 </label>
 
-                {formData.images.length > 0 && (
-                  <div className="image-preview-grid">
-                    {formData.images.map((img, index) => (
-                      <div key={index} className="image-preview">
-                        <img src={img.preview} alt={`Preview ${index + 1}`} />
+                <div className="image-preview-grid">
+                  {formData.images.map((img, index) => (
+                    <div key={index} className="image-preview">
+                      <img src={img.preview} alt={`Preview ${index + 1}`} />
 
-                        <button
-                          type="button"
-                          className="remove-image"
-                          onClick={() => removeImage(index)}
-                        >
-                          <X size={16} />
-                        </button>
-                      </div>
-                    ))}
-                  </div>
-                )}
+                      {console.log(img.preview)}
+
+                      {/* REMOVE BUTTON */}
+                      <button
+                        type="button"
+                        className="remove-image"
+                        onClick={() => handleRemoveImage(img)}
+                      >
+                        <X size={16} />
+                      </button>
+                    </div>
+                  ))}
+                </div>
               </div>
             </div>
 
@@ -629,7 +705,7 @@ const AddProduct = () => {
             </div>
           </div>
         </div>
-      </form>
+      </div>
     </div>
   );
 };

@@ -27,7 +27,7 @@
     padding: 1.5rem;
     border-radius: 16px;
     margin-bottom: 1.5rem;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
 }
 
 .search-box {
@@ -92,7 +92,7 @@
     background: white;
     border-radius: 16px;
     overflow: hidden;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
     margin-bottom: 1.5rem;
 }
 
@@ -102,7 +102,7 @@
 }
 
 .products-table thead {
-    background: #f9fafb;
+    background: #a6afb8;
 }
 
 .products-table th {
