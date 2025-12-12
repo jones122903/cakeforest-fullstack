@@ -44,7 +44,7 @@ const Login = () => {
       toast: true,
       position: "top-right",
       showConfirmButton: false,
-      timer: 2500,
+      timer: 1500,
       timerProgressBar: true,
 
       didOpen: (toast) => {
@@ -93,13 +93,30 @@ const Login = () => {
     e.preventDefault();
 
     // Validation
-    if (!signUpData.name || !signUpData.email || !signUpData.password) {
-      showToast("error", "Please fill all fields");
+    if (!signUpData.name.trim()) {
+      showToast("error", "Name is required");
+      return;
+    }
+
+    if (!signUpData.email.trim()) {
+      showToast("error", "Email address is required");
+      return;
+    }
+
+    // Email format validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(signUpData.email)) {
+      showToast("error", "Enter a valid email address");
+      return;
+    }
+
+    if (!signUpData.password) {
+      showToast("error", "Password is required");
       return;
     }
 
     if (signUpData.password.length < 6) {
-      showToast("error", "Password must be at least 6 characters");
+      showToast("error", "Password must be at least 6 characters long");
       return;
     }
 
@@ -109,15 +126,14 @@ const Login = () => {
       const response = await axios.post(`${import.meta.env.VITE_API_URL}/register`, signUpData);
 
       if (response.data.success) {
-        showToast("success", response.data.message || "Registration successful!");
+        showToast("success", response.data.message || "Account created successfully. Continue by signing in");
         // Clear form
         setSignUpData({ name: "", email: "", password: "" });
-        // Switch to sign in
-        setTimeout(() => setActive(false), 3500);
+        // Switch to sign in after toast
+        setTimeout(() => setActive(false), 3000);
       }
     } catch (error) {
-      const errorMessage = error.response?.data?.message || "Registration failed. Please try again.";
-      showToast("error", errorMessage);
+      const errorMessage = error.response?.data?.message || "Unable to create account. Try again."; showToast("error", errorMessage);
     } finally {
       setSignUpLoading(false);
     }
@@ -128,8 +144,20 @@ const Login = () => {
     e.preventDefault();
 
     // Validation
-    if (!signInData.email || !signInData.password) {
-      showToast("error", "Please fill all fields");
+    if (!signInData.email.trim()) {
+      showToast("error", "Email address is required");
+      return;
+    }
+
+    // Email format validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(signInData.email)) {
+      showToast("error", " Enter a valid email address");
+      return;
+    }
+
+    if (!signInData.password) {
+      showToast("error", "Password is required");
       return;
     }
 
@@ -148,12 +176,14 @@ const Login = () => {
         // Clear form
         setSignInData({ email: "", password: "" });
 
-        // Show success toast and navigate immediately
-        showToast("success", response.data.message || "Login successful!");
-        navigate("/");
+        // Show success toast first, then navigate after toast completes
+        showToast("success", response.data.message || "Welcome back! Redirecting...");
+        setTimeout(() => {
+          navigate("/");
+        }, 1600);
       }
     } catch (error) {
-      const errorMessage = error.response?.data?.message || "Login failed. Please try again.";
+      const errorMessage = error.response?.data?.message || "Unable to sign in. Check your credentials and try again.";
       showToast("error", errorMessage);
     } finally {
       setSignInLoading(false);
@@ -352,14 +382,14 @@ const Login = () => {
         <div className="toggle-container">
           <div className="toggle">
             <div className="toggle-panel toggle-left">
-              <h1>Welcome Back!</h1>
-              <p>Enter your personal details to access all features</p>
+              <h1>Welcome Back</h1>
+              <p>Sign in with your details to continue.</p>
               <button className="hidden" onClick={() => setActive(false)}>Sign In</button>
             </div>
 
             <div className="toggle-panel toggle-right">
-              <h1>Hello, Friend!</h1>
-              <p>Register with your personal details to use all features</p>
+              <h1>Join Us</h1>
+              <p>Register to create your account and start using all features.</p>
               <button className="hidden" onClick={() => setActive(true)}>Sign Up</button>
             </div>
           </div>
