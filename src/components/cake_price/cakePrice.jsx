@@ -11,6 +11,8 @@ import "swiper/css/pagination";
 import styles from "./cakePrice.module.css";
 import { useDispatch, useSelector } from "react-redux";
 import { addToWishlistAsync, removeFromWishlistAsync, fetchWishlist } from "../../redux/slice/wishlistSlice";
+import toast from "react-hot-toast";
+import "../Cart All Pages/Cartuialert.css";
 
 const CakePrice = () => {
   const [products, setProducts] = useState([]);
@@ -30,7 +32,7 @@ const CakePrice = () => {
         const response = await axios.get(
           `${import.meta.env.VITE_API_URL}/products`
         );
-        
+
         if (response.data.success) {
           // Shuffle and pick 8 random products
           const allProducts = response.data.products;
@@ -83,9 +85,28 @@ const CakePrice = () => {
     if (isInWishlist) {
       // Remove
       dispatch(removeFromWishlistAsync({ userId: user._id, productId: cakeId }));
+      toast.custom((t) => (
+        <div className={`re-bk-toast-wrapper ${t.visible ? "slide-in" : "slide-out"}`} style={{ zIndex: 99999999 }}>
+          <div className="re-bk-toast">
+            <span className="re-bk-text-toast">Removed from Favourites</span>
+          </div>
+          <div className="re-bk-progress" />
+        </div>
+      ), { duration: 2000, position: "top-right" });
+
     } else {
       // Add
       dispatch(addToWishlistAsync({ userId: user._id, productId: cakeId }));
+
+      toast.custom((t) => (
+        <div className={`re-bk-toast-wrapper ${t.visible ? "slide-in" : "slide-out"}`} style={{ zIndex: 99999999 }}>
+          <div className="re-bk-toast">
+            <img src="https://bkassets.bakingo.com/bakingo-ssr/static/media/check.adfc0424.svg" alt="check mark" />
+            <span className="re-bk-text-toast">Added to Favourites</span>
+          </div>
+          <div className="re-bk-progress" />
+        </div>
+      ), { duration: 2000, position: "top-right" });
     }
   };
 
@@ -120,7 +141,7 @@ const CakePrice = () => {
               key={cake._id}
               className={styles.cakeCard}
               onClick={() => gotoCakebuy(cake._id)}
-              
+
               onMouseEnter={() => {
                 const swiper = swiperRefs.current[cake._id];
                 if (swiper && swiper.autoplay) {

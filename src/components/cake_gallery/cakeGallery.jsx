@@ -13,6 +13,8 @@ import FlowerAuraNavbar from "../topbar/topbar.jsx";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import { addToWishlistAsync, removeFromWishlistAsync, fetchWishlist } from "../../redux/slice/wishlistSlice";
+import toast from "react-hot-toast";
+import "../Cart All Pages/Cartuialert.css";
 
 const CakeGallery = () => {
   // const [wishlist, setWishlist] = useState({}); // Removed local state
@@ -64,8 +66,26 @@ const CakeGallery = () => {
 
     if (isInWishlist) {
       dispatch(removeFromWishlistAsync({ userId: user._id, productId: cakeId }));
+      toast.custom((t) => (
+        <div className={`re-bk-toast-wrapper ${t.visible ? "slide-in" : "slide-out"}`} style={{ zIndex: 99999999 }}>
+          <div className="re-bk-toast">
+            <span className="re-bk-text-toast">Removed from Favourites</span>
+          </div>
+          <div className="re-bk-progress" />
+        </div>
+      ), { duration: 2000, position: "top-right" });
+
     } else {
       dispatch(addToWishlistAsync({ userId: user._id, productId: cakeId }));
+      toast.custom((t) => (
+        <div className={`re-bk-toast-wrapper ${t.visible ? "slide-in" : "slide-out"}`} style={{ zIndex: 99999999 }}>
+          <div className="re-bk-toast">
+            <img src="https://bkassets.bakingo.com/bakingo-ssr/static/media/check.adfc0424.svg" alt="check mark" />
+            <span className="re-bk-text-toast">Added to Favourites</span>
+          </div>
+          <div className="re-bk-progress" />
+        </div>
+      ), { duration: 2000, position: "top-right" });
     }
   };
 

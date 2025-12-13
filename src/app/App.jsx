@@ -67,12 +67,13 @@ function App() {
     <AuthProvider>
       <AppProvider>
         <Router>
+          <Toaster />
           <PWAInstallPrompt />
 
           <Routes>
             {/* Public Routes */}
             <Route path="/" element={<Home />} />
-            <Route path="/buypage" element={<Buypage />} />
+            <Route path="/buypage/:id" element={<Buypage />} />
             <Route path="/order" element={<OrderSummary />} />
             <Route path="/details" element={<CustomerDetails />} />
             <Route path="/gallery" element={<CakeGallery />} />
