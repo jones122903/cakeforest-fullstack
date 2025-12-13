@@ -1,5 +1,6 @@
-import React, { useState, useRef, useEffect } from "react";
-import { FaHeart, FaRegHeart } from "react-icons/fa";
+import { useState, useRef, useEffect } from "react";
+import { FaHeart } from "react-icons/fa";
+import { Select, MenuItem, FormControl } from "@mui/material";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Pagination, Autoplay } from "swiper/modules";
 import "swiper/css";
@@ -90,7 +91,7 @@ const CakeGallery = () => {
               "Kids",
               "Love",
               "Wedding",
-              
+
             ].map((filter) => (
               <button
                 key={filter}
@@ -103,16 +104,35 @@ const CakeGallery = () => {
             ))}
           </div>
           <div className={styles.sortDropdown}>
-            <select
-              className={styles.dropdown}
-              value={sortBy}
-              onChange={(e) => setSortBy(e.target.value)}
-            >
-              <option value="popularity">Popularity</option>
-              <option value="priceLowToHigh">Price: Low to High</option>
-              <option value="priceHighToLow">Price: High to Low</option>
-              <option value="newest">Newest</option>
-            </select>
+            <FormControl sx={{ m: 1, minWidth: 130 }} size="medium">
+              <Select
+                value={sortBy}
+                onChange={(e) => setSortBy(e.target.value)}
+                displayEmpty
+                inputProps={{ 'aria-label': 'Sort by' }}
+                sx={{
+                  bgcolor: 'white',
+                  borderRadius: '12px',
+                  '& .MuiOutlinedInput-notchedOutline': {
+                    borderColor: '#ddd',
+                  },
+                  '&:hover .MuiOutlinedInput-notchedOutline': {
+                    borderColor: '#0e4d65',
+                  },
+                  '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                    borderColor: '#0e4d65',
+                  },
+                  fontSize: '14px',
+                  fontWeight: 500,
+                  color: '#333'
+                }}
+              >
+                <MenuItem value="popularity">Popularity</MenuItem>
+                <MenuItem value="priceLowToHigh">Low to High</MenuItem>
+                <MenuItem value="priceHighToLow">High to Low</MenuItem>
+                <MenuItem value="newest">Newest</MenuItem>
+              </Select>
+            </FormControl>
           </div>
         </div>
 
@@ -282,12 +302,12 @@ const CakeGallery = () => {
             No cakes found in {selectedFilter} category.
           </div>
         )}
-        <div>
+        <div style={{ marginTop: "89px" }}>
           <ReviewsSection />
         </div>
       </div>
 
-      <div className="my-3">
+      <div>
         <Footer />
       </div>
     </div>
