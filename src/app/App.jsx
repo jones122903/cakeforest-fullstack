@@ -1,6 +1,7 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Home from "../pages/home.jsx";
-import Topbar from "../components/topbar/topbar.jsx"
+import { Toaster } from "react-hot-toast";
+import Topbar from "../components/topbar/topbar.jsx";
 import { AppProvider } from "../admin/context/AppContext.jsx";
 import AdminLayout from "../admin/components/AdminLayout/AdminLayout.jsx";
 import Dashboard from "../admin/pages/Dashboard/Dashboard.jsx";
@@ -20,23 +21,19 @@ import Footer from "../components/footer/footer.jsx";
 import CakeGallery from "../components/cake_gallery/cakeGallery.jsx";
 import PWAInstallPrompt from "../components/PWAInstallPrompt/PWAInstallPrompt.jsx";
 
-import "bootstrap/dist/css/bootstrap.min.css"
-
+import "bootstrap/dist/css/bootstrap.min.css";
 
 import { AuthProvider } from "../admin/context/AuthContext.jsx";
 import Login from "../components/login/login.jsx";
-import  NewForget  from "../components/login/forget/NewForget.jsx";
-import  Otp  from "../components/login/OtpPage/Otp.jsx";
-import  NewReset  from "../components/login/ComfirmPage/NewReset.jsx";
+import NewForget from "../components/login/forget/NewForget.jsx";
+import Otp from "../components/login/OtpPage/Otp.jsx";
+import NewReset from "../components/login/ComfirmPage/NewReset.jsx";
 import CustomerDetails from "../components/customer/customerDetails.jsx";
 
-
-
- 
-
 // import CakeGallery from "../components/cake_gallery/CakeGallery.jsx";
- 
-        {/* <Route path="/cake_category" element={<CakeCategory/>} />
+
+{
+  /* <Route path="/cake_category" element={<CakeCategory/>} />
 
  
 
@@ -49,52 +46,56 @@ import CustomerDetails from "../components/customer/customerDetails.jsx";
         <Route path="/topbar" element={<Topbar />} />
         <Route path="/footer" element={<Footer />} />
         <Route path="/cart" element={<OrderSummary/>} />
-        {/* <Route path="/blog" element={<BlogSection/>} /> */}
-        {/* <Route path="/category" element={<Category />} />
+        {/* <Route path="/blog" element={<BlogSection/>} /> */
+}
+{
+  /* <Route path="/category" element={<Category />} />
         <Route path="/cake_category" element={<CakeCategory/>} />
 
         <Route path="/carousel" element={<Carousel/>} />
-        <Route path="/cake_flovor" element={<Cakeflovour/>} /> */}
-      
-  
+        <Route path="/cake_flovor" element={<Cakeflovour/>} /> */
+}
+
 function App() {
   return (
-    <AuthProvider>
-      <AppProvider>
-        <Router>
-          <PWAInstallPrompt />
+    <>
+      
+      <AuthProvider>
+        <AppProvider>
+          <Router>
+            <PWAInstallPrompt />
 
-          <Routes>
-            {/* Public Routes */}
-            <Route path="/" element={<Home />} />
-            <Route path="/buypage" element={<Buypage />} />
-            <Route path="/order" element={<OrderSummary/>} />
-            <Route path="/details" element={<CustomerDetails/>} />
-            <Route path="/gallery" element={ <CakeGallery/>} />
-            <Route path="/footer" element={<Footer />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/forget" element={<NewForget />} />
-            <Route path="/otp" element={<Otp/>} />
-            <Route path="/comfirm" element={<NewReset/>} />
+            <Routes>
+              {/* Public Routes */}
+              <Route path="/" element={<Home />} />
+              <Route path="/buypage/:id" element={<Buypage />} />
+              <Route path="/order" element={<OrderSummary />} />
+              <Route path="/details" element={<CustomerDetails />} />
+              <Route path="/gallery" element={<CakeGallery />} />
+              <Route path="/footer" element={<Footer />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/forget" element={<NewForget />} />
+              <Route path="/otp" element={<Otp />} />
+              <Route path="/comfirm" element={<NewReset />} />
 
-
-            {/* Admin Routes */}
-            <Route path="/admin" element={<AdminLayout />}>
-              <Route path="dashboard" element={<Dashboard />} />
-              <Route path="products" element={<ProductList />} />
-              <Route path="products/add" element={<AddProduct />} />
-              <Route path="products/edit/:id" element={<AddProduct />} />
-              <Route path="orders" element={<Orders />} />
-              <Route path="customers" element={<Customers />} />
-              <Route path="expenses" element={<Expenses />} />
-              <Route path="coupons" element={<Coupons />} />
-              <Route path="reports" element={<Reports />} />
-              <Route path="settings" element={<Settings />} />
-            </Route>
-          </Routes>
-        </Router>
-      </AppProvider>
-    </AuthProvider>
+              {/* Admin Routes */}
+              <Route path="/admin" element={<AdminLayout />}>
+                <Route path="dashboard" element={<Dashboard />} />
+                <Route path="products" element={<ProductList />} />
+                <Route path="products/add" element={<AddProduct />} />
+                <Route path="products/edit/:id" element={<AddProduct />} />
+                <Route path="orders" element={<Orders />} />
+                <Route path="customers" element={<Customers />} />
+                <Route path="expenses" element={<Expenses />} />
+                <Route path="coupons" element={<Coupons />} />
+                <Route path="reports" element={<Reports />} />
+                <Route path="settings" element={<Settings />} />
+              </Route>
+            </Routes>
+          </Router>
+        </AppProvider>
+      </AuthProvider>
+    </>
   );
 }
 
