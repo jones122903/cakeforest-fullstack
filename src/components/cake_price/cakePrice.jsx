@@ -23,6 +23,7 @@ const CakePrice = () => {
         const response = await axios.get(
           `${import.meta.env.VITE_API_URL}/products`
         );
+        
         if (response.data.success) {
           // Shuffle and pick 8 random products
           const allProducts = response.data.products;
@@ -46,8 +47,8 @@ const CakePrice = () => {
     }));
   };
 
-  const gotoCakebuy = () => {
-    navigate("/buypage");
+  const gotoCakebuy = (id) => {
+    navigate(`/buypage/${id}`);
   };
 
   const gotoCakeALl = () => {
@@ -79,7 +80,8 @@ const CakePrice = () => {
             <div
               key={cake._id}
               className={styles.cakeCard}
-              onClick={gotoCakebuy}
+              onClick={() => gotoCakebuy(cake._id)}
+              
               onMouseEnter={() => {
                 const swiper = swiperRefs.current[cake._id];
                 if (swiper && swiper.autoplay) {
