@@ -138,6 +138,11 @@ const Topbar = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { token, user } = useSelector((state) => state.auth);
+  // const cartItems = useSelector((state) => state.cart.items);
+  // const cartCount = cartItems?.length || 0;
+
+  const wishlistItems = useSelector((state) => state.wishlist.items);
+  const wishlistCount = wishlistItems?.length || 0;
 
   const toggleMobileMenu = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
@@ -266,6 +271,12 @@ const Topbar = () => {
                 <MapPin size={24} />
                 <span className={styles.iconText}>Order</span>
               </div>
+{/* 
+              <div className={styles.iconItem} onClick={() => navigate('/wishlist')}>
+                <Heart size={24} />
+                <span className={styles.iconText}>Favourites</span>
+                {wishlistCount > 0 && <span className={styles.badge}>{wishlistCount}</span>}
+              </div> */}
 
               <div className={styles.iconItem}>
                 <ShoppingCart size={24} />
