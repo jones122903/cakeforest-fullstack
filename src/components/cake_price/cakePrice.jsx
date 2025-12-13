@@ -9,14 +9,21 @@ import { Pagination, Autoplay } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/pagination";
 import styles from "./cakePrice.module.css";
+import { useDispatch, useSelector } from "react-redux";
+import { addToWishlistAsync, removeFromWishlistAsync, fetchWishlist } from "../../redux/slice/wishlistSlice";
 
 const CakePrice = () => {
-  const [wishlist, setWishlist] = useState({});
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const swiperRefs = useRef({});
   const navigate = useNavigate();
 
+  // Redux
+  const dispatch = useDispatch();
+  const { user } = useSelector((state) => state.auth);
+  const wishlistItems = useSelector((state) => state.wishlist.items);
+
+  // Initial Fetch
   useEffect(() => {
     const fetchProducts = async () => {
       try {
@@ -37,14 +44,11 @@ const CakePrice = () => {
     };
 
     fetchProducts();
-  }, []);
-
-  const toggleWishlist = (cakeId) => {
-    setWishlist((prev) => ({
-      ...prev,
-      [cakeId]: !prev[cakeId],
-    }));
-  };
+    // Fetch wishlist if user is logged in
+    if (user?._id) {
+      dispatch(fetchWishlist(user._id));
+    }
+  }, [dispatch, user?._id]);
 
   const gotoCakebuy = () => {
     navigate("/buypage");
@@ -52,6 +56,36 @@ const CakePrice = () => {
 
   const gotoCakeALl = () => {
     navigate("/gallery");
+  };
+
+  // Heart Click Handler (Add/Remove Wishlist)
+  const handleHeartClick = (e, cakeId) => {
+    e.stopPropagation();
+
+    if (!user) {
+      alert("Please login to add to favourites!");
+      navigate("/login");
+      return;
+    }
+
+    // Check if productId is in wishlist array. Wishlist items might be strings (IDs) or objects depending on backend population
+    // Our slice stores whatever backend returns. Controller returns user.wishlist (array of ObjectIds usually, unless populated)
+    // Controller .populate("wishlist") means it returns objects. 
+    // Wait, wishlist logic in controller: `user.wishlist.push(productId)`. If populate is used in `getWishlist`, then items are objects.
+    // Let's assume for toggle check we might need to handle both or ensure we check `_id`.
+
+    const isInWishlist = wishlistItems.some((item) => {
+      const id = typeof item === 'string' ? item : item._id;
+      return id === cakeId;
+    });
+
+    if (isInWishlist) {
+      // Remove
+      dispatch(removeFromWishlistAsync({ userId: user._id, productId: cakeId }));
+    } else {
+      // Add
+      dispatch(addToWishlistAsync({ userId: user._id, productId: cakeId }));
+    }
   };
 
   if (loading) return <div className="text-center mt-5">Loading...</div>;
@@ -74,6 +108,11 @@ const CakePrice = () => {
         {products.map((cake) => {
           // Only render cake card if images exist for this cake
           if (!cake.images || cake.images.length === 0) return null;
+
+          const isInWishlist = wishlistItems.some((item) => {
+            const id = typeof item === 'string' ? item : item._id;
+            return id === cake._id;
+          });
 
           return (
             <div
@@ -129,13 +168,10 @@ const CakePrice = () => {
 
                 <button
                   className={styles.wishlistBtn}
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    toggleWishlist(cake._id);
-                  }}
+                  onClick={(e) => handleHeartClick(e, cake._id)}
                 >
                   <AnimatePresence mode="wait">
-                    {wishlist[cake._id] ? (
+                    {isInWishlist ? (
                       <motion.div
                         key="filled"
                         initial={{ scale: 0 }}

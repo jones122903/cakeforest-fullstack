@@ -1,5 +1,6 @@
 import { configureStore } from "@reduxjs/toolkit";
 import authReducer from "./slice/authSlice";
+import wishlistReducer from "./slice/wishlistSlice";
 
 import storage from "redux-persist/lib/storage"; // localStorage
 import { persistReducer, persistStore } from "redux-persist";
@@ -13,6 +14,7 @@ const persistConfig = {
 // all reducers combine
 const rootReducer = combineReducers({
   auth: authReducer,
+  wishlist: wishlistReducer,
 });
 
 // persist reducer create

@@ -25,18 +25,19 @@ import "bootstrap/dist/css/bootstrap.min.css"
 
 import { AuthProvider } from "../admin/context/AuthContext.jsx";
 import Login from "../components/login/login.jsx";
-import  NewForget  from "../components/login/forget/NewForget.jsx";
-import  Otp  from "../components/login/OtpPage/Otp.jsx";
-import  NewReset  from "../components/login/ComfirmPage/NewReset.jsx";
+import NewForget from "../components/login/forget/NewForget.jsx";
+import Otp from "../components/login/OtpPage/Otp.jsx";
+import NewReset from "../components/login/ComfirmPage/NewReset.jsx";
 import CustomerDetails from "../components/customer/customerDetails.jsx";
+import Wishlist from "../components/wishlist/Wishlist.jsx";
 
 
 
- 
+
 
 // import CakeGallery from "../components/cake_gallery/CakeGallery.jsx";
- 
-        {/* <Route path="/cake_category" element={<CakeCategory/>} />
+
+{/* <Route path="/cake_category" element={<CakeCategory/>} />
 
  
 
@@ -50,13 +51,13 @@ import CustomerDetails from "../components/customer/customerDetails.jsx";
         <Route path="/footer" element={<Footer />} />
         <Route path="/cart" element={<OrderSummary/>} />
         {/* <Route path="/blog" element={<BlogSection/>} /> */}
-        {/* <Route path="/category" element={<Category />} />
+{/* <Route path="/category" element={<Category />} />
         <Route path="/cake_category" element={<CakeCategory/>} />
 
         <Route path="/carousel" element={<Carousel/>} />
         <Route path="/cake_flovor" element={<Cakeflovour/>} /> */}
-      
-  
+
+
 function App() {
   return (
     <AuthProvider>
@@ -68,14 +69,15 @@ function App() {
             {/* Public Routes */}
             <Route path="/" element={<Home />} />
             <Route path="/buypage" element={<Buypage />} />
-            <Route path="/order" element={<OrderSummary/>} />
-            <Route path="/details" element={<CustomerDetails/>} />
-            <Route path="/gallery" element={ <CakeGallery/>} />
+            <Route path="/order" element={<OrderSummary />} />
+            <Route path="/details" element={<CustomerDetails />} />
+            <Route path="/gallery" element={<CakeGallery />} />
             <Route path="/footer" element={<Footer />} />
             <Route path="/login" element={<Login />} />
+            <Route path="/wishlist" element={<Wishlist />} />
             <Route path="/forget" element={<NewForget />} />
-            <Route path="/otp" element={<Otp/>} />
-            <Route path="/comfirm" element={<NewReset/>} />
+            <Route path="/otp" element={<Otp />} />
+            <Route path="/comfirm" element={<NewReset />} />
 
 
             {/* Admin Routes */}

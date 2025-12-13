@@ -11,14 +11,21 @@ import Footer from "../footer/footer.jsx";
 import ReviewsSection from "../reviewsection/reviewsection.jsx";
 import FlowerAuraNavbar from "../topbar/topbar.jsx";
 import axios from "axios";
+import { useDispatch, useSelector } from "react-redux";
+import { addToWishlistAsync, removeFromWishlistAsync, fetchWishlist } from "../../redux/slice/wishlistSlice";
 
 const CakeGallery = () => {
-  const [wishlist, setWishlist] = useState({});
+  // const [wishlist, setWishlist] = useState({}); // Removed local state
   const [selectedFilter, setSelectedFilter] = useState("All");
   const [sortBy, setSortBy] = useState("popularity");
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const swiperRefs = useRef({});
+
+  // Redux
+  const dispatch = useDispatch();
+  const { user } = useSelector((state) => state.auth);
+  const wishlistItems = useSelector((state) => state.wishlist.items);
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -37,13 +44,29 @@ const CakeGallery = () => {
     };
 
     fetchProducts();
-  }, []);
+    // Fetch wishlist if logged in
+    if (user?._id) {
+      dispatch(fetchWishlist(user._id));
+    }
+  }, [dispatch, user?._id]);
 
-  const toggleWishlist = (id) => {
-    setWishlist((prev) => ({
-      ...prev,
-      [id]: !prev[id],
-    }));
+  const toggleWishlist = (cakeId) => {
+    if (!user) {
+      alert("Please login to add to favourites!");
+      // navigate("/login"); // Optional: redirect
+      return;
+    }
+
+    const isInWishlist = wishlistItems.some((item) => {
+      const id = typeof item === 'string' ? item : item._id;
+      return id === cakeId;
+    });
+
+    if (isInWishlist) {
+      dispatch(removeFromWishlistAsync({ userId: user._id, productId: cakeId }));
+    } else {
+      dispatch(addToWishlistAsync({ userId: user._id, productId: cakeId }));
+    }
   };
 
   // Filter cakes based on selected category
@@ -206,7 +229,7 @@ const CakeGallery = () => {
                       onClick={() => toggleWishlist(cake._id)}
                     >
                       <AnimatePresence mode="wait">
-                        {wishlist[cake._id] ? (
+                        {wishlistItems.some((item) => (typeof item === 'string' ? item : item._id) === cake._id) ? (
                           <motion.div
                             key="filled"
                             initial={{ scale: 0 }}
