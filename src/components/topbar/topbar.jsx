@@ -249,7 +249,7 @@ const Topbar = () => {
             <div className={`ms-auto d-none d-lg-flex ${styles.iconGroup}`}>
               <div className={styles.iconItem}>
                 <MapPin size={24} />
-                <span className={styles.iconText}>Track Order</span>
+                <span className={styles.iconText}>Order</span>
               </div>
 
               <div className={styles.iconItem}>
@@ -343,7 +343,7 @@ const Topbar = () => {
           )}
           <div className={styles.drawerMenuItem} onClick={() => navigate('/order')}>
             <MapPin size={22} color="#2C5F7C" />
-            <span className={styles.drawerMenuText}>Track Order</span>
+            <span className={styles.drawerMenuText}>Order</span>
           </div>
           <div className={styles.drawerMenuItem} onClick={() => navigate('/order')}>
             <ShoppingCart size={22} color="#2C5F7C" />

@@ -61,41 +61,41 @@ function Home() {
         <div className="mb-4 mt-2">
           <Category />
         </div>
-        
+
         <div className="my-4">
           <Carousel />
         </div>
-        
+
         <div className="my-5">
           <Cakeflovor />
         </div>
-        
+
         <div className="my-5">
           <CakePrice />
         </div>
-        
+
         <div className="my-5">
           <AllCake />
         </div>
-        
+
         <div className="my-4">
           <CakeCategory />
         </div>
-        
+
         <div className="my-5">
           <Cakeforher />
         </div>
-        
+
         <div className="my-5">
           <BlogSection />
         </div>
-        
+
         <div>
           <ReviewsSection />
         </div>
       </div>
 
-      <div className="my-5">
+      <div className="mt-5">
         <Footer />
       </div>
     </div>
