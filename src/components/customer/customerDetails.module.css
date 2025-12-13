@@ -13,23 +13,74 @@
 }
 
 .header {
-    background-color: #0e4d65;
-    padding: 1rem 1.5rem;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    background-color: #ffffff;
+    padding: 1.3rem 1.5rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
     position: sticky;
     top: 0;
     z-index: 100;
+    border-bottom: 1px solid #e0e0e0;
 }
 
-.headerTitle {
-    font-size: 1.25rem;
-    font-weight: 600;
-    color: #ffffff;
-    margin: 0;
-    text-align: left;
-    max-width: 1200px;
+.checkoutHeaderContent {
+    width: 100%;
     margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
 }
+
+.checkoutLogo {
+    width: 250px;
+    display: flex;
+    align-items: center;
+}
+
+.headerRight {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+}
+
+.trustBadges {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+}
+
+.badgeItem {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.badgeIcon {
+    width: 36px;
+    height: 36px;
+    object-fit: contain;
+    /* CSS Filter to match logo color #2C5F7C */
+    /* filter: invert(34%) sepia(10%) saturate(2027%) hue-rotate(161deg) brightness(96%) contrast(91%); */
+    filter: invert(34%) sepia(10%) saturate(2027%)
+        hue-rotate(161deg) brightness(96%) contrast(91%);
+
+}
+
+.badgeText {
+    font-size: 0.75rem;
+    line-height: 1.2;
+    color: #555;
+    font-weight: 500;
+}
+
+
+
+@media (max-width: 992px) {
+    .trustBadges {
+        display: none;
+    }
+}
+
+
 
 .content {
     padding: 1.5rem;
@@ -253,7 +304,7 @@
     font-size: 1rem;
     font-weight: 600;
     width: 100%;
-    max-width: 1200px;
+    max-width: 300px;
     cursor: pointer;
     box-shadow: 0 4px 12px rgba(14, 77, 101, 0.25);
     transition: all 0.3s ease;

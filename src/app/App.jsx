@@ -1,6 +1,7 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Home from "../pages/home.jsx";
-import Topbar from "../components/topbar/topbar.jsx"
+import { Toaster } from "react-hot-toast";
+import Topbar from "../components/topbar/topbar.jsx";
 import { AppProvider } from "../admin/context/AppContext.jsx";
 import AdminLayout from "../admin/components/AdminLayout/AdminLayout.jsx";
 import Dashboard from "../admin/pages/Dashboard/Dashboard.jsx";
@@ -20,8 +21,7 @@ import Footer from "../components/footer/footer.jsx";
 import CakeGallery from "../components/cake_gallery/cakeGallery.jsx";
 import PWAInstallPrompt from "../components/PWAInstallPrompt/PWAInstallPrompt.jsx";
 
-import "bootstrap/dist/css/bootstrap.min.css"
-
+import "bootstrap/dist/css/bootstrap.min.css";
 
 import { AuthProvider } from "../admin/context/AuthContext.jsx";
 import Login from "../components/login/login.jsx";
@@ -38,6 +38,10 @@ import Wishlist from "../components/wishlist/Wishlist.jsx";
 // import CakeGallery from "../components/cake_gallery/CakeGallery.jsx";
 
 {/* <Route path="/cake_category" element={<CakeCategory/>} />
+// import CakeGallery from "../components/cake_gallery/CakeGallery.jsx";
+
+{
+  /* <Route path="/cake_category" element={<CakeCategory/>} />
 
  
 

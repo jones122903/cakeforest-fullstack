@@ -13,9 +13,39 @@ import FlowerAuraNavbar from "../components/topbar/topbar.jsx";
 import Footer from "../components/footer/footer.jsx";
 import CakeProductPage from "../components/cakeProductPage/cakeProductPage.jsx";
 import Topbar from "../components/topbar/topbar.jsx";
+import { useParams } from "react-router-dom";
+import { useEffect, useState } from "react";
+import axios from "axios";
 
 function Buypage() {
-  
+
+   const { id } = useParams();
+  const [cake, setCake] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect (() => {
+    const fetchCake = async () => {
+
+      try{
+       const res = await axios.get(
+          `${import.meta.env.VITE_API_URL}/products/${id}`
+        );
+
+        
+
+        setCake(res.data.product);
+        setLoading(false);
+        
+      }catch (error)  {
+          console.log(error);
+        setLoading(false);
+      }
+
+    }
+    fetchCake();
+  },[id])
+
+   if (loading) return <h2>Loading...</h2>;
   return (
 
     <div>
@@ -27,7 +57,7 @@ function Buypage() {
        
        
         <div className="my-5">
-           <CakeProductPage/>
+           <CakeProductPage  products={cake}/>
         </div>
 
         <div>
