@@ -114,6 +114,13 @@ import {
   X,
   Edit,
   LogOut,
+  Tag,
+  Heart,
+  BadgePercent,
+  Info,
+  MessageCircle,
+  Phone,
+  Gift,
 } from "lucide-react";
 import { IndianRupee } from "lucide-react";
 import styles from "./topbar.module.css";
@@ -125,6 +132,7 @@ import Swal from "sweetalert2"; // Toast message-க்கு
 
 const Topbar = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [showMore, setShowMore] = useState(false);
 
   // Redux hooks add பண்ணுங்க
   const dispatch = useDispatch();
@@ -136,42 +144,49 @@ const Topbar = () => {
   };
 
   // Show Toast Notification (same as AddProduct.jsx)
-    const showToast = async (icon, title) => {
-      const Toast = Swal.mixin({
-        toast: true,
-        position: "top-right",
-        showConfirmButton: false,
-        timer: 2500,
-        timerProgressBar: true,
-  
-        didOpen: (toast) => {
-          const progressBar = toast.querySelector(".swal2-timer-progress-bar");
-          progressBar.style.background = icon === "success" ? "green" : "red";
-  
-          toast.addEventListener("mouseenter", () => {
-            Swal.stopTimer();
-          });
-  
-          toast.addEventListener("mouseleave", () => {
-            Swal.resumeTimer();
-          });
-        },
-  
-        customClass: {
-          popup: icon === "success" ? "colored-toast" : "colored-toast-error",
-          container: 'toast-high-zindex', // Higher z-index க்கு
-        },
-  
-        iconColor: icon === "success" ? "green" : "red",
-      });
-  
-      await Toast.fire({ icon, title });
-    };
+  const showToast = async (icon, title) => {
+    const Toast = Swal.mixin({
+      toast: true,
+      position: "top-right",
+      showConfirmButton: false,
+      timer: 1000,
+      timerProgressBar: true,
 
-  // Logout handler add பண்ணுங்க
+      didOpen: (toast) => {
+        const progressBar = toast.querySelector(".swal2-timer-progress-bar");
+        progressBar.style.background = icon === "success" ? "green" : "red";
+
+        // Fix visibility issue: Topbar has z-index 9999, so we need > 9999
+        const container = Swal.getContainer();
+        if (container) {
+          container.style.zIndex = "10000";
+          // container.style.marginTop = "50px";
+        }
+
+        toast.addEventListener("mouseenter", () => {
+          Swal.stopTimer();
+        });
+
+        toast.addEventListener("mouseleave", () => {
+          Swal.resumeTimer();
+        });
+      },
+
+      customClass: {
+        popup: icon === "success" ? "colored-toast" : "colored-toast-error",
+        container: 'toast-high-zindex', // Higher z-index க்கு
+      },
+
+      iconColor: icon === "success" ? "green" : "red",
+    });
+
+    await Toast.fire({ icon, title });
+  };
+
+  // Logout handler add 
   const handleLogout = () => {
     dispatch(clearToken());
-    showToast("success","You’ve successfully logged out");
+    showToast("success", "You’ve successfully logged out");
     navigate("/");
     setIsMobileMenuOpen(false); // Close mobile menu if open
   };
@@ -293,9 +308,49 @@ const Topbar = () => {
                 </div>
               )}
 
-              <div className={styles.iconItem}>
+              <div
+                className={styles.iconItem}
+                onMouseEnter={() => setShowMore(true)}
+                onMouseLeave={() => setShowMore(false)}
+              >
                 <MoreVertical size={24} />
                 <span className={styles.iconText}>More</span>
+
+                {showMore && (
+                  <div className={styles.dropdownMenu}>
+                    <div className={styles.dropdownItem} onClick={() => navigate('/coupons')}>
+                      <Tag size={18} /> <span>Coupons</span>
+                    </div>
+                    <div className={styles.dropdownItem} onClick={() => navigate('/wishlist')}>
+                      <Heart size={18} /> <span>Favourites</span>
+                    </div>
+                    <div className={styles.dropdownItem} onClick={() => navigate('/offers')}>
+                      <BadgePercent size={18} /> <span>Offers</span>
+                    </div>
+                    <div className={styles.dropdownItem} onClick={() => navigate('/about')}>
+                      <Info size={18} /> <span>About Us</span>
+                    </div>
+                    <div className={styles.dropdownItem} onClick={() => window.open('https://wa.me/919876543210', '_blank')}>
+                      <MessageCircle size={18} /> <span>Whatsapp</span>
+                    </div>
+                    <div className={styles.dropdownItem} onClick={() => navigate('/contact')}>
+                      <Phone size={18} /> <span>Contact</span>
+                    </div>
+                    {token && (
+                      <div
+                        className={styles.dropdownItem}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleLogout();
+                          setShowMore(false);
+                        }}
+                      >
+                        <LogOut size={18} color="#e74c3c" />
+                        <span style={{ color: '#e74c3c' }}>Logout</span>
+                      </div>
+                    )}
+                  </div>
+                )}
               </div>
             </div>
 
@@ -316,7 +371,7 @@ const Topbar = () => {
         </div>
       </div>
 
-       {/* OVERLAY */}
+      {/* OVERLAY */}
       <div className={`${styles.overlay} ${isMobileMenuOpen ? styles.overlayOpen : ""}`} onClick={toggleMobileMenu}></div>
       {/* SIDE DRAWER */}
       <div className={`${styles.sideDrawer} ${isMobileMenuOpen ? styles.sideDrawerOpen : ""}`}>
@@ -327,11 +382,7 @@ const Topbar = () => {
           </button>
         </div>
         <div className={styles.drawerMenu}>
-          <div className={styles.deliverSection}>
-            <span className={styles.flag}>🇮🇳</span>
-            <span className={styles.deliverText}>Deliver To ?</span>
-            <Edit size={16} color="#2C5F7C" />
-          </div>
+
           {token && user && (
             <div className={styles.userInfoSection}>
               <User size={24} color="#2C5F7C" />
@@ -348,11 +399,37 @@ const Topbar = () => {
           <div className={styles.drawerMenuItem} onClick={() => navigate('/order')}>
             <ShoppingCart size={22} color="#2C5F7C" />
             <span className={styles.drawerMenuText}>Cart</span>
-            <span className={styles.badge}>2</span>
+            {/* <span className={styles.badge}>2</span> */}
+          </div>
+
+          {/* New Menu Items */}
+          <div className={styles.drawerMenuItem} onClick={() => navigate('/coupons')}>
+            <Tag size={22} color="#2C5F7C" />
+            <span className={styles.drawerMenuText}>Coupons</span>
+          </div>
+          <div className={styles.drawerMenuItem} onClick={() => navigate('/wishlist')}>
+            <Heart size={22} color="#2C5F7C" />
+            <span className={styles.drawerMenuText}>Favourites</span>
+          </div>
+          <div className={styles.drawerMenuItem} onClick={() => navigate('/offers')}>
+            <BadgePercent size={22} color="#2C5F7C" />
+            <span className={styles.drawerMenuText}>Offers</span>
+          </div>
+          <div className={styles.drawerMenuItem} onClick={() => navigate('/about')}>
+            <Info size={22} color="#2C5F7C" />
+            <span className={styles.drawerMenuText}>About Us</span>
+          </div>
+          <div className={styles.drawerMenuItem} onClick={() => window.open('https://wa.me/919876543210', '_blank')}>
+            <MessageCircle size={22} color="#2C5F7C" />
+            <span className={styles.drawerMenuText}>Whatsapp</span>
+          </div>
+          <div className={styles.drawerMenuItem} onClick={() => navigate('/contact')}>
+            <Phone size={22} color="#2C5F7C" />
+            <span className={styles.drawerMenuText}>Contact</span>
           </div>
           {token ? (
-            <div 
-              className={styles.drawerMenuItem} 
+            <div
+              className={styles.drawerMenuItem}
               onClick={handleLogout}
               style={{ borderTop: '1px solid #e0e0e0', marginTop: '10px', paddingTop: '10px' }}
             >
@@ -365,14 +442,9 @@ const Topbar = () => {
               <span className={styles.drawerMenuText}>Login</span>
             </div>
           )}
-          <div className={styles.drawerMenuItem}>
-            <Search size={22} color="#2C5F7C" />
-            <span className={styles.drawerMenuText}>Search Products</span>
-          </div>
-          <div className={styles.drawerMenuItem}>
-            <IndianRupee size={22} color="#2C5F7C" />
-            <span className={styles.drawerMenuText}>Currency: INR</span>
-          </div>
+
+
+
         </div>
       </div>
     </div>
