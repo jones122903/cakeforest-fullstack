@@ -68,9 +68,11 @@ const CakeProductPage = () => {
 
   const currentPrice = variants.find(v => v.name === selectedVariant)?.price || 685;
 
-  const goToChapter = () => {
-    navigate("/order");
+  const goToChapter = (id) => {
+    navigate("/order", { state: { cakeId: id } });
   };
+
+  
 
   return (
     <div  >
