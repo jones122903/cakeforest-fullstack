@@ -102,6 +102,10 @@ const CakeGallery = () => {
     }
   };
 
+  const gotoCakebuy = (id) => {
+    navigate(`/buypage/${id}`);
+  };
+
   // Filter cakes based on selected category
   const filteredCakes =
     selectedFilter === "All"
@@ -213,6 +217,7 @@ const CakeGallery = () => {
                   <div
                     key={cake._id}
                     className={styles.cakeCard}
+                    onClick={() => gotoCakebuy(cake._id)}
                     onMouseEnter={() => {
                       const swiper = swiperRefs.current[cake._id];
                       if (swiper && swiper.autoplay) {

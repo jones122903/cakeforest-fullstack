@@ -34,8 +34,8 @@ const Wishlist = () => {
     }
   };
 
-  const handleCardClick = () => {
-    navigate("/buypage");
+  const handleCardClick = (id) => {
+    navigate(`/buypage/${id}`);
   };
 
   if (!user) {
@@ -123,7 +123,7 @@ const Wishlist = () => {
                 <div
                   key={product._id}
                   className={styles.cakeCard}
-                  onClick={handleCardClick}
+                  onClick={() => handleCardClick(product._id)}
                 >
                   <div className={styles.imageWrapper}>
                     <img
