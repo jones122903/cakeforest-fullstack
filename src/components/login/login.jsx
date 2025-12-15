@@ -22,7 +22,9 @@ const Login = () => {
   const [signUpData, setSignUpData] = useState({
     name: "",
     email: "",
-    password: ""
+    password: "",
+    loginType: "EMAIL",
+    picture: ""
   });
 
   // Sign In Form State
@@ -160,7 +162,7 @@ const Login = () => {
       if (response.data.success) {
         showToast("success", response.data.message || "Account created successfully. Continue by signing in");
         // Clear form
-        setSignUpData({ name: "", email: "", password: "" });
+        setSignUpData({ name: "", email: "", password: "", loginType: "EMAIL", picture: "" });
         // Switch to sign in after toast
         setTimeout(() => setActive(false), 3000);
       }

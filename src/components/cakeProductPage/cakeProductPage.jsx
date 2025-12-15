@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import Swal from 'sweetalert2';
 import { Heart, MapPin, Smile, Truck } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { useEffect } from 'react';
 // Import cake images
 import redVelvetMain from '../../assets/images/cakes/red_velvet_main.png';
 import chocolateCake from '../../assets/images/cakes/chocolate_cake.png';
@@ -12,15 +14,36 @@ import butterscotchCake from '../../assets/images/cakes/butterscotch_cake.png';
 import pineappleCake from '../../assets/images/cakes/pineapple_cake.png';
 import './cakeProductPage.css'
 
-const CakeProductPage = () => {
+const CakeProductPage = ({ products }) => {
   const navigate = useNavigate();
   const [selectedWeight, setSelectedWeight] = useState('0.5 Kg');
   const [selectedVariant, setSelectedVariant] = useState('Basic');
   const [nameOnCake, setNameOnCake] = useState('');
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
+ console.log("hhsadhjkashdfjasdhfjkashfjiahdsfjhsdjfhasjd",products)
 
-
-  const weights = ['0.5 Kg', '1 Kg', '1.5 Kg', '2 Kg', '3 Kg'];
+  /* 
+   * Weight Logic:
+   * If products.weight matches one of our standard weights, we make that the only available one?
+   * Or if products.weight is just a string "0.5", we might need to parse it.
+   * Let's filter available based on product data if present.
+   */
+  const standardWeights = ['0.5 Kg', '1 Kg', '1.5 Kg', '2 Kg', '3 Kg'];
+  // If product has a weight (e.g. "0.5"), we try to find it in our list or default to it.
+  // Assuming the backend sends the *available* weight(s).
+  // If it's a single string like "0.5", we treat that as the only available one.
+  const availableWeight = products?.weight ? (products.weight.includes("Kg") ? products.weight : `${products.weight} Kg`) : '0.5 Kg';
+  
+  // Set initial weight to the available one
+  useEffect(() => {
+    if (products?.weight) {
+        // Normalize: add " Kg" if missing
+        const w = products.weight.toString().includes("Kg") || products.weight.toString().includes("kg") 
+            ? products.weight 
+            : `${products.weight} Kg`;
+        setSelectedWeight(w);
+    }
+  }, [products]);
 
   const variants = [
     { name: 'Basic', price: 685, image: redVelvetMain },
@@ -55,6 +78,8 @@ const CakeProductPage = () => {
   ];
 
   const cakeImages = [
+    // If products has images, use them.
+    ...(products?.images || [
     redVelvetMain,
     chocolateCake,
     strawberryCake,
@@ -62,14 +87,71 @@ const CakeProductPage = () => {
     blackforestCake,
     butterscotchCake,
     pineappleCake
+    ])
   ];
 
 
 
-  const currentPrice = variants.find(v => v.name === selectedVariant)?.price || 685;
+  /* 
+   * Mapping product images from props if available, otherwise using fallback/hardcoded.
+   * ensuring we use the images from the DB for specific products.
+   */
+  const productImages = products?.images && products.images.length > 0 
+    ? products.images 
+    : [redVelvetMain, chocolateCake, strawberryCake, birthdayCake, blackforestCake, butterscotchCake, pineappleCake];
 
-  const goToChapter = (id) => {
-    navigate("/order", { state: { cakeId: id } });
+  // If we have a product price from props, use it. 
+  // For now, we are keeping the variants logic but it might need adjustment if variants are specific to products.
+  // Assuming the `products.price` is the base price.
+  // Ideally, variants should come from the DB too. 
+  // Since they are not in the provided JSON, we might want to be careful.
+  // Let's rely on the hardcoded variants for "upgrades" but update the base logic if needed.
+  // However, the user asked to "map the data".
+  
+  // Let's use the product price as the default current price if no variant is selected or if variants are not applicable.
+  // But the UI selects a variant by default.
+  // Let's make the variants selection update the price relative to the product price OR just use the product price if it's high priority.
+  
+  // SIMPLIFICATION:
+  // The user provided data has a specific price (1995).
+  // The hardcoded variants have prices like 685, 775.
+  // If I load the Harry Potter cake, showing 685 (Red Velvet) is wrong.
+  
+  // Strategy: If `products` data is present, we prioritize it.
+  
+  const currentPrice = products?.price || (variants.find(v => v.name === selectedVariant)?.price || 685);
+  
+  // Helper to get current image
+  const getCurrentImage = () => {
+      if (products?.images?.length > 0) return products.images[selectedImageIndex];
+      return cakeImages[selectedImageIndex];
+  };
+
+  const goToChapter = () => {
+    if (!nameOnCake.trim()) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Required Field',
+        text: 'Please enter the Name on Cake to proceed!',
+        confirmButtonColor: '#ff4444'
+      });
+      return;
+    }
+
+    navigate("/order", {
+      state: {
+        product: {
+          _id: products?._id,
+          cakeName: products?.cakeName,
+          image: productImages[selectedImageIndex] || productImages[0],
+          price: currentPrice,
+          weight: selectedWeight,
+          variant: selectedVariant, 
+          nameOnCake: nameOnCake,
+          flavor: products?.flavor
+        }
+      }
+    });
   };
 
   
@@ -96,7 +178,7 @@ const CakeProductPage = () => {
 
             <div className="main-image-container">
               <div className="main-image">
-                <img src={cakeImages[selectedImageIndex]} alt="Red Velvet Cake" />
+                <img src={cakeImages[selectedImageIndex]} alt={products?.cakeName || "Cake"} />
               </div>
 
               {/* <div className="stats-section">
@@ -127,7 +209,7 @@ const CakeProductPage = () => {
                   <span style={{ color: '#4caf50' }}>●</span> EGGLESS
                 </div>
                 <h2 style={{ fontSize: '28px', fontWeight: '700', marginTop: '10px' }}>
-                  Decadent Red Velvet Cake
+                  {products.cakeName}
                 </h2>
               </div>
               <Heart style={{ cursor: 'pointer' }} size={28} />
@@ -141,6 +223,7 @@ const CakeProductPage = () => {
             <h3 style={{ fontSize: '32px', fontWeight: '700', color: '#ff4444' }}>
               ₹ {currentPrice}
             </h3>
+            {/* Discount/Strike-through if needed, based on props? */}
 
             {/* Variants */}
             <div className="mt-4">
@@ -171,15 +254,26 @@ const CakeProductPage = () => {
                 </span>
               </div>
               <div className="weights-container">
-                {weights.map((weight) => (
-                  <button
-                    key={weight}
-                    className={`weight-btn ${selectedWeight === weight ? 'active' : ''}`}
-                    onClick={() => setSelectedWeight(weight)}
-                  >
-                    {weight}
-                  </button>
-                ))}
+                {standardWeights.map((weight) => {
+                   // Check availability. For now, strict match with the product's single weight.
+                   // If products.weight is "0.5", then "0.5 Kg" is available, others disabled.
+                   const isAvailable = products?.weight 
+                        ? (weight.toLowerCase().includes(products.weight.toString().toLowerCase())) 
+                        : true;
+
+                  return (
+                    <button
+                        key={weight}
+                        className={`weight-btn ${selectedWeight === weight ? 'active' : ''} ${!isAvailable ? 'disabled-weight' : ''}`}
+                        onClick={() => isAvailable && setSelectedWeight(weight)}
+                        disabled={!isAvailable}
+                        style={!isAvailable ? { opacity: 0.5, cursor: 'not-allowed', background: '#eee', borderColor: '#ddd' } : {}}
+                    >
+                        {weight}
+                        {!isAvailable && <span style={{display: 'block', fontSize: '8px', color: 'red'}}>Out of Stock</span>}
+                    </button>
+                  );
+                })}
               </div>
             </div>
 
@@ -195,6 +289,7 @@ const CakeProductPage = () => {
                 type="text"
                 className="name-input"
                 placeholder="Write Name Here"
+                required
                 maxLength={25}
                 value={nameOnCake}
                 onChange={(e) => setNameOnCake(e.target.value)}

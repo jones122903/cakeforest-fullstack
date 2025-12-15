@@ -9,20 +9,30 @@ import { Pagination, Autoplay } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/pagination";
 import styles from "./cakePrice.module.css";
+import { useDispatch, useSelector } from "react-redux";
+import { addToWishlistAsync, removeFromWishlistAsync, fetchWishlist } from "../../redux/slice/wishlistSlice";
+import toast from "react-hot-toast";
+import "../Cart All Pages/Cartuialert.css";
 
 const CakePrice = () => {
-  const [wishlist, setWishlist] = useState({});
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const swiperRefs = useRef({});
   const navigate = useNavigate();
 
+  // Redux
+  const dispatch = useDispatch();
+  const { user } = useSelector((state) => state.auth);
+  const wishlistItems = useSelector((state) => state.wishlist.items);
+
+  // Initial Fetch
   useEffect(() => {
     const fetchProducts = async () => {
       try {
         const response = await axios.get(
           `${import.meta.env.VITE_API_URL}/products`
         );
+
         if (response.data.success) {
           // Shuffle and pick 8 random products
           const allProducts = response.data.products;
@@ -37,21 +47,67 @@ const CakePrice = () => {
     };
 
     fetchProducts();
-  }, []);
+    // Fetch wishlist if user is logged in
+    if (user?._id) {
+      dispatch(fetchWishlist(user._id));
+    }
+  }, [dispatch, user?._id]);
 
-  const toggleWishlist = (cakeId) => {
-    setWishlist((prev) => ({
-      ...prev,
-      [cakeId]: !prev[cakeId],
-    }));
-  };
-
-  const gotoCakebuy = () => {
-    navigate("/buypage");
+  const gotoCakebuy = (id) => {
+    navigate(`/buypage/${id}`);
   };
 
   const gotoCakeALl = () => {
     navigate("/gallery");
+  };
+
+  // Heart Click Handler (Add/Remove Wishlist)
+  const handleHeartClick = (e, cakeId) => {
+    e.stopPropagation();
+
+    if (!user) {
+      alert("Please login to add to favourites!");
+      navigate("/login");
+      return;
+    }
+
+    // Check if productId is in wishlist array. Wishlist items might be strings (IDs) or objects depending on backend population
+    // Our slice stores whatever backend returns. Controller returns user.wishlist (array of ObjectIds usually, unless populated)
+    // Controller .populate("wishlist") means it returns objects. 
+    // Wait, wishlist logic in controller: `user.wishlist.push(productId)`. If populate is used in `getWishlist`, then items are objects.
+    // Let's assume for toggle check we might need to handle both or ensure we check `_id`.
+
+    const isInWishlist = wishlistItems.some((item) => {
+      const id = typeof item === 'string' ? item : item._id;
+      return id === cakeId;
+    });
+
+    if (isInWishlist) {
+      // Remove
+      dispatch(removeFromWishlistAsync({ userId: user._id, productId: cakeId }));
+      toast.custom((t) => (
+        <div className={`re-bk-toast-wrapper ${t.visible ? "slide-in" : "slide-out"}`} style={{ zIndex: 99999999 }}>
+          <div className="re-bk-toast">
+            <span className="re-bk-text-toast">Removed from Favourites</span>
+          </div>
+          <div className="re-bk-progress" />
+        </div>
+      ), { duration: 2000, position: "top-right" });
+
+    } else {
+      // Add
+      dispatch(addToWishlistAsync({ userId: user._id, productId: cakeId }));
+
+      toast.custom((t) => (
+        <div className={`re-bk-toast-wrapper ${t.visible ? "slide-in" : "slide-out"}`} style={{ zIndex: 99999999 }}>
+          <div className="re-bk-toast">
+            <img src="https://bkassets.bakingo.com/bakingo-ssr/static/media/check.adfc0424.svg" alt="check mark" />
+            <span className="re-bk-text-toast">Added to Favourites</span>
+          </div>
+          <div className="re-bk-progress" />
+        </div>
+      ), { duration: 2000, position: "top-right" });
+    }
   };
 
   if (loading) return <div className="text-center mt-5">Loading...</div>;
@@ -75,11 +131,17 @@ const CakePrice = () => {
           // Only render cake card if images exist for this cake
           if (!cake.images || cake.images.length === 0) return null;
 
+          const isInWishlist = wishlistItems.some((item) => {
+            const id = typeof item === 'string' ? item : item._id;
+            return id === cake._id;
+          });
+
           return (
             <div
               key={cake._id}
               className={styles.cakeCard}
-              onClick={gotoCakebuy}
+              onClick={() => gotoCakebuy(cake._id)}
+
               onMouseEnter={() => {
                 const swiper = swiperRefs.current[cake._id];
                 if (swiper && swiper.autoplay) {
@@ -129,13 +191,10 @@ const CakePrice = () => {
 
                 <button
                   className={styles.wishlistBtn}
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    toggleWishlist(cake._id);
-                  }}
+                  onClick={(e) => handleHeartClick(e, cake._id)}
                 >
                   <AnimatePresence mode="wait">
-                    {wishlist[cake._id] ? (
+                    {isInWishlist ? (
                       <motion.div
                         key="filled"
                         initial={{ scale: 0 }}

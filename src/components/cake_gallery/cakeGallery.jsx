@@ -1,5 +1,6 @@
-import React, { useState, useRef, useEffect } from "react";
-import { FaHeart, FaRegHeart } from "react-icons/fa";
+import { useState, useRef, useEffect } from "react";
+import { FaHeart } from "react-icons/fa";
+import { Select, MenuItem, FormControl } from "@mui/material";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Pagination, Autoplay } from "swiper/modules";
 import "swiper/css";
@@ -10,14 +11,23 @@ import Footer from "../footer/footer.jsx";
 import ReviewsSection from "../reviewsection/reviewsection.jsx";
 import FlowerAuraNavbar from "../topbar/topbar.jsx";
 import axios from "axios";
+import { useDispatch, useSelector } from "react-redux";
+import { addToWishlistAsync, removeFromWishlistAsync, fetchWishlist } from "../../redux/slice/wishlistSlice";
+import toast from "react-hot-toast";
+import "../Cart All Pages/Cartuialert.css";
 
 const CakeGallery = () => {
-  const [wishlist, setWishlist] = useState({});
+  // const [wishlist, setWishlist] = useState({}); // Removed local state
   const [selectedFilter, setSelectedFilter] = useState("All");
   const [sortBy, setSortBy] = useState("popularity");
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const swiperRefs = useRef({});
+
+  // Redux
+  const dispatch = useDispatch();
+  const { user } = useSelector((state) => state.auth);
+  const wishlistItems = useSelector((state) => state.wishlist.items);
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -36,13 +46,47 @@ const CakeGallery = () => {
     };
 
     fetchProducts();
-  }, []);
+    // Fetch wishlist if logged in
+    if (user?._id) {
+      dispatch(fetchWishlist(user._id));
+    }
+  }, [dispatch, user?._id]);
 
-  const toggleWishlist = (id) => {
-    setWishlist((prev) => ({
-      ...prev,
-      [id]: !prev[id],
-    }));
+  const toggleWishlist = (cakeId) => {
+    if (!user) {
+      alert("Please login to add to favourites!");
+      // navigate("/login"); // Optional: redirect
+      return;
+    }
+
+    const isInWishlist = wishlistItems.some((item) => {
+      const id = typeof item === 'string' ? item : item._id;
+      return id === cakeId;
+    });
+
+    if (isInWishlist) {
+      dispatch(removeFromWishlistAsync({ userId: user._id, productId: cakeId }));
+      toast.custom((t) => (
+        <div className={`re-bk-toast-wrapper ${t.visible ? "slide-in" : "slide-out"}`} style={{ zIndex: 99999999 }}>
+          <div className="re-bk-toast">
+            <span className="re-bk-text-toast">Removed from Favourites</span>
+          </div>
+          <div className="re-bk-progress" />
+        </div>
+      ), { duration: 2000, position: "top-right" });
+
+    } else {
+      dispatch(addToWishlistAsync({ userId: user._id, productId: cakeId }));
+      toast.custom((t) => (
+        <div className={`re-bk-toast-wrapper ${t.visible ? "slide-in" : "slide-out"}`} style={{ zIndex: 99999999 }}>
+          <div className="re-bk-toast">
+            <img src="https://bkassets.bakingo.com/bakingo-ssr/static/media/check.adfc0424.svg" alt="check mark" />
+            <span className="re-bk-text-toast">Added to Favourites</span>
+          </div>
+          <div className="re-bk-progress" />
+        </div>
+      ), { duration: 2000, position: "top-right" });
+    }
   };
 
   // Filter cakes based on selected category
@@ -90,7 +134,7 @@ const CakeGallery = () => {
               "Kids",
               "Love",
               "Wedding",
-              
+
             ].map((filter) => (
               <button
                 key={filter}
@@ -103,16 +147,35 @@ const CakeGallery = () => {
             ))}
           </div>
           <div className={styles.sortDropdown}>
-            <select
-              className={styles.dropdown}
-              value={sortBy}
-              onChange={(e) => setSortBy(e.target.value)}
-            >
-              <option value="popularity">Popularity</option>
-              <option value="priceLowToHigh">Price: Low to High</option>
-              <option value="priceHighToLow">Price: High to Low</option>
-              <option value="newest">Newest</option>
-            </select>
+            <FormControl sx={{ m: 1, minWidth: 130 }} size="medium">
+              <Select
+                value={sortBy}
+                onChange={(e) => setSortBy(e.target.value)}
+                displayEmpty
+                inputProps={{ 'aria-label': 'Sort by' }}
+                sx={{
+                  bgcolor: 'white',
+                  borderRadius: '12px',
+                  '& .MuiOutlinedInput-notchedOutline': {
+                    borderColor: '#ddd',
+                  },
+                  '&:hover .MuiOutlinedInput-notchedOutline': {
+                    borderColor: '#0e4d65',
+                  },
+                  '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                    borderColor: '#0e4d65',
+                  },
+                  fontSize: '14px',
+                  fontWeight: 500,
+                  color: '#333'
+                }}
+              >
+                <MenuItem value="popularity">Popularity</MenuItem>
+                <MenuItem value="priceLowToHigh">Low to High</MenuItem>
+                <MenuItem value="priceHighToLow">High to Low</MenuItem>
+                <MenuItem value="newest">Newest</MenuItem>
+              </Select>
+            </FormControl>
           </div>
         </div>
 
@@ -186,7 +249,7 @@ const CakeGallery = () => {
                       onClick={() => toggleWishlist(cake._id)}
                     >
                       <AnimatePresence mode="wait">
-                        {wishlist[cake._id] ? (
+                        {wishlistItems.some((item) => (typeof item === 'string' ? item : item._id) === cake._id) ? (
                           <motion.div
                             key="filled"
                             initial={{ scale: 0 }}
@@ -282,12 +345,12 @@ const CakeGallery = () => {
             No cakes found in {selectedFilter} category.
           </div>
         )}
-        <div>
+        <div style={{ marginTop: "89px" }}>
           <ReviewsSection />
         </div>
       </div>
 
-      <div className="my-3">
+      <div>
         <Footer />
       </div>
     </div>

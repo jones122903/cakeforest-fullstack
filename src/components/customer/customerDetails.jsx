@@ -7,7 +7,7 @@ import {
   AlignRight
 } from 'lucide-react';
 import { useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import { useEffect } from 'react';
 import Swal from 'sweetalert2';
@@ -46,15 +46,21 @@ const CustomerDetails = () => {
 
   
   // Mock Order Data (would come from props/context in real app)
+  /* Retrieving passed order details */
+  const location = useLocation();
+  const incomingOrderDetails = location.state?.orderDetails;
+
   const orderDetails = {
-    cakeName: "Red Velvet Bliss",
-    variant: "Heart Shape",
-    weight: "1 kg",
-    price: 1200,
-    nameOnCake: "Happy Birthday Priya",
-    deliveryDate: "2025-12-25",
-    deliveryTime: "18:00 - 20:00",
-    deliveryCharge: 50
+    _id: incomingOrderDetails?._id, // Capture ID
+    cakeName: incomingOrderDetails?.cakeName || "Red Velvet Bliss",
+    variant: incomingOrderDetails?.variant || "Heart Shape",
+    weight: incomingOrderDetails?.weight || "1 kg",
+    price: incomingOrderDetails?.price || 1200,
+    nameOnCake: incomingOrderDetails?.nameOnCake || "Happy Birthday",
+    deliveryDate: new Date().toISOString().split('T')[0], // Default to today
+    deliveryTime: "Standard Delivery",
+    deliveryCharge: 50,
+    quantity: incomingOrderDetails?.quantity || 1
   };
   
 
@@ -184,12 +190,13 @@ const CustomerDetails = () => {
       userId: user.id,
       cartItems: [
         {
+          productId: orderDetails._id, // API might need this
           cakeName: orderDetails.cakeName,
           variant: orderDetails.variant,
           weight: orderDetails.weight,
           price: orderDetails.price,
           nameOnCake: orderDetails.nameOnCake,
-          quantity: 1
+          quantity: orderDetails.quantity
         }
       ],
       deliveryDetails: {
@@ -253,12 +260,57 @@ const CustomerDetails = () => {
   }
 };
 
-  const totalAmount = orderDetails.price + orderDetails.deliveryCharge;
+  const totalAmount = (orderDetails.price * orderDetails.quantity) + orderDetails.deliveryCharge;
 
   return (
     <div className={styles.container}>
       <header className={styles.header}>
-        <h1 className={styles.headerTitle}>Checkout</h1>
+        <div className={styles.checkoutHeaderContent}>
+          {/* Logo Section - Matching Topbar Theme */}
+          <div className={styles.checkoutLogo}>
+             <svg
+                viewBox="0 0 500 80"
+                preserveAspectRatio="xMidYMid meet"
+                xmlns="http://www.w3.org/2000/svg"
+                style={{ height: '50px', width: 'auto' }}
+              >
+                <path d="M30 20 L40 35 L50 20 L40 28 L30 20 Z" fill="#244B64" />
+                <path d="M22 28 L40 45 L58 28 L40 36 L22 28 Z" fill="#2C5F7C" />
+                <path d="M15 36 L40 57 L65 36 L40 46 L15 36 Z" fill="#387C9D" />
+
+                <text
+                  x="85"
+                  y="52"
+                  fill="#2C5F7C"
+                  fontSize="55"
+                  fontWeight="800"
+                  fontFamily="Poppins, sans-serif"
+                  letterSpacing="1px"
+                  // width= "100px"
+                >
+                  Cake Forest
+                </text>
+              </svg>
+          </div>
+
+          {/* Right Section - Trust Badges & Support */}
+          <div className={styles.headerRight}>
+            <div className={styles.trustBadges}>
+              <div className={styles.badgeItem}>
+                <img src="https://bkassets.bakingo.com/bakingo-checkout-geo/static/media/payment.3d900b85.svg" alt="Payment" className={styles.badgeIcon} />
+                <span className={styles.badgeText}>100% Payment <br /> Protection</span>
+              </div>
+              <div className={styles.badgeItem}>
+                <img src="https://bkassets.bakingo.com/bakingo-checkout-geo/static/media/smiles.ba440372.svg" alt="Smiles" className={styles.badgeIcon} />
+                <span className={styles.badgeText}>2 Million Smiles <br /> Delivered</span>
+              </div>
+              <a href="tel:8882553333" className={styles.badgeItem} style={{ textDecoration: 'none' }}>
+                  <img src="https://bkassets.bakingo.com/bakingo-checkout-geo/static/media/need-assitance.dc31866a.svg" alt="Assistance" className={styles.badgeIcon} />
+                  <span className={styles.badgeText}>Need Assistance <br /> +91 8882553333</span>
+              </a>
+            </div>
+          </div>
+        </div>
       </header>
 
       <div className={styles.content}>

@@ -8,35 +8,42 @@
   border-radius: 8px;
   margin-bottom: 10px;
 }
+
 .userName {
   font-weight: 600;
   color: #2C5F7C;
   font-size: 16px;
 }
+
 .userEmail {
   font-size: 13px;
   color: #666;
   margin-top: 2px;
 }
+
 /* Icon item cursor pointer */
 .iconItem {
   cursor: pointer;
   transition: transform 0.2s ease;
 }
+
 .iconItem:hover {
   transform: translateY(-2px);
 }
+
 /* Drawer menu item cursor */
 .drawerMenuItem {
   cursor: pointer;
   transition: background-color 0.2s ease;
 }
+
 .drawerMenuItem:hover {
   background-color: #f5f5f5;
 }
+
 .topbar {
   background-color: #fff;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   position: sticky;
   top: 0;
   z-index: 1000;
@@ -159,7 +166,7 @@
   height: 100vh;
   width: 280px;
   background-color: #fff;
-  box-shadow: 2px 0 10px rgba(0,0,0,0.2);
+  box-shadow: 2px 0 10px rgba(0, 0, 0, 0.2);
   transform: translateX(-100%);
   transition: transform 0.3s ease-in-out;
   z-index: 2000;
@@ -176,7 +183,7 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: rgba(0,0,0,0.5);
+  background-color: rgba(0, 0, 0, 0.5);
   z-index: 1999;
   opacity: 0;
   transition: opacity 0.3s ease-in-out;
@@ -223,35 +230,70 @@
 /* Mobile View */
 @media (max-width: 768px) {
   .logo {
-     height: 50px !important;
-     width: auto;
-     margin-right: -50px;
+    height: 50px !important;
+    width: auto;
+    margin-right: -50px;
   }
+
   .navbar {
-  padding:  0;
-}
+    padding: 0;
+  }
 }
 
 /* Very small mobile */
 @media (max-width: 600px) {
   .logo {
-     height: 50px !important;
-     width: auto;
-     margin-right: -50px;
+    height: 50px !important;
+    width: auto;
+    margin-right: -50px;
   }
+
   .navbar {
-  padding:  0;
-}
+    padding: 0;
+  }
 
   .container {
-  max-width: 100%;
-  margin: 0 ;
-  padding: 0 15px;
-}
+    max-width: 100%;
+    margin: 0;
+    padding: 0 15px;
+  }
 }
 
 
 .drawerMenuText {
   font-size: 15px;
   color: #333;
+}
+
+/* More Dropdown */
+.dropdownMenu {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  width: 220px;
+  background: white;
+  border: 1px solid #eee;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  padding: 8px 0;
+  z-index: 1001;
+  display: flex;
+  flex-direction: column;
+}
+
+.dropdownItem {
+  display: flex;
+  align-items: center;
+  padding: 10px 15px;
+  font-size: 14px;
+  color: #333;
+  text-decoration: none;
+  transition: background 0.2s;
+  cursor: pointer;
+  gap: 10px;
+}
+
+.dropdownItem:hover {
+  background-color: #f5f5f5;
+  color: #0e4d65;
 }
