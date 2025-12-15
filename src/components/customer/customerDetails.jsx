@@ -30,7 +30,7 @@ const CustomerDetails = () => {
   const [errors, setErrors] = useState({});
    const [loading, setLoading] = useState(false); 
    const { token, user } = useSelector((state) => state.auth);
-   console.log("fklasdjfjklasjdfklasajdflkajsdkfjasdklfjkl",user.id)
+   console.log("fklasdjfjklasjdfklasajdflkajsdkfjasdklfjkl",user._id)
   const navigate = useNavigate();
 
     useEffect(() => {
@@ -66,7 +66,7 @@ const CustomerDetails = () => {
 
   useEffect(() => {
   const fetchUserDetails = async () => {
-    if (!user?.id) return;
+    if (!user?._id) return;
     
     try {
       const response = await axios.get(
@@ -177,7 +177,7 @@ const CustomerDetails = () => {
     await axios.post(
       `${import.meta.env.VITE_API_URL}/details`,
       {
-        userId: user.id,
+        userId: user._id,
         ...formData
       },
       { headers: { Authorization: `Bearer ${token}` } }
@@ -187,7 +187,7 @@ const CustomerDetails = () => {
     
     // Step 2: Place order
     const orderPayload = {
-      userId: user.id,
+      userId: user._id,
       cartItems: [
         {
           productId: orderDetails._id, // API might need this
