@@ -154,6 +154,8 @@ const CakeProductPage = ({ products }) => {
     });
   };
 
+  
+
   return (
     <div  >
  
