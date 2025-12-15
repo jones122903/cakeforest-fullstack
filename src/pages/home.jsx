@@ -58,12 +58,13 @@ function Home() {
           <Settings size={28} color="white" />
         </motion.button>
 
-        <div className="mb-4 mt-2">
-          <Category />
+        <div className="mb-4 mt-4">
+          
+          <Carousel />
         </div>
 
         <div className="my-4">
-          <Carousel />
+          <Category />
         </div>
 
         <div className="my-5">

@@ -25,14 +25,14 @@ const Cakeflovor = () => {
 
   // 🔹 Your Cake List with Local Images
   const cakeCategories = [
-    { id: 1, name: "All Cakes", image: cake1 },
-    { id: 2, name: "Birthday Cakes", image: cake2 },
-    { id: 3, name: "Designer Cakes", image: cake3 },
-    { id: 4, name: "Anniversary Cakes", image: cake4 },
-    { id: 5, name: "Photo Cakes", image: cake5 },
-    { id: 6, name: "Bento Cakes", image: cake6 },
-    { id: 7, name: "Photo Cakes", image: cake5 },
-    { id: 8, name: "Bento Cakes", image: cake6 },
+    { id: 1, name: "All Cakes", image: "https://imgcdn.floweraura.com/rosy-kiss-red-velvet-cake-9752700ca-AA.jpg?tr=w-315,dpr-1.5" },
+    { id: 2, name: "Birthday Cakes", image: "https://imgcdn.floweraura.com/love-you-more-red-velvet-cake-9748810ca-A_0.jpg?tr=w-315,dpr-1.5" },
+    { id: 3, name: "Designer Cakes", image: "https://imgcdn.floweraura.com/eggless-velvety-cake-9911230ca-AA.jpg?tr=w-315,dpr-1.5" },
+    { id: 4, name: "Anniversary Cakes", image: "https://imgcdn.floweraura.com/velvet-cake_b.jpg?tr=w-315,dpr-1.5" },
+    { id: 5, name: "Photo Cakes", image: "https://imgcdn.floweraura.com/cherry-n-red-velvet-valentine-cake-9748800ca-A_0.jpg?tr=w-315,dpr-1.5" },
+    { id: 6, name: "Bento Cakes", image: "https://imgcdn.floweraura.com/12_12.jpg?tr=w-315,dpr-1.5" },
+    { id: 7, name: "Photo Cakes", image: "https://imgcdn.floweraura.com/red-velvet-valentine-cake-9827310ca-AA.jpg?tr=w-315,dpr-1.5" },
+    { id: 8, name: "Bento Cakes", image: "https://imgcdn.floweraura.com/iron-man-bday-poster-cake-9935580ca-aaaa.jpg?tr=w-315,dpr-1.5" },
   ];
 
   return (

@@ -95,12 +95,13 @@
 }
 
 .searchInput {
-  width: 100%;
+  /* width: 100%; */
   padding: 10px 40px 10px 15px;
   border: 1px solid #ddd;
   border-radius: 8px;
   font-size: 14px;
   background-color: #F5F5F5;
+  width: 300px !important;
 }
 
 .searchIcon {
@@ -223,15 +224,25 @@
 }
 
 .logo {
-  width: 160px;
-  height: auto;
+  height: 50px;
+  width: auto;
+}
+
+/* Desktop View: Center Search Bar */
+@media (min-width: 992px) {
+  .searchContainer {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    margin: 0;
+    max-width: 500px; /* Slightly wider on desktop looks better */
+  }
 }
 
 /* Mobile View */
 @media (max-width: 768px) {
   .logo {
-    height: 50px !important;
-    width: auto;
+    /* height: 50px;  Already set globally */
     margin-right: -50px;
   }
 
@@ -243,8 +254,6 @@
 /* Very small mobile */
 @media (max-width: 600px) {
   .logo {
-    height: 50px !important;
-    width: auto;
     margin-right: -50px;
   }
 
