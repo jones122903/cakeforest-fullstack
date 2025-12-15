@@ -6,9 +6,11 @@ import {
   removeFromWishlistAsync,
 } from "../../redux/slice/wishlistSlice";
 import styles from "./Wishlist.module.css";
-import { Trash2, Heart } from "lucide-react";
+import { Trash2 } from "lucide-react";
+import noWishlistImg from "../../assets/cake_price/no_wishlist.png";
 import Footer from "../footer/footer.jsx";
 import FlowerAuraNavbar from "../topbar/topbar.jsx";
+
 
 const Wishlist = () => {
   const dispatch = useDispatch();
@@ -45,18 +47,25 @@ const Wishlist = () => {
         <div className={styles.wishlistContainer}>
           <h2 className={styles.mainTitle}>My Favourites</h2>
           <div className={styles.emptyWishlist}>
-            Please{" "}
-            <span
-              style={{
-                color: "#2C5F7C",
-                cursor: "pointer",
-                fontWeight: "bold",
-              }}
-              onClick={() => navigate("/login")}
-            >
-              Login
-            </span>{" "}
-            to view your favourites.
+            <img
+              src={noWishlistImg}
+              alt="Login Required"
+              className={styles.emptyImage}
+            />
+            <p>
+              Please{" "}
+              <span
+                style={{
+                  color: "#2C5F7C",
+                  cursor: "pointer",
+                  fontWeight: "bold",
+                }}
+                onClick={() => navigate("/login")}
+              >
+                Login
+              </span>{" "}
+              to view your favourites.
+            </p>
           </div>
         </div>
         <div>
@@ -76,9 +85,14 @@ const Wishlist = () => {
           My Favourites ({wishlistItems.length})
         </h2>
 
+
         {wishlistItems.length === 0 ? (
           <div className={styles.emptyWishlist}>
-            <Heart size={48} color="#ddd" style={{ marginBottom: "15px" }} />
+            <img
+              src={noWishlistImg}
+              alt="No Favourites"
+              className={styles.emptyImage}
+            />
             <p>No items in your favourites yet.</p>
             <button
               style={{

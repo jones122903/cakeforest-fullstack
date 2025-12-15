@@ -13,6 +13,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { addToWishlistAsync, removeFromWishlistAsync, fetchWishlist } from "../../redux/slice/wishlistSlice";
 import toast from "react-hot-toast";
 import "../Cart All Pages/Cartuialert.css";
+import Swal from "sweetalert2";
 
 const CakePrice = () => {
   const [products, setProducts] = useState([]);
@@ -66,8 +67,19 @@ const CakePrice = () => {
     e.stopPropagation();
 
     if (!user) {
-      alert("Please login to add to favourites!");
-      navigate("/login");
+      Swal.fire({
+        title: "Login Required!",
+        text: "You need to be logged in to save favourites",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#2C5F7C",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Login Now",
+      }).then((result) => {
+        if (result.isConfirmed) {
+          navigate("/login");
+        }
+      });
       return;
     }
 

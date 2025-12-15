@@ -15,6 +15,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { addToWishlistAsync, removeFromWishlistAsync, fetchWishlist } from "../../redux/slice/wishlistSlice";
 import toast from "react-hot-toast";
 import "../Cart All Pages/Cartuialert.css";
+import Swal from "sweetalert2";
+import { useNavigate } from "react-router-dom";
 
 const CakeGallery = () => {
   // const [wishlist, setWishlist] = useState({}); // Removed local state
@@ -23,6 +25,7 @@ const CakeGallery = () => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const swiperRefs = useRef({});
+  const navigate = useNavigate();
 
   // Redux
   const dispatch = useDispatch();
@@ -54,8 +57,19 @@ const CakeGallery = () => {
 
   const toggleWishlist = (cakeId) => {
     if (!user) {
-      alert("Please login to add to favourites!");
-      // navigate("/login"); // Optional: redirect
+      Swal.fire({
+        title: "Login Required!",
+        text: "You need to be logged in to save favourites",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#2C5F7C",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Login Now",
+      }).then((result) => {
+        if (result.isConfirmed) {
+          navigate("/login");
+        }
+      });
       return;
     }
 
