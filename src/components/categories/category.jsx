@@ -19,12 +19,12 @@ const Category = () => {
 
   // 🔹 Your Cake List with Local Images
   const cakeCategories = [
-    { id: 1, name: "All Cakes", image: cake1 },
-    { id: 2, name: "Birthday Cakes", image: cake2 },
-    { id: 3, name: "Designer Cakes", image: cake3 },
-    { id: 4, name: "Anniversary Cakes", image: cake4 },
-    { id: 5, name: "Photo Cakes", image: cake5 },
-    { id: 6, name: "Bento Cakes", image: cake6 },
+    { id: 1, name: "All Cakes", image: "https://imgcdn.floweraura.com/be-mine-love-chocolate-cake-9749190ca-A.jpg?tr=w-315,dpr-1.5" },
+    { id: 2, name: "Birthday Cakes", image: "https://imgcdn.floweraura.com/black-forest-birthday-drip-cake-9728120ca-A_1.jpg?tr=w-315,dpr-1.5" },
+    { id: 3, name: "Designer Cakes", image: "https://imgcdn.floweraura.com/layers-of-love-red-velvet-fruit-cake-9751337ca-A.jpg?tr=w-315,dpr-1.5" },
+    { id: 4, name: "Anniversary Cakes", image: "https://imgcdn.floweraura.com/photo-anniversary-red-cake-9831550ca-A_0.jpg?tr=w-315,dpr-1.5" },
+    { id: 5, name: "Photo Cakes", image: "https://imgcdn.floweraura.com/iron-man-bday-poster-cake-9935580ca-aaaa.jpg?tr=w-315,dpr-1.5" },
+    { id: 6, name: "Bento Cakes", image: "https://imgcdn.floweraura.com/bento4887flav-A_0.jpg?tr=w-315,dpr-1.5" },
   ];
 
   const gotoCakeALl =()=>{
