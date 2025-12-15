@@ -70,7 +70,7 @@ const CustomerDetails = () => {
     
     try {
       const response = await axios.get(
-        `${import.meta.env.VITE_API_URL}/details/${user.id}`,
+        `${import.meta.env.VITE_API_URL}/details/${user._id}`,
         { headers: { Authorization: `Bearer ${token}` } }
       );
       
