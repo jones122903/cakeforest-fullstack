@@ -11,7 +11,7 @@ import "swiper/css/pagination";
 import styles from "./cakePrice.module.css";
 import { useDispatch, useSelector } from "react-redux";
 import { addToWishlistAsync, removeFromWishlistAsync, fetchWishlist } from "../../redux/slice/wishlistSlice";
-import toast from "react-hot-toast";
+import toast, { Toaster } from "react-hot-toast"; // Added Toaster import
 import "../Cart All Pages/Cartuialert.css";
 import Swal from "sweetalert2";
 
@@ -83,12 +83,7 @@ const CakePrice = () => {
       return;
     }
 
-    // Check if productId is in wishlist array. Wishlist items might be strings (IDs) or objects depending on backend population
-    // Our slice stores whatever backend returns. Controller returns user.wishlist (array of ObjectIds usually, unless populated)
-    // Controller .populate("wishlist") means it returns objects. 
-    // Wait, wishlist logic in controller: `user.wishlist.push(productId)`. If populate is used in `getWishlist`, then items are objects.
-    // Let's assume for toggle check we might need to handle both or ensure we check `_id`.
-
+    // Check if productId is in wishlist array
     const isInWishlist = wishlistItems.some((item) => {
       const id = typeof item === 'string' ? item : item._id;
       return id === cakeId;
@@ -125,152 +120,157 @@ const CakePrice = () => {
   if (loading) return <div className="text-center mt-5">Loading...</div>;
 
   return (
-    <div className={styles.cakeContainer}>
-      <div className={styles.headerSection}>
-        <div className={styles.headerContent}>
-          <h2 className={styles.mainTitle}>Bestseller Cakes Online</h2>
-          <p className={styles.subtitle}>
-            Delectably Delicious in Every Layers!
-          </p>
+    <>
+      {/* Add Toaster component to render toasts */}
+      <Toaster position="top-right" />
+      
+      <div className={styles.cakeContainer}>
+        <div className={styles.headerSection}>
+          <div className={styles.headerContent}>
+            <h2 className={styles.mainTitle}>Bestseller Cakes Online</h2>
+            <p className={styles.subtitle}>
+              Delectably Delicious in Every Layers!
+            </p>
+          </div>
+          <button className={styles.viewAllBtn} onClick={gotoCakeALl}>
+            View All
+          </button>
         </div>
-        <button className={styles.viewAllBtn} onClick={gotoCakeALl}>
-          View All
-        </button>
-      </div>
 
-      <div className={styles.cakesGrid}>
-        {products.map((cake) => {
-          // Only render cake card if images exist for this cake
-          if (!cake.images || cake.images.length === 0) return null;
+        <div className={styles.cakesGrid}>
+          {products.map((cake) => {
+            // Only render cake card if images exist for this cake
+            if (!cake.images || cake.images.length === 0) return null;
 
-          const isInWishlist = wishlistItems.some((item) => {
-            const id = typeof item === 'string' ? item : item._id;
-            return id === cake._id;
-          });
+            const isInWishlist = wishlistItems.some((item) => {
+              const id = typeof item === 'string' ? item : item._id;
+              return id === cake._id;
+            });
 
-          return (
-            <div
-              key={cake._id}
-              className={styles.cakeCard}
-              onClick={() => gotoCakebuy(cake._id)}
+            return (
+              <div
+                key={cake._id}
+                className={styles.cakeCard}
+                onClick={() => gotoCakebuy(cake._id)}
 
-              onMouseEnter={() => {
-                const swiper = swiperRefs.current[cake._id];
-                if (swiper && swiper.autoplay) {
-                  swiper.autoplay.start();
-                }
-              }}
-              onMouseLeave={() => {
-                const swiper = swiperRefs.current[cake._id];
-                if (swiper && swiper.autoplay) {
-                  swiper.autoplay.stop();
-                  swiper.slideTo(0);
-                }
-              }}
-            >
-              <div className={styles.imageWrapper}>
-                <Swiper
-                  modules={[Pagination, Autoplay]}
-                  spaceBetween={0}
-                  slidesPerView={1}
-                  pagination={{
-                    clickable: true,
-                    dynamicBullets: true,
-                  }}
-                  autoplay={{
-                    delay: 1500,
-                    disableOnInteraction: false,
-                    pauseOnMouseEnter: false,
-                  }}
-                  loop={true}
-                  speed={500}
-                  className={styles.cakeSwiper}
-                  onSwiper={(swiper) => {
-                    swiperRefs.current[cake._id] = swiper;
+                onMouseEnter={() => {
+                  const swiper = swiperRefs.current[cake._id];
+                  if (swiper && swiper.autoplay) {
+                    swiper.autoplay.start();
+                  }
+                }}
+                onMouseLeave={() => {
+                  const swiper = swiperRefs.current[cake._id];
+                  if (swiper && swiper.autoplay) {
                     swiper.autoplay.stop();
-                  }}
-                >
-                  {cake.images.map((image, idx) => (
-                    <SwiperSlide key={idx}>
-                      <img
-                        src={image}
-                        alt={`${cake.cakeName} - Image ${idx + 1}`}
-                        className={styles.cakeImage}
-                      />
-                    </SwiperSlide>
-                  ))}
-                </Swiper>
+                    swiper.slideTo(0);
+                  }
+                }}
+              >
+                <div className={styles.imageWrapper}>
+                  <Swiper
+                    modules={[Pagination, Autoplay]}
+                    spaceBetween={0}
+                    slidesPerView={1}
+                    pagination={{
+                      clickable: true,
+                      dynamicBullets: true,
+                    }}
+                    autoplay={{
+                      delay: 1500,
+                      disableOnInteraction: false,
+                      pauseOnMouseEnter: false,
+                    }}
+                    loop={true}
+                    speed={500}
+                    className={styles.cakeSwiper}
+                    onSwiper={(swiper) => {
+                      swiperRefs.current[cake._id] = swiper;
+                      swiper.autoplay.stop();
+                    }}
+                  >
+                    {cake.images.map((image, idx) => (
+                      <SwiperSlide key={idx}>
+                        <img
+                          src={image}
+                          alt={`${cake.cakeName} - Image ${idx + 1}`}
+                          className={styles.cakeImage}
+                        />
+                      </SwiperSlide>
+                    ))}
+                  </Swiper>
 
-                <button
-                  className={styles.wishlistBtn}
-                  onClick={(e) => handleHeartClick(e, cake._id)}
-                >
-                  <AnimatePresence mode="wait">
-                    {isInWishlist ? (
-                      <motion.div
-                        key="filled"
-                        initial={{ scale: 0 }}
-                        animate={{ scale: 1 }}
-                        exit={{ scale: 0 }}
-                        transition={{ type: "spring", stiffness: 200 }}
-                      >
-                        <FaHeart size={27} className={styles.redHeart} />
-                      </motion.div>
-                    ) : (
-                      <motion.div
-                        key="outline"
-                        initial={{ scale: 0 }}
-                        animate={{ scale: 1 }}
-                        exit={{ scale: 0 }}
-                        transition={{ type: "spring", stiffness: 200 }}
-                      >
-                        <svg
-                          width="27"
-                          height="27"
-                          viewBox="0 0 24 24"
-                          fill="white"
-                          stroke="#0E4D65"
-                          strokeWidth="1.5"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
+                  <button
+                    className={styles.wishlistBtn}
+                    onClick={(e) => handleHeartClick(e, cake._id)}
+                  >
+                    <AnimatePresence mode="wait">
+                      {isInWishlist ? (
+                        <motion.div
+                          key="filled"
+                          initial={{ scale: 0 }}
+                          animate={{ scale: 1 }}
+                          exit={{ scale: 0 }}
+                          transition={{ type: "spring", stiffness: 200 }}
                         >
-                          <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
-                        </svg>
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
-                </button>
+                          <FaHeart size={27} className={styles.redHeart} />
+                        </motion.div>
+                      ) : (
+                        <motion.div
+                          key="outline"
+                          initial={{ scale: 0 }}
+                          animate={{ scale: 1 }}
+                          exit={{ scale: 0 }}
+                          transition={{ type: "spring", stiffness: 200 }}
+                        >
+                          <svg
+                            width="27"
+                            height="27"
+                            viewBox="0 0 24 24"
+                            fill="white"
+                            stroke="#0E4D65"
+                            strokeWidth="1.5"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          >
+                            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
+                          </svg>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                  </button>
 
-                {cake.availability === 'available' && (
-                  <span className={styles.vegBadge}>
-                    <span className={styles.vegDot}></span>
-                  </span>
-                )}
-              </div>
-
-              <div className={styles.cardBody}>
-                <h5 className={styles.cakeName}>{cake.cakeName}</h5>
-                <p className={styles.cakePrice}>₹ {cake.price}</p>
-
-                {/* Static Rating as data isn't in API yet */}
-                <div className={styles.ratingSection}>
-                  <span className={styles.ratingBadge}>★ 4.8</span>
-                  <span className={styles.reviewsText}>(50+ Reviews)</span>
+                  {cake.availability === 'available' && (
+                    <span className={styles.vegBadge}>
+                      <span className={styles.vegDot}></span>
+                    </span>
+                  )}
                 </div>
 
-                <div className={styles.deliveryText}>
-                  <span className={styles.deliveryLabel}>Earliest Delivery :</span>
-                  <span className={styles.deliveryTime}> Tomorrow</span>
+                <div className={styles.cardBody}>
+                  <h5 className={styles.cakeName}>{cake.cakeName}</h5>
+                  <p className={styles.cakePrice}>₹ {cake.price}</p>
+
+                  {/* Static Rating as data isn't in API yet */}
+                  <div className={styles.ratingSection}>
+                    <span className={styles.ratingBadge}>★ 4.8</span>
+                    <span className={styles.reviewsText}>(50+ Reviews)</span>
+                  </div>
+
+                  <div className={styles.deliveryText}>
+                    <span className={styles.deliveryLabel}>Earliest Delivery :</span>
+                    <span className={styles.deliveryTime}> Tomorrow</span>
+                  </div>
                 </div>
               </div>
-            </div>
-          );
-        })}
-        <button className={styles.viewAllBtn} onClick={gotoCakeALl}>
-          View All
-        </button>
+            );
+          })}
+          <button className={styles.viewAllBtn} onClick={gotoCakeALl}>
+            View All
+          </button>
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 

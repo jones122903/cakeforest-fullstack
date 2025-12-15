@@ -67,7 +67,7 @@ function App() {
     <AuthProvider>
       <AppProvider>
         <Router>
-          <Toaster containerStyle={{ zIndex: 99999999 }} />
+          {/* <Toaster containerStyle={{ zIndex: 99999999 }} /> */}
           <PWAInstallPrompt />
 
           <Routes>

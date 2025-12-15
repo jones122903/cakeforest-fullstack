@@ -8,78 +8,79 @@ const NotificationDrawer = ({ open, setOpen }) => {
 
   const [orders, setOrders] = useState([]);
 
+  const getNotification = async () => {
+    try {
+      const response = await axios.get(`${api_url}/notifications`);
 
+      const notifications = response.data.notifications;
 
- const getNotification = async () => {
-  try {
-    const response = await axios.get(`${api_url}/notifications`);
+      // 🔁 Convert backend response → UI order format
+      const mappedOrders = notifications
+        .filter((n) => n.orderId) // ⭐ null orderId remove
+        .map((n) => {
+          const order = n.orderId;
 
-    const notifications = response.data.notifications;
+          return {
+            mongoId: order._id,
+            id: order.orderId, // ORDxxxx
+            customerName: order.deliveryDetails.fullName,
+            phone: order.deliveryDetails.phone,
+            cakes: order.cartItems.map((item) => ({
+              name: item.cakeName,
+              weight: item.weight,
+              quantity: item.quantity,
+            })),
+            totalAmount: `₹${order.totalAmount}`,
+            deliveryAddress: `${order.deliveryDetails.address.flatNo}, ${order.deliveryDetails.address.street}, ${order.deliveryDetails.address.city} - ${order.deliveryDetails.address.pincode}`,
+            deliveryTime: order.deliveryTime,
+            orderTime: new Date(n.createdAt).toLocaleString(), // or "10 mins ago"
+            status: order.status === "pending" ? "pending" : "completed",
+          };
+        });
 
-    // 🔁 Convert backend response → UI order format
-    const mappedOrders = notifications.map((n) => {
-      const order = n.orderId;
-
-      return {
-        mongoId: order._id,
-        id: order.orderId, // ORDxxxx
-        customerName: order.deliveryDetails.fullName,
-        phone: order.deliveryDetails.phone,
-        cakes: order.cartItems.map((item) => ({
-          name: item.cakeName,
-          weight: item.weight,
-          quantity: item.quantity,
-        })),
-        totalAmount: `₹${order.totalAmount}`,
-        deliveryAddress: `${order.deliveryDetails.address.flatNo}, ${order.deliveryDetails.address.street}, ${order.deliveryDetails.address.city} - ${order.deliveryDetails.address.pincode}`,
-        deliveryTime: order.deliveryTime,
-        orderTime: new Date(n.createdAt).toLocaleString(), // or "10 mins ago"
-        status: order.status === "pending" ? "pending" : "completed",
-      };
-    });
-
-    setOrders(mappedOrders);
-
-  } catch (error) {
-    console.log(error);
-  }
-};
-
+      setOrders(mappedOrders);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   useEffect(() => {
-  if (open) {
-    getNotification();
-  }
-}, [open]);
+    if (open) {
+      getNotification();
+    }
+  }, [open]);
 
-
-const pendingOrders = orders.filter(o => o.status === "pending");
-const completedOrders = orders.filter(o => o.status !== "pending");
-
-
-
+  const pendingOrders = orders.filter((o) => o.status === "pending");
+  const completedOrders = orders.filter((o) => o.status !== "pending");
 
   const handleAccept = async (orderMongoId) => {
-  try {
-    await axios.patch(
-      `${api_url}/orders/${orderMongoId}/status`,
-      { status: "completed" }
-    );
+    try {
+      await axios.patch(`${api_url}/orders/${orderMongoId}/status`, {
+        status: "completed",
+      });
 
-    // 🔁 Refresh notifications from DB
-    getNotification();
-  } catch (err) {
-    console.log(err);
-  }
-};
-
-
-  const handleReject = (id) => {
-    setOrders((prev) =>
-      prev.map((o) => (o.id === id ? { ...o, status: "rejected" } : o))
-    );
+      // 🔁 Refresh notifications from DB
+      getNotification();
+      window.dispatchEvent(new Event('refreshNotifications'));
+    } catch (err) {
+      console.log(err);
+    }
   };
- 
+
+  const handleReject = async (orderMongoId) => {
+    try {
+      await axios.patch(`${api_url}/orders/${orderMongoId}/status`, {
+        status: "rejected",
+      });
+
+      // 🔁 Refresh notifications from DB
+      getNotification();
+      window.dispatchEvent(new Event('refreshNotifications'));
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
   const renderOrder = (order) => (
     <div key={order.id} className={styles.notificationCard}>
       <div className={styles.orderHeader}>
@@ -117,18 +118,17 @@ const completedOrders = orders.filter(o => o.status !== "pending");
           </button>
           <button
             className={`${styles.button} ${styles.rejectButton}`}
-            onClick={() => handleReject(order.id)}
+            onClick={() => handleReject(order.mongoId)}
           >
             ✕ Reject
           </button>
         </div>
       ) : (
         <span
-          className={`${styles.statusBadge} ${
-            order.status === "completed"
-              ? styles.completedBadge
-              : styles.rejectedBadge
-          }`}
+          className={`${styles.statusBadge} ${order.status === "completed"
+            ? styles.completedBadge
+            : styles.rejectedBadge
+            }`}
         >
           {order.status === "completed" ? "✓ Completed" : "✕ Rejected"}
         </span>
@@ -154,31 +154,26 @@ const completedOrders = orders.filter(o => o.status !== "pending");
         <div className={styles.content}>
           <div className={styles.tabContainer}>
             <button
-              className={`${styles.tab} ${
-                activeTab === "pending" ? styles.activeTab : ""
-              }`}
+              className={`${styles.tab} ${activeTab === "pending" ? styles.activeTab : ""
+                }`}
               onClick={() => setActiveTab("pending")}
             >
               Pending ({pendingOrders.length})
             </button>
             <button
-              className={`${styles.tab} ${
-                activeTab === "completed" ? styles.activeTab : ""
-              }`}
+              className={`${styles.tab} ${activeTab === "completed" ? styles.activeTab : ""
+                }`}
               onClick={() => setActiveTab("completed")}
             >
               Completed ({completedOrders.length})
             </button>
           </div>
 
-          {(activeTab === "pending"
-            ? pendingOrders
-            : completedOrders
-          ).length > 0 ? (
-            (activeTab === "pending"
-              ? pendingOrders
-              : completedOrders
-            ).map(renderOrder)
+          {(activeTab === "pending" ? pendingOrders : completedOrders).length >
+            0 ? (
+            (activeTab === "pending" ? pendingOrders : completedOrders).map(
+              renderOrder
+            )
           ) : (
             <div className={styles.emptyState}>
               <div className={styles.emptyIcon}>📭</div>

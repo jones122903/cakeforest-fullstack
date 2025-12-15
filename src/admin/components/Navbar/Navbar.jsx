@@ -1,10 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { Bell, Search, Moon, Sun, Menu } from "lucide-react";
 import { useApp } from "../../context/AppContext";
 import { useAuth } from "../../context/AuthContext";
 import "./Navbar.css";
 // import NotificationDrawer from "../../pages/notification/NotificationDrawer.jsx";
-import NotificationDrawer from "../../pages/notification/notificationDrawer.jsx";   
+import NotificationDrawer from "../../pages/notification/notificationDrawer.jsx";
+import axios from "axios";
 
 const Navbar = ({ sideWidth }) => {
   const { darkMode, toggleDarkMode, toggleSidebar } = useApp();
@@ -12,6 +13,50 @@ const Navbar = ({ sideWidth }) => {
 
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [unreadCount, setUnreadCount] = useState(0);
+
+  // Fetch unread count
+  const fetchUnreadCount = useCallback(async () => {
+    try {
+      const response = await axios.get(
+        `${import.meta.env.VITE_API_URL}/notifications/unread-count`
+      );
+      if (response.data.success) {
+        setUnreadCount(response.data.count);
+      }
+    } catch (error) {
+      console.error("Error fetching notification count:", error);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchUnreadCount();
+
+    // Poll every 30 seconds for new notifications
+    const interval = setInterval(fetchUnreadCount, 30000);
+
+    const handleRefresh = () => fetchUnreadCount();
+    window.addEventListener('refreshNotifications', handleRefresh);
+
+    return () => {
+      clearInterval(interval);
+      window.removeEventListener('refreshNotifications', handleRefresh);
+    };
+  }, [fetchUnreadCount]);
+
+  const handleNotificationClick = async () => {
+    setOpen(true);
+
+    // Mark all notifications as read when drawer opens
+    try {
+      await axios.patch(
+        `${import.meta.env.VITE_API_URL}/notifications/mark-read`
+      );
+      setUnreadCount(0);
+    } catch (error) {
+      console.error("Error marking notifications as read:", error);
+    }
+  };
 
   return (
     <div className={sideWidth ? "admin-navbar-1" : "admin-navbar"}>
@@ -34,10 +79,12 @@ const Navbar = ({ sideWidth }) => {
         {/* 🔔 Bell Button */}
         <button
           className="icon-btn notification-btn"
-          onClick={() => setOpen(true)}
+          onClick={handleNotificationClick}
         >
           <Bell size={20} />
-          <span className="notification-badge">3</span>
+          {unreadCount > 0 && (
+            <span className="notification-badge">{unreadCount}</span>
+          )}
         </button>
 
         {/* ✅ Drawer OUTSIDE button */}
