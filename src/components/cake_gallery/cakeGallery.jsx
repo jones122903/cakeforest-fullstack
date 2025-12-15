@@ -80,7 +80,7 @@ const CakeGallery = () => {
     if (isInWishlist) {
       dispatch(removeFromWishlistAsync({ userId: user._id, productId: cakeId }));
       toast.custom((t) => (
-        <div className={`re-bk-toast-wrapper ${t.visible ? "slide-in" : "slide-out"}`} style={{ zIndex: 99999999 }}>
+        <div className={`re-bk-toast-wrapper ${t.visible ? "slide-in" : "slide-out"}`} style={{ zIndex: 999999999 }}>
           <div className="re-bk-toast">
             <span className="re-bk-text-toast">Removed from Favourites</span>
           </div>
@@ -91,7 +91,7 @@ const CakeGallery = () => {
     } else {
       dispatch(addToWishlistAsync({ userId: user._id, productId: cakeId }));
       toast.custom((t) => (
-        <div className={`re-bk-toast-wrapper ${t.visible ? "slide-in" : "slide-out"}`} style={{ zIndex: 99999999 }}>
+        <div className={`re-bk-toast-wrapper ${t.visible ? "slide-in" : "slide-out"}`} style={{ zIndex: 999999999 }}>
           <div className="re-bk-toast">
             <img src="https://bkassets.bakingo.com/bakingo-ssr/static/media/check.adfc0424.svg" alt="check mark" />
             <span className="re-bk-text-toast">Added to Favourites</span>
@@ -134,7 +134,13 @@ const CakeGallery = () => {
   return (
     <>
       {/* Add Toaster component here */}
-      <Toaster position="top-right" />
+      <Toaster
+        position="top-right"
+        containerStyle={{
+          top: 90,
+          zIndex: 999999999,
+        }}
+      />
 
       <div>
         <div className="">
