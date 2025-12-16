@@ -188,6 +188,15 @@
 .acceptButton {
   background: #52c41a;
   color: #fff;
+  flex: 1;
+  padding: 10px;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-right: 20px;
 }
 
 .acceptButton:hover {
@@ -197,6 +206,14 @@
 .rejectButton {
   background: #ff4d4f;
   color: #fff;
+  flex: 1;
+  padding: 10px;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
 }
 
 .rejectButton:hover {
