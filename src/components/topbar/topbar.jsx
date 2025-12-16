@@ -1,107 +1,3 @@
-// import React, { useState } from "react";
-// import {
-//   Search,
-//   Edit2,
-//   ShoppingCart,
-//   User,
-//   Menu,
-//   Building2,
-//   Heart,
-//   Gift,
-//   RefreshCw,
-//   Store,
-//   HelpCircle,
-//   Info,
-//   BadgeDollarSign,
-//   Phone,
-//   MessageCircle
-// } from "lucide-react";
-// import "./topbar.css";
-
-// export default function FlowerAuraNavbar() {
-//   const [searchQuery, setSearchQuery] = useState("");
-//   const [deliveryLocation, setDeliveryLocation] = useState("Deliver To ?");
-//   const [cartCount] = useState(0);
-//   const [showMore, setShowMore] = useState(false);
-
-//   // More menu items WITH ICONS
-//   const moreMenuItems = [
-//     { label: "Corporate Gifts", icon: <Building2 size={20} /> },
-//     { label: "My Favourites", icon: <Heart size={20} /> },
-//     { label: "Gift Finder", icon: <Gift size={20} /> },
-//     { label: "Refer and Earn", icon: <RefreshCw size={20} /> },
-//     { label: "Franchise", icon: <Store size={20} /> },
-//     { label: "FAQ", icon: <HelpCircle size={20} /> },
-//     { label: "About Us", icon: <Info size={20} /> },
-//     { label: "Sell With Us", icon: <BadgeDollarSign size={20} /> },
-//     { label: "Contact Us", icon: <Phone size={20} /> },
-//     { label: "Whatsapp", icon: <MessageCircle size={20} /> },
-//   ];
-
-//   return (
-//     <div className="navbar-wrapper">
-//       {/* MAIN TOP BAR */}
-//       <div className="topbar">
-//         <div className="logo-area">
-//           <span className="logo-text">CAKE FORESTS</span>
-//         </div>
-
-//         <div className="delivery-box">
-//           <img src="https://flagcdn.com/w40/in.png" alt="IN" />
-//           <span>{deliveryLocation}</span>
-//           <Edit2 size={16} />
-//         </div>
-
-//         <div className="search-area">
-//           <input
-//             type="text"
-// placeholder="Search for flowers, cakes, gifts, etc."
-//             value={searchQuery}
-//             onChange={(e) => setSearchQuery(e.target.value)}
-//           />
-//           <span className="search-btn mt-1 my-3"  type="button">
-//             <Search size={18} />
-//           </span>
-//         </div>
-
-//         <div className="action-area">
-//           <div className="d-flex flex-column align-items-center">
-//             <ShoppingCart size={22} />
-//             {cartCount > 0 && <span className="cart-badge">{cartCount}</span>}
-//             <span>Cart</span>
-//           </div>
-
-//           <div className="d-flex flex-column align-items-center">
-//             <User size={22} />
-//             <span>Sign In</span>
-//           </div>
-
-//           <div
-//             className="d-flex flex-column align-items-center more-btn"
-//             onClick={() => setShowMore(!showMore)}
-//           >
-//             <Menu size={22} />
-//             <span>More</span>
-//           </div>
-//         </div>
-//       </div>
-
-//       {/* MORE DROPDOWN */}
-//       {showMore && (
-//         <div className="more-dropdown">
-//           {moreMenuItems.map((item) => (
-//             <div key={item.label} className="dropdown-item">
-//               {item.icon}
-//               <span style={{ marginLeft: "10px" }}>{item.label}</span>
-//             </div>
-//           ))}
-//         </div>
-
-//       )}
-//     </div>
-
-//   );
-// }
 import React, { useState } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import {
@@ -130,10 +26,12 @@ import { useSelector, useDispatch } from "react-redux";
 import { clearToken } from "../../redux/slice/authSlice";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2"; // Toast message-க்கு
+import OrderDrawer from "./OrderDrawer";
 
 const Topbar = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [showMore, setShowMore] = useState(false);
+  const [isOrderDrawerOpen, setIsOrderDrawerOpen] = useState(false);
 
   // Redux hooks add பண்ணுங்க
   const dispatch = useDispatch();
@@ -202,6 +100,17 @@ const Topbar = () => {
     setIsMobileMenuOpen(false);
   };
 
+  const handleOrderClick = () => {
+    if (token) {
+      setIsOrderDrawerOpen(true);
+      setIsMobileMenuOpen(false);
+    } else {
+      showToast("error", "Please login to view orders");
+      navigate("/login");
+      setIsMobileMenuOpen(false);
+    }
+  };
+
   return (
     <div
       style={{
@@ -211,6 +120,8 @@ const Topbar = () => {
         background: "#fff",
       }}
     >
+      <OrderDrawer open={isOrderDrawerOpen} setOpen={setIsOrderDrawerOpen} />
+
       {/* TOPBAR */}
       <div className={styles.topbar}>
         <div className={styles.container}>
@@ -268,7 +179,7 @@ const Topbar = () => {
 
             {/* DESKTOP ICONS */}
             <div className={`ms-auto d-none d-lg-flex ${styles.iconGroup}`}>
-              <div className={styles.iconItem}>
+              <div className={styles.iconItem} onClick={handleOrderClick} style={{ cursor: 'pointer' }}>
                 <Package size={24} />
                 <span className={styles.iconText}>Order</span>
               </div>
@@ -393,11 +304,11 @@ const Topbar = () => {
               </div>
             </div>
           )}
-          <div className={styles.drawerMenuItem} onClick={() => navigate('/order')}>
+          <div className={styles.drawerMenuItem} onClick={handleOrderClick}>
             <Package size={22} color="#2C5F7C" />
             <span className={styles.drawerMenuText}>Order</span>
           </div>
-          <div className={styles.drawerMenuItem} onClick={() => navigate('/order')}>
+          <div className={styles.drawerMenuItem} onClick={() => navigate('/cart')}>
             <ShoppingCart size={22} color="#2C5F7C" />
             <span className={styles.drawerMenuText}>Cart</span>
             {/* <span className={styles.badge}>2</span> */}
@@ -434,9 +345,6 @@ const Topbar = () => {
               <span className={styles.drawerMenuText}>Login</span>
             </div>
           )}
-
-
-
         </div>
       </div>
     </div>

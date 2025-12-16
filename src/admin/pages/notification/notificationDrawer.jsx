@@ -79,7 +79,7 @@ const NotificationDrawer = ({ open, setOpen }) => {
   const acceptedOrders = orders.filter((o) => o.status === "accepted");
 
   const handleAccept = async (notificationId) => {
-    await axios.post(`${api_url}/notifications/accept/${notificationId}`);
+    await axios.put(`${api_url}/notifications/${notificationId}/accept`);
     audioRef.current.pause();
     audioRef.current.currentTime = 0;
     getNotification();
