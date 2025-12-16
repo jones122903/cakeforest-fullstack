@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback,useRef } from "react";
 import { Bell, Search, Moon, Sun, Menu } from "lucide-react";
 import { useApp } from "../../context/AppContext";
 import { useAuth } from "../../context/AuthContext";
@@ -14,6 +14,31 @@ const Navbar = ({ sideWidth }) => {
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [unreadCount, setUnreadCount] = useState(0);
+
+   const audioRef = useRef(null);
+
+  useEffect(() => {
+    audioRef.current = new Audio("/notification.mp3");
+    audioRef.current.loop = true;
+  }, []);
+
+const handleBellClick = () => {
+  audioRef.current
+    .play()
+    .then(() => {
+      audioRef.current.pause();
+      audioRef.current.currentTime = 0;
+      console.log("🔓 Sound unlocked");
+    })
+    .catch((err) => {
+      console.log("❌ Unlock error", err);
+    });
+
+  setOpen(true);
+};
+
+
+
 
   // Fetch unread count
   const fetchUnreadCount = useCallback(async () => {
@@ -79,7 +104,7 @@ const Navbar = ({ sideWidth }) => {
         {/* 🔔 Bell Button */}
         <button
           className="icon-btn notification-btn"
-          onClick={handleNotificationClick}
+          onClick={()=>{handleNotificationClick();handleBellClick()}}
         >
           <Bell size={20} />
           {unreadCount > 0 && (
