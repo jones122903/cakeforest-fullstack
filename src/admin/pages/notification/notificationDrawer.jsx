@@ -1,82 +1,67 @@
-import React, { useEffect, useState,useRef } from "react";
-import styles from "./notification.module.css";
+import React, { useEffect, useState, useRef } from "react";
+import { Drawer, Tabs, Badge, Button, Space, Empty } from "antd";
+import { CloseOutlined } from "@ant-design/icons";
 import axios from "axios";
- 
-
-
+import styles from "./notification.module.css";
 
 const NotificationDrawer = ({ open, setOpen }) => {
   const [activeTab, setActiveTab] = useState("pending");
   const api_url = import.meta.env.VITE_API_URL;
-
   const [orders, setOrders] = useState([]);
   const notificationSound = "/notification.mp3";
   const audioRef = useRef(null);
 
-useEffect(() => {
-  audioRef.current = new Audio(notificationSound);
-  audioRef.current.loop = true; // 🔁 accept varaikum repeat
-}, []);
+  useEffect(() => {
+    audioRef.current = new Audio(notificationSound);
+    audioRef.current.loop = true;
+  }, []);
 
-useEffect(() => {
-  const hasPending = orders.some(
-    (order) => order.status === "pending"
-  );
+  useEffect(() => {
+    const hasPending = orders.some((order) => order.status === "pending");
 
-  if (hasPending) {
-    console.log("🔊 Playing sound");
-    audioRef.current.play().catch(err => {
-      console.log("Play blocked", err);
-    });
-  } else {
-    audioRef.current.pause();
-    audioRef.current.currentTime = 0;
-  }
-}, [orders]);
-
-
-
+    if (hasPending) {
+      console.log("🔊 Playing sound");
+      audioRef.current.play().catch((err) => {
+        console.log("Play blocked", err);
+      });
+    } else {
+      audioRef.current.pause();
+      audioRef.current.currentTime = 0;
+    }
+  }, [orders]);
 
   const getNotification = async () => {
     try {
       const response = await axios.get(`${api_url}/notifications`);
-
       const notifications = response.data.notifications;
 
-
-
-      // 🔁 Convert backend response → UI order format
       const mappedOrders = notifications
-  .filter((n) => n.orderId)
-  .map((n) => {
-    const order = n.orderId;
+        .filter((n) => n.orderId)
+        .map((n) => {
+          const order = n.orderId;
 
-     let status = "pending";
+          let status = "pending";
+          if (n.isRejected) status = "rejected";
+          else if (n.isAccepted) status = "accepted";
 
-if (n.isRejected) status = "rejected";
-else if (n.isAccepted) status = "accepted";
-
-    return {
-      mongoId: order._id,
-      notificationId: n._id,   // ⭐ VERY IMPORTANT
-      id: order.orderId,
-      customerName: order.deliveryDetails.fullName,
-      phone: order.deliveryDetails.phone,
-      cakes: order.cartItems.map((item) => ({
-        name: item.cakeName,
-        weight: item.weight,
-        quantity: item.quantity,
-      })),
-      totalAmount: `₹${order.totalAmount}`,
-      deliveryAddress: `${order.deliveryDetails.address.flatNo}, ${order.deliveryDetails.address.street}, ${order.deliveryDetails.address.city} - ${order.deliveryDetails.address.pincode}`,
-      deliveryTime: order.deliveryTime,
-      orderTime: new Date(n.createdAt).toLocaleString(),
-
-      // 🔥 KEY CHANGE
-      status:status
-    };
-  });
-
+          return {
+            mongoId: order._id,
+            notificationId: n._id,
+            id: order.orderId,
+            customerName: order.deliveryDetails.fullName,
+            phone: order.deliveryDetails.phone,
+            cakes: order.cartItems.map((item) => ({
+              name: item.cakeName,
+              weight: item.weight,
+              quantity: item.quantity,
+            })),
+            totalAmount: `₹${order.totalAmount}`,
+            deliveryAddress: `${order.deliveryDetails.address.flatNo}, ${order.deliveryDetails.address.street}, ${order.deliveryDetails.address.city} - ${order.deliveryDetails.address.pincode}`,
+            deliveryTime: order.deliveryTime,
+            orderTime: new Date(n.createdAt).toLocaleString(),
+            status: status,
+          };
+        });
 
       setOrders(mappedOrders);
     } catch (error) {
@@ -90,35 +75,24 @@ else if (n.isAccepted) status = "accepted";
     }
   }, [open]);
 
-  const pendingOrders = orders.filter(o => o.status === "pending");
-  const acceptedOrders = orders.filter(o => o.status === "accepted");
-
-
+  const pendingOrders = orders.filter((o) => o.status === "pending");
+  const acceptedOrders = orders.filter((o) => o.status === "accepted");
 
   const handleAccept = async (notificationId) => {
-  await axios.post(`${api_url}/notifications/accept/${notificationId}`);
-
-  audioRef.current.pause();
-  audioRef.current.currentTime = 0;
-
-  getNotification(); // refresh
-};
-
-
-
+    await axios.put(`${api_url}/notifications/${notificationId}/accept`);
+    audioRef.current.pause();
+    audioRef.current.currentTime = 0;
+    getNotification();
+  };
 
   const handleReject = async (notificationId) => {
-  try {
-    await axios.put(
-      `${api_url}/notifications/${notificationId}/reject`
-    );
-
-    getNotification();
-  } catch (err) {
-    console.log(err);
-  }
-};
-
+    try {
+      await axios.put(`${api_url}/notifications/${notificationId}/reject`);
+      getNotification();
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
   const renderOrder = (order) => (
     <div key={order.id} className={styles.notificationCard}>
@@ -147,88 +121,69 @@ else if (n.isAccepted) status = "accepted";
         </div>
       ))}
 
-     {order.status === "pending" && (
-  <>
-    <button
-      className={styles.acceptButton}
-      onClick={() => handleAccept(order.notificationId)}
-    >
-      Accept
-    </button>
+      {order.status === "pending" && (
+        <Space style={{ marginTop: 16 }}>
+          <Button
+            type="primary"
+            style={{ backgroundColor: "#52c41a" }}
+            onClick={() => handleAccept(order.notificationId)}
+          >
+            Accept
+          </Button>
+          <Button danger onClick={() => handleReject(order.notificationId)}>
+            Reject
+          </Button>
+        </Space>
+      )}
 
-    <button
-      className={styles.rejectButton}
-      onClick={() => handleReject(order.notificationId)}
-    >
-      Reject
-    </button>
-  </>
-)}
+      {order.status === "accepted" && (
+        <Badge status="success" text="Accepted" style={{ marginTop: 16 }} />
+      )}
 
-
-{order.status === "accepted" && (
-  <span className="badge accepted">Accepted</span>
-)}
-
-{order.status === "rejected" && (
-  <span className="badge rejected">Rejected</span>
-)}
-
-
+      {order.status === "rejected" && (
+        <Badge status="error" text="Rejected" style={{ marginTop: 16 }} />
+      )}
     </div>
   );
 
+  const tabItems = [
+    {
+      key: "pending",
+      label: `Pending (${pendingOrders.length})`,
+      children:
+        pendingOrders.length > 0 ? (
+          pendingOrders.map(renderOrder)
+        ) : (
+          <Empty description="No pending orders" />
+        ),
+    },
+    {
+      key: "accepted",
+      label: `Accepted (${acceptedOrders.length})`,
+      children:
+        acceptedOrders.length > 0 ? (
+          acceptedOrders.map(renderOrder)
+        ) : (
+          <Empty description="No accepted orders" />
+        ),
+    },
+  ];
+
   return (
-    <>
-      <div
-        className={`${styles.overlay} ${open ? styles.overlayVisible : ""}`}
-        onClick={() => setOpen(false)}
+    <Drawer
+      title="Notifications"
+      placement="right"
+      onClose={() => setOpen(false)}
+      open={open}
+      width={400}
+      closeIcon={<CloseOutlined />}
+    >
+      <Tabs
+        activeKey={activeTab}
+        onChange={setActiveTab}
+        items={tabItems}
       />
-
-      <div className={`${styles.drawer} ${open ? styles.drawerOpen : ""}`}>
-        <div className={styles.header}>
-          <h2 className={styles.title}>Notifications</h2>
-          <button className={styles.closeButton} onClick={() => setOpen(false)}>
-            ×
-          </button>
-        </div>
-
-        <div className={styles.content}>
-          <div className={styles.tabContainer}>
-            <button
-  className={`${styles.tab} ${
-    activeTab === "pending" ? styles.activeTab : ""
-  }`}
-  onClick={() => setActiveTab("pending")}
->
-  Pending ({pendingOrders.length})
-</button>
-
-<button
-  className={`${styles.tab} ${
-    activeTab === "accepted" ? styles.activeTab : ""
-  }`}
-  onClick={() => setActiveTab("accepted")}
->
-  Accepted ({acceptedOrders.length})
-</button>
-
-          </div>
-
-          {(activeTab === "pending" ? pendingOrders : acceptedOrders).length >
-            0 ? (
-            (activeTab === "pending" ? pendingOrders : acceptedOrders).map(
-              renderOrder
-            )
-          ) : (
-            <div className={styles.emptyState}>
-              <div className={styles.emptyIcon}>📭</div>
-              No orders
-            </div>
-          )}
-        </div>
-      </div>
-    </>
+    </Drawer>
   );
 };
 
