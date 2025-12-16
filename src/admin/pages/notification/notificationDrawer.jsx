@@ -78,7 +78,21 @@ const NotificationDrawer = ({ open, setOpen }) => {
     }
   };
 
-  // 🔄 Load notifications when drawer opens
+  // 🔄 Continuous polling - check for new orders every 5 seconds
+  useEffect(() => {
+    // Initial fetch
+    getNotification();
+
+    // Set up polling interval
+    const interval = setInterval(() => {
+      getNotification();
+    }, 50000); // Check every 5 seconds
+
+    // Cleanup interval on unmount
+    return () => clearInterval(interval);
+  }, []);
+
+  // 🔄 Refresh when drawer opens
   useEffect(() => {
     if (open) {
       getNotification();

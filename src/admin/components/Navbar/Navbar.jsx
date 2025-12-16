@@ -80,19 +80,19 @@ const handleBellClick = () => {
     };
   }, [fetchUnreadCount]);
 
-  const handleNotificationClick = async () => {
-    setOpen(true);
+  // const handleNotificationClick = async () => {
+  //   setOpen(true);
 
-    // Mark all notifications as read when drawer opens
-    try {
-      await axios.patch(
-        `${import.meta.env.VITE_API_URL}/notifications/mark-read`
-      );
-      setUnreadCount(0);
-    } catch (error) {
-      console.error("Error marking notifications as read:", error);
-    }
-  };
+  //   // Mark all notifications as read when drawer opens
+  //   try {
+  //     await axios.patch(
+  //       `${import.meta.env.VITE_API_URL}/notifications/mark-read`
+  //     );
+  //     setUnreadCount(0);
+  //   } catch (error) {
+  //     console.error("Error marking notifications as read:", error);
+  //   }
+  // };
 
   return (
     <div className={sideWidth ? "admin-navbar-1" : "admin-navbar"}>
