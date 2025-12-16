@@ -5,37 +5,46 @@ import axios from "axios";
 import styles from "./notification.module.css";
 
 const NotificationDrawer = ({ open, setOpen }) => {
-  const [activeTab, setActiveTab] = useState("pending");
   const api_url = import.meta.env.VITE_API_URL;
+
+  const [activeTab, setActiveTab] = useState("pending");
   const [orders, setOrders] = useState([]);
-  const notificationSound = "/notification.mp3";
+
   const audioRef = useRef(null);
+  const prevPendingCount = useRef(0); // 🔑 IMPORTANT
 
+  const pendingOrders = orders.filter((o) => o.status === "pending");
+  const acceptedOrders = orders.filter((o) => o.status === "accepted");
+
+  // 🔊 Init audio ONE TIME
   useEffect(() => {
-    audioRef.current = new Audio(notificationSound);
+    audioRef.current = new Audio(`http://localhost:5000/public/sounds/notification.mp3`);
     audioRef.current.loop = true;
-  }, []);
+  }, [api_url]);
 
+  // 🔔 PLAY SOUND ONLY WHEN NEW ORDER ARRIVES
   useEffect(() => {
-    const hasPending = orders.some((order) => order.status === "pending");
+    if (pendingOrders.length > prevPendingCount.current) {
+      audioRef.current
+        .play()
+        .catch(() => console.log("🔇 Autoplay blocked"));
+    }
 
-    if (hasPending) {
-      console.log("🔊 Playing sound");
-      audioRef.current.play().catch((err) => {
-        console.log("Play blocked", err);
-      });
-    } else {
+    if (pendingOrders.length === 0) {
       audioRef.current.pause();
       audioRef.current.currentTime = 0;
     }
-  }, [orders]);
 
+    prevPendingCount.current = pendingOrders.length;
+  }, [pendingOrders.length]);
+
+  // 📥 Fetch notifications
   const getNotification = async () => {
     try {
-      const response = await axios.get(`${api_url}/notifications`);
-      const notifications = response.data.notifications;
+      const res = await axios.get(`${api_url}/notifications`);
+      const notifications = res.data.notifications;
 
-      const mappedOrders = notifications
+      const mapped = notifications
         .filter((n) => n.orderId)
         .map((n) => {
           const order = n.orderId;
@@ -59,39 +68,51 @@ const NotificationDrawer = ({ open, setOpen }) => {
             deliveryAddress: `${order.deliveryDetails.address.flatNo}, ${order.deliveryDetails.address.street}, ${order.deliveryDetails.address.city} - ${order.deliveryDetails.address.pincode}`,
             deliveryTime: order.deliveryTime,
             orderTime: new Date(n.createdAt).toLocaleString(),
-            status: status,
+            status,
           };
         });
 
-      setOrders(mappedOrders);
-    } catch (error) {
-      console.log(error);
+      setOrders(mapped);
+    } catch (err) {
+      console.log(err);
     }
   };
 
+  // 🔄 Continuous polling - check for new orders every 5 seconds
+  useEffect(() => {
+    // Initial fetch
+    getNotification();
+
+    // Set up polling interval
+    const interval = setInterval(() => {
+      getNotification();
+    }, 50000); // Check every 5 seconds
+
+    // Cleanup interval on unmount
+    return () => clearInterval(interval);
+  }, []);
+
+  // 🔄 Refresh when drawer opens
   useEffect(() => {
     if (open) {
       getNotification();
     }
   }, [open]);
 
-  const pendingOrders = orders.filter((o) => o.status === "pending");
-  const acceptedOrders = orders.filter((o) => o.status === "accepted");
-
-  const handleAccept = async (notificationId) => {
-    await axios.put(`${api_url}/notifications/${notificationId}/accept`);
+  // ✅ Accept
+  const handleAccept = async (id) => {
+    await axios.put(`${api_url}/notifications/${id}/accept`);
     audioRef.current.pause();
     audioRef.current.currentTime = 0;
     getNotification();
   };
 
-  const handleReject = async (notificationId) => {
-    try {
-      await axios.put(`${api_url}/notifications/${notificationId}/reject`);
-      getNotification();
-    } catch (err) {
-      console.log(err);
-    }
+  // ❌ Reject
+  const handleReject = async (id) => {
+    await axios.put(`${api_url}/notifications/${id}/reject`);
+    audioRef.current.pause();
+    audioRef.current.currentTime = 0;
+    getNotification();
   };
 
   const renderOrder = (order) => (
@@ -114,10 +135,7 @@ const NotificationDrawer = ({ open, setOpen }) => {
 
       {order.cakes.map((cake, i) => (
         <div key={i} className={styles.cakeItem}>
-          <div className={styles.cakeName}>🎂 {cake.name}</div>
-          <div className={styles.cakeDetails}>
-            {cake.weight} × {cake.quantity}
-          </div>
+          🎂 {cake.name} ({cake.weight} × {cake.quantity})
         </div>
       ))}
 
@@ -137,11 +155,11 @@ const NotificationDrawer = ({ open, setOpen }) => {
       )}
 
       {order.status === "accepted" && (
-        <Badge status="success" text="Accepted" style={{ marginTop: 16 }} />
+        <Badge status="success" text="Accepted" />
       )}
 
       {order.status === "rejected" && (
-        <Badge status="error" text="Rejected" style={{ marginTop: 16 }} />
+        <Badge status="error" text="Rejected" />
       )}
     </div>
   );
@@ -150,22 +168,14 @@ const NotificationDrawer = ({ open, setOpen }) => {
     {
       key: "pending",
       label: `Pending (${pendingOrders.length})`,
-      children:
-        pendingOrders.length > 0 ? (
-          pendingOrders.map(renderOrder)
-        ) : (
-          <Empty description="No pending orders" />
-        ),
+      children: pendingOrders.length ? pendingOrders.map(renderOrder) : <Empty />,
     },
     {
       key: "accepted",
       label: `Accepted (${acceptedOrders.length})`,
-      children:
-        acceptedOrders.length > 0 ? (
-          acceptedOrders.map(renderOrder)
-        ) : (
-          <Empty description="No accepted orders" />
-        ),
+      children: acceptedOrders.length
+        ? acceptedOrders.map(renderOrder)
+        : <Empty />,
     },
   ];
 
@@ -173,16 +183,12 @@ const NotificationDrawer = ({ open, setOpen }) => {
     <Drawer
       title="Notifications"
       placement="right"
-      onClose={() => setOpen(false)}
       open={open}
+      onClose={() => setOpen(false)}
       width={400}
       closeIcon={<CloseOutlined />}
     >
-      <Tabs
-        activeKey={activeTab}
-        onChange={setActiveTab}
-        items={tabItems}
-      />
+      <Tabs activeKey={activeTab} onChange={setActiveTab} items={tabItems} />
     </Drawer>
   );
 };
