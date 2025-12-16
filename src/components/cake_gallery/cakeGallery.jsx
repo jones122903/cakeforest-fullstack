@@ -273,7 +273,10 @@ const CakeGallery = () => {
 
                       <button
                         className={styles.wishlistBtn}
-                        onClick={() => toggleWishlist(cake._id)}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          toggleWishlist(cake._id);
+                        }}
                       >
                         <AnimatePresence mode="wait">
                           {wishlistItems.some((item) => (typeof item === 'string' ? item : item._id) === cake._id) ? (

@@ -121,6 +121,7 @@ import {
   MessageCircle,
   Phone,
   Gift,
+  Package,
 } from "lucide-react";
 import { IndianRupee } from "lucide-react";
 import styles from "./topbar.module.css";
@@ -268,10 +269,10 @@ const Topbar = () => {
             {/* DESKTOP ICONS */}
             <div className={`ms-auto d-none d-lg-flex ${styles.iconGroup}`}>
               <div className={styles.iconItem}>
-                <MapPin size={24} />
+                <Package size={24} />
                 <span className={styles.iconText}>Order</span>
               </div>
-{/* 
+              {/* 
               <div className={styles.iconItem} onClick={() => navigate('/wishlist')}>
                 <Heart size={24} />
                 <span className={styles.iconText}>Favourites</span>
@@ -291,23 +292,12 @@ const Topbar = () => {
 
               {/* Conditional Login/Logout - Desktop */}
               {token ? (
-                <>
-                  <div className={styles.iconItem}>
-                    <User size={24} />
-                    <span className={styles.iconText}>
-                      {user?.name || user?.email?.split("@")[0] || "Account"}
-                    </span>
-                  </div>
-
-                  <div
-                    className={styles.iconItem}
-                    onClick={handleLogout}
-                    style={{ cursor: "pointer" }}
-                  >
-                    <LogOut size={24} />
-                    <span className={styles.iconText}>Logout</span>
-                  </div>
-                </>
+                <div className={styles.iconItem}>
+                  <User size={24} />
+                  <span className={styles.iconText}>
+                    {user?.name || user?.email?.split("@")[0] || "Account"}
+                  </span>
+                </div>
               ) : (
                 <div
                   className={styles.iconItem}
@@ -404,7 +394,7 @@ const Topbar = () => {
             </div>
           )}
           <div className={styles.drawerMenuItem} onClick={() => navigate('/order')}>
-            <MapPin size={22} color="#2C5F7C" />
+            <Package size={22} color="#2C5F7C" />
             <span className={styles.drawerMenuText}>Order</span>
           </div>
           <div className={styles.drawerMenuItem} onClick={() => navigate('/order')}>
@@ -438,16 +428,7 @@ const Topbar = () => {
             <Phone size={22} color="#2C5F7C" />
             <span className={styles.drawerMenuText}>Contact</span>
           </div>
-          {token ? (
-            <div
-              className={styles.drawerMenuItem}
-              onClick={handleLogout}
-              style={{ borderTop: '1px solid #e0e0e0', marginTop: '10px', paddingTop: '10px' }}
-            >
-              <LogOut size={22} color="#e74c3c" />
-              <span className={styles.drawerMenuText} style={{ color: '#e74c3c' }}>Logout</span>
-            </div>
-          ) : (
+          {!token && (
             <div className={styles.drawerMenuItem} onClick={handleLogin}>
               <User size={22} color="#2C5F7C" />
               <span className={styles.drawerMenuText}>Login</span>
