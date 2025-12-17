@@ -262,10 +262,7 @@ const Topbar = () => {
 
                 {showMore && (
                   <div className={styles.dropdownMenu}>
-                    <div
-                      className={styles.dropdownItem}
-                      onClick={() => navigate("/coupons")}
-                    >
+                    <div className={styles.dropdownItem} onClick={() => navigate('/couponspage')}>
                       <Tag size={18} /> <span>Coupons</span>
                     </div>
                     <div

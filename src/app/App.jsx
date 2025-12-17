@@ -30,6 +30,7 @@ import Otp from "../components/login/OtpPage/Otp.jsx";
 import NewReset from "../components/login/ComfirmPage/NewReset.jsx";
 import CustomerDetails from "../components/customer/customerDetails.jsx";
 import Wishlist from "../components/wishlist/Wishlist.jsx";
+import CouponsPage from "../pages/CouponsPage.jsx";
 
 
 
@@ -67,7 +68,9 @@ function App() {
     <AuthProvider>
       <AppProvider>
         <Router>
-          {/* <Toaster containerStyle={{ zIndex: 99999999 }} /> */}
+          <Toaster containerStyle={{ zIndex: 99999999 }} />
+           
+         
           <PWAInstallPrompt />
 
           <Routes>
@@ -83,6 +86,7 @@ function App() {
             <Route path="/forget" element={<NewForget />} />
             <Route path="/otp" element={<Otp />} />
             <Route path="/comfirm" element={<NewReset />} />
+            <Route path="/couponspage" element={<CouponsPage/>} />
 
 
             {/* Admin Routes */}
