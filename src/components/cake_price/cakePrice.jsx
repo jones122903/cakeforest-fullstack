@@ -10,7 +10,11 @@ import "swiper/css";
 import "swiper/css/pagination";
 import styles from "./cakePrice.module.css";
 import { useDispatch, useSelector } from "react-redux";
-import { addToWishlistAsync, removeFromWishlistAsync, fetchWishlist } from "../../redux/slice/wishlistSlice";
+import {
+  addToWishlistAsync,
+  removeFromWishlistAsync,
+  fetchWishlist,
+} from "../../redux/slice/wishlistSlice";
 import toast, { Toaster } from "react-hot-toast"; // Added Toaster import
 import "../Cart All Pages/Cartuialert.css";
 import Swal from "sweetalert2";
@@ -85,35 +89,55 @@ const CakePrice = () => {
 
     // Check if productId is in wishlist array
     const isInWishlist = wishlistItems.some((item) => {
-      const id = typeof item === 'string' ? item : item._id;
+      const id = typeof item === "string" ? item : item._id;
       return id === cakeId;
     });
 
     if (isInWishlist) {
       // Remove
-      dispatch(removeFromWishlistAsync({ userId: user._id, productId: cakeId }));
-      toast.custom((t) => (
-        <div className={`re-bk-toast-wrapper ${t.visible ? "slide-in" : "slide-out"}`} style={{ zIndex: 99999999 }}>
-          <div className="re-bk-toast">
-            <span className="re-bk-text-toast">Removed from Favourites</span>
+      dispatch(
+        removeFromWishlistAsync({ userId: user._id, productId: cakeId })
+      );
+      toast.custom(
+        (t) => (
+          <div
+            className={`re-bk-toast-wrapper ${
+              t.visible ? "slide-in" : "slide-out"
+            }`}
+            style={{ zIndex: 99999999 }}
+          >
+            <div className="re-bk-toast">
+              <span className="re-bk-text-toast">Removed from Favourites</span>
+            </div>
+            <div className="re-bk-progress" />
           </div>
-          <div className="re-bk-progress" />
-        </div>
-      ), { duration: 2000, position: "top-right" });
-
+        ),
+        { duration: 2000, position: "top-right" }
+      );
     } else {
       // Add
       dispatch(addToWishlistAsync({ userId: user._id, productId: cakeId }));
 
-      toast.custom((t) => (
-        <div className={`re-bk-toast-wrapper ${t.visible ? "slide-in" : "slide-out"}`} style={{ zIndex: 99999999 }}>
-          <div className="re-bk-toast">
-            <img src="https://bkassets.bakingo.com/bakingo-ssr/static/media/check.adfc0424.svg" alt="check mark" />
-            <span className="re-bk-text-toast">Added to Favourites</span>
+      toast.custom(
+        (t) => (
+          <div
+            className={`re-bk-toast-wrapper ${
+              t.visible ? "slide-in" : "slide-out"
+            }`}
+            style={{ zIndex: 99999999 }}
+          >
+            <div className="re-bk-toast">
+              <img
+                src="https://bkassets.bakingo.com/bakingo-ssr/static/media/check.adfc0424.svg"
+                alt="check mark"
+              />
+              <span className="re-bk-text-toast">Added to Favourites</span>
+            </div>
+            <div className="re-bk-progress" />
           </div>
-          <div className="re-bk-progress" />
-        </div>
-      ), { duration: 2000, position: "top-right" });
+        ),
+        { duration: 2000, position: "top-right" }
+      );
     }
   };
 
@@ -123,7 +147,7 @@ const CakePrice = () => {
     <>
       {/* Add Toaster component to render toasts */}
       <Toaster position="top-right" />
-      
+
       <div className={styles.cakeContainer}>
         <div className={styles.headerSection}>
           <div className={styles.headerContent}>
@@ -143,7 +167,7 @@ const CakePrice = () => {
             if (!cake.images || cake.images.length === 0) return null;
 
             const isInWishlist = wishlistItems.some((item) => {
-              const id = typeof item === 'string' ? item : item._id;
+              const id = typeof item === "string" ? item : item._id;
               return id === cake._id;
             });
 
@@ -152,7 +176,6 @@ const CakePrice = () => {
                 key={cake._id}
                 className={styles.cakeCard}
                 onClick={() => gotoCakebuy(cake._id)}
-
                 onMouseEnter={() => {
                   const swiper = swiperRefs.current[cake._id];
                   if (swiper && swiper.autoplay) {
@@ -213,7 +236,16 @@ const CakePrice = () => {
                           exit={{ scale: 0 }}
                           transition={{ type: "spring", stiffness: 200 }}
                         >
-                          <FaHeart size={27} className={styles.redHeart} />
+                          <svg
+                            width="27"
+                            height="27"
+                            viewBox="0 0 24 24"
+                            fill="red"
+                            stroke="white"
+                            strokeWidth="0.8"
+                          >
+                            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
+                          </svg>
                         </motion.div>
                       ) : (
                         <motion.div
@@ -240,7 +272,7 @@ const CakePrice = () => {
                     </AnimatePresence>
                   </button>
 
-                  {cake.availability === 'available' && (
+                  {cake.availability === "available" && (
                     <span className={styles.vegBadge}>
                       <span className={styles.vegDot}></span>
                     </span>
@@ -258,7 +290,9 @@ const CakePrice = () => {
                   </div>
 
                   <div className={styles.deliveryText}>
-                    <span className={styles.deliveryLabel}>Earliest Delivery :</span>
+                    <span className={styles.deliveryLabel}>
+                      Earliest Delivery :
+                    </span>
                     <span className={styles.deliveryTime}> Tomorrow</span>
                   </div>
                 </div>
