@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import {
   MapPin,
@@ -21,33 +21,73 @@ import {
 } from "lucide-react";
 import { IndianRupee } from "lucide-react";
 import styles from "./topbar.module.css";
-// Redux imports add பண்ணுங்க
 import { useSelector, useDispatch } from "react-redux";
 import { clearToken } from "../../redux/slice/authSlice";
 import { useNavigate } from "react-router-dom";
-import Swal from "sweetalert2"; // Toast message-க்கு
+import Swal from "sweetalert2";
 import OrderDrawer from "./OrderDrawer";
+import axios from "axios";
 
 const Topbar = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [showMore, setShowMore] = useState(false);
   const [isOrderDrawerOpen, setIsOrderDrawerOpen] = useState(false);
+  const [pendingCount, setPendingCount] = useState(0);
 
-  // Redux hooks add பண்ணுங்க
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { token, user } = useSelector((state) => state.auth);
-  // const cartItems = useSelector((state) => state.cart.items);
-  // const cartCount = cartItems?.length || 0;
+  const api_url = import.meta.env.VITE_API_URL;
 
   const wishlistItems = useSelector((state) => state.wishlist.items);
   const wishlistCount = wishlistItems?.length || 0;
+
+  // Fetch pending orders count
+  const fetchPendingCount = async () => {
+    if (!user || !token) {
+      setPendingCount(0);
+      return;
+    }
+
+    try {
+      const userId = user.id || user._id;
+      const response = await axios.get(`${api_url}/orders/user/${userId}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (response.data.success) {
+        const pending = response.data.orders.filter(
+          (order) => order.status === "pending"
+        ).length;
+        setPendingCount(pending);
+      }
+    } catch (error) {
+      console.error("Error fetching pending count:", error);
+    }
+  };
+
+  useEffect(() => {
+    if (token && user) {
+      fetchPendingCount();
+      // Refresh count every 30 seconds
+      const interval = setInterval(fetchPendingCount, 30000);
+      return () => clearInterval(interval);
+    }
+  }, [user, token]);
+
+  // Refresh count when drawer closes
+  useEffect(() => {
+    if (!isOrderDrawerOpen && token && user) {
+      fetchPendingCount();
+    }
+  }, [isOrderDrawerOpen]);
 
   const toggleMobileMenu = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
   };
 
-  // Show Toast Notification (same as AddProduct.jsx)
   const showToast = async (icon, title) => {
     const Toast = Swal.mixin({
       toast: true,
@@ -60,11 +100,9 @@ const Topbar = () => {
         const progressBar = toast.querySelector(".swal2-timer-progress-bar");
         progressBar.style.background = icon === "success" ? "green" : "red";
 
-        // Fix visibility issue: Topbar has z-index 9999, so we need > 9999
         const container = Swal.getContainer();
         if (container) {
           container.style.zIndex = "10000";
-          // container.style.marginTop = "50px";
         }
 
         toast.addEventListener("mouseenter", () => {
@@ -78,7 +116,7 @@ const Topbar = () => {
 
       customClass: {
         popup: icon === "success" ? "colored-toast" : "colored-toast-error",
-        container: 'toast-high-zindex', // Higher z-index க்கு
+        container: "toast-high-zindex",
       },
 
       iconColor: icon === "success" ? "green" : "red",
@@ -87,12 +125,12 @@ const Topbar = () => {
     await Toast.fire({ icon, title });
   };
 
-  // Logout handler add 
   const handleLogout = () => {
     dispatch(clearToken());
-    showToast("success", "You’ve successfully logged out");
+    setPendingCount(0);
+    showToast("success", "You've successfully logged out");
     navigate("/");
-    setIsMobileMenuOpen(false); // Close mobile menu if open
+    setIsMobileMenuOpen(false);
   };
 
   const handleLogin = () => {
@@ -126,8 +164,6 @@ const Topbar = () => {
       <div className={styles.topbar}>
         <div className={styles.container}>
           <nav className={`${styles.navbar} navbar navbar-expand-lg`}>
-            {/* MOBILE MENU BUTTON */}
-
             {/* LOGO */}
             <div className="navbar-brand d-flex align-items-center">
               <svg
@@ -179,27 +215,23 @@ const Topbar = () => {
 
             {/* DESKTOP ICONS */}
             <div className={`ms-auto d-none d-lg-flex ${styles.iconGroup}`}>
-              <div className={styles.iconItem} onClick={handleOrderClick} style={{ cursor: 'pointer' }}>
+              <div
+                className={styles.iconItem}
+                onClick={handleOrderClick}
+                style={{ cursor: "pointer" }}
+              >
                 <Package size={24} />
                 <span className={styles.iconText}>Order</span>
+                {pendingCount > 0 && (
+                  <span className={styles.badge}>{pendingCount}</span>
+                )}
               </div>
-              {/* 
-              <div className={styles.iconItem} onClick={() => navigate('/wishlist')}>
-                <Heart size={24} />
-                <span className={styles.iconText}>Favourites</span>
-                {wishlistCount > 0 && <span className={styles.badge}>{wishlistCount}</span>}
-              </div> */}
 
               <div className={styles.iconItem}>
                 <ShoppingCart size={24} />
                 <span className={styles.iconText}>Cart</span>
                 <span className={styles.badge}>2</span>
               </div>
-
-              {/* <div className={styles.iconItem}>
-                <User size={24} />
-                <span className={styles.iconText}>My Account</span>
-              </div> */}
 
               {/* Conditional Login/Logout - Desktop */}
               {token ? (
@@ -233,19 +265,36 @@ const Topbar = () => {
                     <div className={styles.dropdownItem} onClick={() => navigate('/couponspage')}>
                       <Tag size={18} /> <span>Coupons</span>
                     </div>
-                    <div className={styles.dropdownItem} onClick={() => navigate('/wishlist')}>
+                    <div
+                      className={styles.dropdownItem}
+                      onClick={() => navigate("/wishlist")}
+                    >
                       <Heart size={18} /> <span>Favourites</span>
                     </div>
-                    <div className={styles.dropdownItem} onClick={() => navigate('/offers')}>
+                    <div
+                      className={styles.dropdownItem}
+                      onClick={() => navigate("/offers")}
+                    >
                       <BadgePercent size={18} /> <span>Offers</span>
                     </div>
-                    <div className={styles.dropdownItem} onClick={() => navigate('/about')}>
+                    <div
+                      className={styles.dropdownItem}
+                      onClick={() => navigate("/about")}
+                    >
                       <Info size={18} /> <span>About Us</span>
                     </div>
-                    <div className={styles.dropdownItem} onClick={() => window.open('https://wa.me/919876543210', '_blank')}>
+                    <div
+                      className={styles.dropdownItem}
+                      onClick={() =>
+                        window.open("https://wa.me/919876543210", "_blank")
+                      }
+                    >
                       <MessageCircle size={18} /> <span>Whatsapp</span>
                     </div>
-                    <div className={styles.dropdownItem} onClick={() => navigate('/contact')}>
+                    <div
+                      className={styles.dropdownItem}
+                      onClick={() => navigate("/contact")}
+                    >
                       <Phone size={18} /> <span>Contact</span>
                     </div>
                     {token && (
@@ -258,48 +307,46 @@ const Topbar = () => {
                         }}
                       >
                         <LogOut size={18} color="#e74c3c" />
-                        <span style={{ color: '#e74c3c' }}>Logout</span>
+                        <span style={{ color: "#e74c3c" }}>Logout</span>
                       </div>
                     )}
                   </div>
                 )}
               </div>
             </div>
-
-            {/* MOBILE ICONS */}
-            {/* <div className={`d-flex d-lg-none ms-auto ${styles.mobileIconsRow}`}>
-              <div className={styles.iconItem}>
-                <ShoppingCart size={22} />
-                <span className={styles.badge}>0</span>
-              </div>
-              <div className={styles.iconItem}>
-                <Search size={22} />
-              </div>
-              <div className={styles.iconItem}>
-                <User size={24} />
-              </div>
-            </div> */}
           </nav>
         </div>
       </div>
 
       {/* OVERLAY */}
-      <div className={`${styles.overlay} ${isMobileMenuOpen ? styles.overlayOpen : ""}`} onClick={toggleMobileMenu}></div>
+      <div
+        className={`${styles.overlay} ${
+          isMobileMenuOpen ? styles.overlayOpen : ""
+        }`}
+        onClick={toggleMobileMenu}
+      ></div>
+
       {/* SIDE DRAWER */}
-      <div className={`${styles.sideDrawer} ${isMobileMenuOpen ? styles.sideDrawerOpen : ""}`}>
+      <div
+        className={`${styles.sideDrawer} ${
+          isMobileMenuOpen ? styles.sideDrawerOpen : ""
+        }`}
+      >
         <div className={styles.drawerHeader}>
           <span className={styles.drawerTitle}>Menu</span>
-          <button onClick={toggleMobileMenu} style={{ background: "none", border: "none", cursor: "pointer" }}>
+          <button
+            onClick={toggleMobileMenu}
+            style={{ background: "none", border: "none", cursor: "pointer" }}
+          >
             <X size={24} color="#2C5F7C" />
           </button>
         </div>
         <div className={styles.drawerMenu}>
-
           {token && user && (
             <div className={styles.userInfoSection}>
               <User size={24} color="#2C5F7C" />
               <div>
-                <div className={styles.userName}>{user.name || 'User'}</div>
+                <div className={styles.userName}>{user.name || "User"}</div>
                 <div className={styles.userEmail}>{user.email}</div>
               </div>
             </div>
@@ -307,35 +354,59 @@ const Topbar = () => {
           <div className={styles.drawerMenuItem} onClick={handleOrderClick}>
             <Package size={22} color="#2C5F7C" />
             <span className={styles.drawerMenuText}>Order</span>
+            {pendingCount > 0 && (
+              <span className={styles.badge}>{pendingCount}</span>
+            )}
           </div>
-          <div className={styles.drawerMenuItem} onClick={() => navigate('/cart')}>
+          <div
+            className={styles.drawerMenuItem}
+            onClick={() => navigate("/cart")}
+          >
             <ShoppingCart size={22} color="#2C5F7C" />
             <span className={styles.drawerMenuText}>Cart</span>
-            {/* <span className={styles.badge}>2</span> */}
           </div>
 
-          {/* New Menu Items */}
-          <div className={styles.drawerMenuItem} onClick={() => navigate('/coupons')}>
+          <div
+            className={styles.drawerMenuItem}
+            onClick={() => navigate("/coupons")}
+          >
             <Tag size={22} color="#2C5F7C" />
             <span className={styles.drawerMenuText}>Coupons</span>
           </div>
-          <div className={styles.drawerMenuItem} onClick={() => navigate('/wishlist')}>
+          <div
+            className={styles.drawerMenuItem}
+            onClick={() => navigate("/wishlist")}
+          >
             <Heart size={22} color="#2C5F7C" />
             <span className={styles.drawerMenuText}>Favourites</span>
           </div>
-          <div className={styles.drawerMenuItem} onClick={() => navigate('/offers')}>
+          <div
+            className={styles.drawerMenuItem}
+            onClick={() => navigate("/offers")}
+          >
             <BadgePercent size={22} color="#2C5F7C" />
             <span className={styles.drawerMenuText}>Offers</span>
           </div>
-          <div className={styles.drawerMenuItem} onClick={() => navigate('/about')}>
+          <div
+            className={styles.drawerMenuItem}
+            onClick={() => navigate("/about")}
+          >
             <Info size={22} color="#2C5F7C" />
             <span className={styles.drawerMenuText}>About Us</span>
           </div>
-          <div className={styles.drawerMenuItem} onClick={() => window.open('https://wa.me/919876543210', '_blank')}>
+          <div
+            className={styles.drawerMenuItem}
+            onClick={() =>
+              window.open("https://wa.me/919876543210", "_blank")
+            }
+          >
             <MessageCircle size={22} color="#2C5F7C" />
             <span className={styles.drawerMenuText}>Whatsapp</span>
           </div>
-          <div className={styles.drawerMenuItem} onClick={() => navigate('/contact')}>
+          <div
+            className={styles.drawerMenuItem}
+            onClick={() => navigate("/contact")}
+          >
             <Phone size={22} color="#2C5F7C" />
             <span className={styles.drawerMenuText}>Contact</span>
           </div>
