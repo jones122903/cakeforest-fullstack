@@ -17,3 +17,16 @@
        margin: 0 20px;
     }
     }
+    /* Firefox – keeps default behavior but thin */
+/* Firefox */
+* {
+  scrollbar-width: thin;
+}
+
+/* Chrome / Edge */
+::-webkit-scrollbar {
+  width: 2px;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(0,0,0,0.2);  /* romba light */
+}
