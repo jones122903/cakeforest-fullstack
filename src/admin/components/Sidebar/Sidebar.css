@@ -69,10 +69,17 @@
 .sidebar-nav {
     flex: 1;
     padding: 1.5rem 0;
-    overflow-y: hidden; /* Changed from auto to hidden */
+    overflow-y: auto;
 }
 
-/* Removed scrollbar styles since overflow is now hidden */
+.sidebar-nav::-webkit-scrollbar {
+    width: 4px;
+}
+
+.sidebar-nav::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 4px;
+}
 
 .sidebar-item {
     display: flex;
@@ -206,3 +213,5 @@
         width: 70px;
     }
 }
+
+ 
