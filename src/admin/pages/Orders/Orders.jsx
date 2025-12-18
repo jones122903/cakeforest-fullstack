@@ -25,18 +25,33 @@ const Orders = () => {
   const [loading, setLoading] = useState(false);
   const [activeTab, setActiveTab] = useState("pending");
 
-  useEffect(() => {
+ useEffect(() => {
+  fetchOrders(); // first load
+
+  const handleRefreshOrders = () => {
     fetchOrders();
-  }, []);
+  };
+
+  // 👂 listen for notification accept
+  window.addEventListener("refreshOrders", handleRefreshOrders);
+
+  return () => {
+    window.removeEventListener("refreshOrders", handleRefreshOrders);
+  };
+}, []);
 
   const fetchOrders = async () => {
-    try {
-      setLoading(true);
-      const response = await axios.get(
-        `${import.meta.env.VITE_API_URL}/orders`
-      );
-      if (response.data.success) {
-        const mappedOrders = response.data.orders.map((order) => ({
+  try {
+    setLoading(true);
+    const response = await axios.get(
+      `${import.meta.env.VITE_API_URL}/orders`
+    );
+
+    if (response.data.success) {
+      const mappedOrders = response.data.orders
+        // ✅ ONLY accepted notifications
+        .filter(order => order.notificationstatus === true)
+        .map((order) => ({
           id: order.orderId,
           mongoId: order._id,
           customer: order.deliveryDetails?.fullName || "Unknown",
@@ -53,16 +68,18 @@ const Orders = () => {
             ).toLocaleDateString(),
           },
         }));
-        mappedOrders.sort((a, b) => b.rawDate - a.rawDate);
-        setOrders(mappedOrders);
-      }
-    } catch (error) {
-      console.error("Error fetching orders:", error);
-      toast.error("Failed to fetch orders");
-    } finally {
-      setLoading(false);
+
+      mappedOrders.sort((a, b) => b.rawDate - a.rawDate);
+      setOrders(mappedOrders);
     }
-  };
+  } catch (error) {
+    console.error("Error fetching orders:", error);
+    toast.error("Failed to fetch orders");
+  } finally {
+    setLoading(false);
+  }
+};
+
 
   const handleStatusChange = async (mongoId, newStatus) => {
     try {

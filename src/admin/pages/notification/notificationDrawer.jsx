@@ -100,12 +100,26 @@ const NotificationDrawer = ({ open, setOpen }) => {
   }, [open]);
 
   // ✅ Accept
-  const handleAccept = async (id) => {
-    await axios.put(`${api_url}/notifications/${id}/accept`);
-    audioRef.current.pause();
-    audioRef.current.currentTime = 0;
-    getNotification();
-  };
+const handleAccept = async (id) => {
+  try {
+    const res = await axios.put(
+      `${api_url}/notifications/${id}/accept`
+    );
+
+    if (res.data.success) {
+      audioRef.current.pause();
+      audioRef.current.currentTime = 0;
+      getNotification();
+
+      // refresh orders table
+      window.dispatchEvent(new Event("refreshOrders"));
+    }
+  } catch (error) {
+    toast.error("Accept failed");
+  }
+};
+
+
 
   // ❌ Reject
   const handleReject = async (id) => {
