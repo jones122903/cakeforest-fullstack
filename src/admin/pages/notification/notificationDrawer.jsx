@@ -104,16 +104,48 @@ const NotificationDrawer = ({ open, setOpen }) => {
     await axios.put(`${api_url}/notifications/${id}/accept`);
     audioRef.current.pause();
     audioRef.current.currentTime = 0;
+    handleDeleteNotification(id)
+    setOrders(prev =>
+      prev.filter(o => o.notificationId !== id)
+    );
     getNotification();
+
+    // 🔄 Trigger order page refresh
+    window.dispatchEvent(new Event("refreshOrders"));
   };
 
-  // ❌ Reject
+
+
   const handleReject = async (id) => {
     await axios.put(`${api_url}/notifications/${id}/reject`);
     audioRef.current.pause();
     audioRef.current.currentTime = 0;
+    handleDeleteNotification(id)
+    setOrders(prev =>
+      prev.filter(o => o.notificationId !== id)
+    );
     getNotification();
   };
+
+  const handleDeleteNotification = async (id) => {
+    try {
+      const res = await axios.delete(
+        `${api_url}/notifications/${id}`
+      );
+
+      if (res.data.success) {
+        toast.success("Notification removed");
+        return true; // ✅ IMPORTANT
+      }
+      return false;
+    } catch (error) {
+      toast.error("Delete failed");
+      return false;
+    }
+  };
+
+
+
 
   const renderOrder = (order) => (
     <div key={order.id} className={styles.notificationCard}>
@@ -188,7 +220,11 @@ const NotificationDrawer = ({ open, setOpen }) => {
       width={400}
       closeIcon={<CloseOutlined />}
     >
-      <Tabs activeKey={activeTab} onChange={setActiveTab} items={tabItems} />
+      {orders.length ? (
+        orders.map(renderOrder)
+      ) : (
+        <Empty description="No notifications" />
+      )}
     </Drawer>
   );
 };
