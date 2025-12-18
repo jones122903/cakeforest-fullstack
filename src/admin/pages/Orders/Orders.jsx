@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { Popconfirm } from "antd";
 import "../Dashboard/Dashboard.css";
+import styles from "./Orders.module.css"; // Import custom styles
 import {
   X,
   MapPin,
@@ -108,12 +109,9 @@ const Orders = () => {
   };
 
   const getStatusIcon = (status) => {
-    if (status === "pending")
-      return <CheckCircle size={18} />;
-    if (status === "ready") 
-      return <Truck size={18} />;
-    if (status === "delivered")
-      return <Package size={18} />;
+    if (status === "pending") return <CheckCircle size={18} />;
+    if (status === "ready") return <Truck size={18} />;
+    if (status === "delivered") return <Package size={18} />;
     return null;
   };
 
@@ -132,11 +130,13 @@ const Orders = () => {
   const handleViewDetails = (order) => {
     setSelectedOrder(order.fullDetails);
     setIsModalOpen(true);
+    document.body.classList.add("modal-open");
   };
 
   const closeModal = () => {
     setIsModalOpen(false);
     setSelectedOrder(null);
+    document.body.classList.remove("modal-open");
   };
 
   const pendingOrders = orders.filter((order) =>
@@ -345,51 +345,21 @@ const Orders = () => {
           </p>
         </div>
 
-        <div
-          style={{
-            display: "flex",
-            gap: "10px",
-            marginBottom: "20px",
-            borderBottom: "2px solid #e5e7eb",
-          }}
-        >
+        {/* Custom Tabs Container - Similar to Notification Drawer */}
+        <div className={styles.tabContainer}>
           <button
             onClick={() => setActiveTab("pending")}
-            style={{
-              padding: "12px 24px",
-              background: activeTab === "pending" ? "#667eea" : "transparent",
-              color: activeTab === "pending" ? "white" : "#64748b",
-              border: "none",
-              borderBottom:
-                activeTab === "pending"
-                  ? "3px solid #667eea"
-                  : "3px solid transparent",
-              cursor: "pointer",
-              fontWeight: 600,
-              fontSize: "1rem",
-              transition: "all 0.3s",
-              borderRadius: "8px 8px 0 0",
-            }}
+            className={`${styles.tab} ${
+              activeTab === "pending" ? styles.activeTab : ""
+            }`}
           >
             Active Orders ({pendingOrders.length})
           </button>
           <button
             onClick={() => setActiveTab("delivered")}
-            style={{
-              padding: "12px 24px",
-              background: activeTab === "delivered" ? "#10b981" : "transparent",
-              color: activeTab === "delivered" ? "white" : "#64748b",
-              border: "none",
-              borderBottom:
-                activeTab === "delivered"
-                  ? "3px solid #10b981"
-                  : "3px solid transparent",
-              cursor: "pointer",
-              fontWeight: 600,
-              fontSize: "1rem",
-              transition: "all 0.3s",
-              borderRadius: "8px 8px 0 0",
-            }}
+            className={`${styles.tab} ${
+              activeTab === "delivered" ? styles.activeTab : ""
+            }`}
           >
             Delivered Orders ({deliveredOrders.length})
           </button>
@@ -410,7 +380,7 @@ const Orders = () => {
           )}
         </div>
 
-        {/* Enhanced Order Details Modal */}
+        {/* Modal remains the same */}
         {isModalOpen && selectedOrder && (
           <div
             className="modal-overlay"
@@ -421,15 +391,13 @@ const Orders = () => {
               left: 0,
               right: 0,
               bottom: 0,
-              backgroundColor: "rgba(0, 0, 0, 0.7)",
+              backgroundColor: "rgba(0, 0, 0, 0.6)",
               display: "flex",
               justifyContent: "center",
               alignItems: "center",
               zIndex: 10000,
-              padding: "20px",
-              backdropFilter: "blur(4px)",
-              overflowY: "auto", // ✅ PAGE SCROLL
-              
+              backdropFilter: "blur(8px)",
+              overflow: "hidden",
             }}
           >
             <div
@@ -437,165 +405,276 @@ const Orders = () => {
               onClick={(e) => e.stopPropagation()}
               style={{
                 backgroundColor: "white",
-                borderRadius: "20px",
+                borderRadius: "12px",
                 padding: "0",
-                width: "95%",
-                maxWidth: "700px",
-                maxHeight: "92vh",
-                overflowY: "auto",
-                boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.25)",
+                width: "90%",
+                maxWidth: "500px",
+                height: "85vh",
+                maxHeight: "600px",
+                display: "flex",
+                flexDirection: "column",
+                boxShadow: "0 20px 60px rgba(0, 0, 0, 0.3)",
                 animation: "modalSlideIn 0.3s ease-out",
               }}
             >
-              {/* Modal Header with gradient */}
               <div
                 style={{
-                  background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
-                  padding: "24px 28px",
-                  borderRadius: "20px 20px 0 0",
+                  background: "#667eea",
+                  padding: "16px 20px",
+                  borderRadius: "12px 12px 0 0",
                   display: "flex",
                   justifyContent: "space-between",
                   alignItems: "center",
                   color: "white",
+                  flexShrink: 0,
                 }}
               >
                 <div>
-                  <h2 style={{ margin: 0, fontSize: "1.5rem", fontWeight: 700 }}>
+                  <h2
+                    style={{ margin: 0, fontSize: "1.2rem", fontWeight: 600 }}
+                  >
                     Order #{selectedOrder.orderId}
                   </h2>
-                  <p style={{ margin: "4px 0 0 0", fontSize: "0.9rem", opacity: 0.9 }}>
-                    Placed on {selectedOrder.formattedOrderDate}
+                  <p
+                    style={{
+                      margin: "4px 0 0 0",
+                      fontSize: "0.75rem",
+                      opacity: 0.9,
+                    }}
+                  >
+                    {selectedOrder.formattedOrderDate}
                   </p>
                 </div>
                 <button
                   onClick={closeModal}
                   style={{
-                    background: "rgba(255, 255, 255, 0.2)",
+                    background: "rgba(255, 255, 255, 0.15)",
                     border: "none",
                     cursor: "pointer",
                     color: "white",
                     borderRadius: "50%",
-                    width: "40px",
-                    height: "40px",
+                    width: "32px",
+                    height: "32px",
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
                     transition: "all 0.2s",
                   }}
-                  onMouseEnter={(e) => (e.currentTarget.style.background = "rgba(255, 255, 255, 0.3)")}
-                  onMouseLeave={(e) => (e.currentTarget.style.background = "rgba(255, 255, 255, 0.2)")}
+                  onMouseEnter={(e) =>
+                    (e.currentTarget.style.background =
+                      "rgba(255, 255, 255, 0.25)")
+                  }
+                  onMouseLeave={(e) =>
+                    (e.currentTarget.style.background =
+                      "rgba(255, 255, 255, 0.15)")
+                  }
                 >
-                  <X size={24} />
+                  <X size={18} />
                 </button>
               </div>
 
-              {/* Modal Body */}
-              <div style={{ padding: "28px" }}>
-                {/* Status Badge - Large and prominent */}
+              <div
+                style={{
+                  padding: "20px",
+                  overflowY: "auto",
+                  flex: 1,
+                }}
+              >
                 <div
                   style={{
                     display: "inline-flex",
                     alignItems: "center",
-                    gap: "8px",
-                    padding: "12px 20px",
-                    borderRadius: "12px",
-                    fontSize: "1.1rem",
-                    fontWeight: 700,
+                    gap: "6px",
+                    padding: "6px 14px",
+                    borderRadius: "6px",
+                    fontSize: "0.85rem",
+                    fontWeight: 600,
                     textTransform: "capitalize",
-                    background: `${getStatusColor(selectedOrder.status)}15`,
-                    color: getStatusColor(selectedOrder.status),
-                    border: `2px solid ${getStatusColor(selectedOrder.status)}30`,
-                    marginBottom: "24px",
+                    background: `${getStatusColor(selectedOrder.status)}`,
+                    color: "white",
+                    marginBottom: "16px",
                   }}
                 >
                   {getStatusIcon(selectedOrder.status.toLowerCase())}
                   {selectedOrder.status}
                 </div>
 
-                <div style={{ display: "grid", gap: "20px" }}>
-                  {/* Customer Info Card */}
+                <div style={{ display: "grid", gap: "12px" }}>
                   <div
                     style={{
-                      background: "#f8fafc",
-                      padding: "20px",
-                      borderRadius: "12px",
-                      border: "1px solid #e2e8f0",
+                      background: "#fafafa",
+                      padding: "12px",
+                      borderRadius: "8px",
+                      border: "1px solid #e5e7eb",
                     }}
                   >
-                    <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "16px" }}>
-                      <div style={{ background: "#667eea", padding: "8px", borderRadius: "8px" }}>
-                        <User size={20} color="white" />
-                      </div>
-                      <h3 style={{ margin: 0, fontSize: "1.1rem", fontWeight: 600 }}>
+                    <div
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "6px",
+                        marginBottom: "10px",
+                      }}
+                    >
+                      <User size={16} color="#667eea" />
+                      <h3
+                        style={{
+                          margin: 0,
+                          fontSize: "0.9rem",
+                          fontWeight: 600,
+                          color: "#1f2937",
+                        }}
+                      >
                         Customer Details
                       </h3>
                     </div>
-                    <div style={{ display: "grid", gap: "10px", paddingLeft: "12px" }}>
-                      <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-                        <strong style={{ minWidth: "60px" }}>Name:</strong>
-                        <span>{selectedOrder.deliveryDetails.fullName}</span>
+                    <div
+                      style={{
+                        display: "grid",
+                        gap: "6px",
+                        fontSize: "0.85rem",
+                      }}
+                    >
+                      <div style={{ display: "flex", gap: "6px" }}>
+                        <strong
+                          style={{ color: "#6b7280", minWidth: "45px" }}
+                        >
+                          Name:
+                        </strong>
+                        <span style={{ color: "#1f2937" }}>
+                          {selectedOrder.deliveryDetails.fullName}
+                        </span>
                       </div>
-                      <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-                        <strong style={{ minWidth: "60px" }}>Phone:</strong>
-                        <span>{selectedOrder.deliveryDetails.phone}</span>
+                      <div style={{ display: "flex", gap: "6px" }}>
+                        <strong
+                          style={{ color: "#6b7280", minWidth: "45px" }}
+                        >
+                          Phone:
+                        </strong>
+                        <span style={{ color: "#1f2937" }}>
+                          {selectedOrder.deliveryDetails.phone}
+                        </span>
                       </div>
                     </div>
                   </div>
 
-                  {/* Delivery Info Card */}
                   <div
                     style={{
-                      background: "#f8fafc",
-                      padding: "20px",
-                      borderRadius: "12px",
-                      border: "1px solid #e2e8f0",
+                      background: "#fafafa",
+                      padding: "12px",
+                      borderRadius: "8px",
+                      border: "1px solid #e5e7eb",
                     }}
                   >
-                    <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "16px" }}>
-                      <div style={{ background: "#10b981", padding: "8px", borderRadius: "8px" }}>
-                        <MapPin size={20} color="white" />
-                      </div>
-                      <h3 style={{ margin: 0, fontSize: "1.1rem", fontWeight: 600 }}>
+                    <div
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "6px",
+                        marginBottom: "10px",
+                      }}
+                    >
+                      <MapPin size={16} color="#10b981" />
+                      <h3
+                        style={{
+                          margin: 0,
+                          fontSize: "0.9rem",
+                          fontWeight: 600,
+                          color: "#1f2937",
+                        }}
+                      >
                         Delivery Information
                       </h3>
                     </div>
-                    <div style={{ paddingLeft: "12px" }}>
-                      <p style={{ margin: "0 0 16px 0", lineHeight: "1.6", color: "#475569" }}>
-                        {selectedOrder.deliveryDetails.address.flatNo}, {selectedOrder.deliveryDetails.address.street},
-                        <br />
-                        {selectedOrder.deliveryDetails.address.city} - {selectedOrder.deliveryDetails.address.pincode}
+                    <div>
+                      <p
+                        style={{
+                          margin: "0 0 10px 0",
+                          lineHeight: "1.5",
+                          color: "#4b5563",
+                          fontSize: "0.85rem",
+                        }}
+                      >
+                        {selectedOrder.deliveryDetails.address.flatNo},{" "}
+                        {selectedOrder.deliveryDetails.address.street},{" "}
+                        {selectedOrder.deliveryDetails.address.city} -{" "}
+                        {selectedOrder.deliveryDetails.address.pincode}
                       </p>
-                      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px" }}>
-                        <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-                          <Calendar size={16} color="#64748b" />
-                          <span style={{ fontSize: "0.9rem" }}>{selectedOrder.formattedDeliveryDate}</span>
+                      <div
+                        style={{
+                          display: "grid",
+                          gridTemplateColumns: "1fr 1fr",
+                          gap: "8px",
+                        }}
+                      >
+                        <div
+                          style={{
+                            display: "flex",
+                            alignItems: "center",
+                            gap: "6px",
+                          }}
+                        >
+                          <Calendar size={14} color="#6b7280" />
+                          <span
+                            style={{ fontSize: "0.8rem", color: "#4b5563" }}
+                          >
+                            {selectedOrder.formattedDeliveryDate}
+                          </span>
                         </div>
-                        <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-                          <Clock size={16} color="#64748b" />
-                          <span style={{ fontSize: "0.9rem" }}>{selectedOrder.deliveryTime}</span>
+                        <div
+                          style={{
+                            display: "flex",
+                            alignItems: "center",
+                            gap: "6px",
+                          }}
+                        >
+                          <Clock size={14} color="#6b7280" />
+                          <span
+                            style={{ fontSize: "0.8rem", color: "#4b5563" }}
+                          >
+                            {selectedOrder.deliveryTime}
+                          </span>
                         </div>
                       </div>
                     </div>
                   </div>
 
-                  {/* Order Items Card */}
                   <div
                     style={{
-                      background: "#f8fafc",
-                      padding: "20px",
-                      borderRadius: "12px",
-                      border: "1px solid #e2e8f0",
+                      background: "#fafafa",
+                      padding: "12px",
+                      borderRadius: "8px",
+                      border: "1px solid #e5e7eb",
                     }}
                   >
-                    <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "16px" }}>
-                      <div style={{ background: "#f59e0b", padding: "8px", borderRadius: "8px" }}>
-                        <ShoppingBag size={20} color="white" />
-                      </div>
-                      <h3 style={{ margin: 0, fontSize: "1.1rem", fontWeight: 600 }}>
+                    <div
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "6px",
+                        marginBottom: "10px",
+                      }}
+                    >
+                      <ShoppingBag size={16} color="#f59e0b" />
+                      <h3
+                        style={{
+                          margin: 0,
+                          fontSize: "0.9rem",
+                          fontWeight: 600,
+                          color: "#1f2937",
+                        }}
+                      >
                         Order Items
                       </h3>
                     </div>
-                    <div style={{ background: "white", borderRadius: "8px", overflow: "hidden", border: "1px solid #e2e8f0" }}>
+                    <div
+                      style={{
+                        background: "white",
+                        borderRadius: "6px",
+                        overflow: "hidden",
+                        border: "1px solid #e5e7eb",
+                      }}
+                    >
                       {selectedOrder.cartItems.map((item, idx) => (
                         <div
                           key={idx}
@@ -603,19 +682,37 @@ const Orders = () => {
                             display: "flex",
                             justifyContent: "space-between",
                             alignItems: "center",
-                            padding: "16px",
-                            borderBottom: idx < selectedOrder.cartItems.length - 1 ? "1px solid #e2e8f0" : "none",
+                            padding: "10px",
+                            borderBottom:
+                              idx < selectedOrder.cartItems.length - 1
+                                ? "1px solid #f3f4f6"
+                                : "none",
                           }}
                         >
                           <div>
-                            <div style={{ fontWeight: 600, fontSize: "1rem", marginBottom: "4px" }}>
+                            <div
+                              style={{
+                                fontWeight: 600,
+                                fontSize: "0.85rem",
+                                marginBottom: "2px",
+                                color: "#1f2937",
+                              }}
+                            >
                               {item.cakeName}
                             </div>
-                            <div style={{ fontSize: "0.85rem", color: "#64748b" }}>
+                            <div
+                              style={{ fontSize: "0.75rem", color: "#6b7280" }}
+                            >
                               {item.weight} × {item.quantity}
                             </div>
                           </div>
-                          <div style={{ fontWeight: 700, fontSize: "1.1rem", color: "#059669" }}>
+                          <div
+                            style={{
+                              fontWeight: 600,
+                              fontSize: "0.9rem",
+                              color: "#059669",
+                            }}
+                          >
                             ₹{item.price * item.quantity}
                           </div>
                         </div>
@@ -623,27 +720,58 @@ const Orders = () => {
                     </div>
                   </div>
 
-                  {/* Payment Summary Card */}
                   <div
                     style={{
-                      background: "linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%)",
-                      padding: "24px",
-                      borderRadius: "12px",
-                      border: "2px solid #cbd5e1",
+                      background: "#f9fafb",
+                      padding: "12px",
+                      borderRadius: "8px",
+                      border: "2px solid #e5e7eb",
                     }}
                   >
-                    <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "16px" }}>
-                      <CreditCard size={20} color="#475569" />
-                      <h3 style={{ margin: 0, fontSize: "1.1rem", fontWeight: 600 }}>
+                    <div
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "6px",
+                        marginBottom: "10px",
+                      }}
+                    >
+                      <CreditCard size={16} color="#6b7280" />
+                      <h3
+                        style={{
+                          margin: 0,
+                          fontSize: "0.9rem",
+                          fontWeight: 600,
+                          color: "#1f2937",
+                        }}
+                      >
                         Payment Summary
                       </h3>
                     </div>
-                    <div style={{ display: "grid", gap: "12px" }}>
-                      <div style={{ display: "flex", justifyContent: "space-between", fontSize: "0.95rem" }}>
+                    <div style={{ display: "grid", gap: "8px" }}>
+                      <div
+                        style={{
+                          display: "flex",
+                          justifyContent: "space-between",
+                          fontSize: "0.85rem",
+                          color: "#4b5563",
+                        }}
+                      >
                         <span>Subtotal</span>
-                        <span>₹{selectedOrder.totalAmount - (selectedOrder.deliveryCharge || 0)}</span>
+                        <span>
+                          ₹
+                          {selectedOrder.totalAmount -
+                            (selectedOrder.deliveryCharge || 0)}
+                        </span>
                       </div>
-                      <div style={{ display: "flex", justifyContent: "space-between", fontSize: "0.95rem" }}>
+                      <div
+                        style={{
+                          display: "flex",
+                          justifyContent: "space-between",
+                          fontSize: "0.85rem",
+                          color: "#4b5563",
+                        }}
+                      >
                         <span>Delivery Charge</span>
                         <span>₹{selectedOrder.deliveryCharge || 0}</span>
                       </div>
@@ -651,27 +779,30 @@ const Orders = () => {
                         style={{
                           display: "flex",
                           justifyContent: "space-between",
-                          paddingTop: "12px",
-                          borderTop: "2px solid #94a3b8",
-                          fontSize: "1.4rem",
+                          paddingTop: "8px",
+                          borderTop: "2px solid #d1d5db",
+                          fontSize: "1.1rem",
                           fontWeight: 700,
                         }}
                       >
-                        <span>Total</span>
-                        <span style={{ color: "#059669" }}>₹{selectedOrder.totalAmount}</span>
+                        <span style={{ color: "#1f2937" }}>Total</span>
+                        <span style={{ color: "#059669" }}>
+                          ₹{selectedOrder.totalAmount}
+                        </span>
                       </div>
                       <div
                         style={{
-                          marginTop: "8px",
-                          padding: "8px 12px",
+                          marginTop: "4px",
+                          padding: "6px 10px",
                           background: "white",
                           borderRadius: "6px",
                           textAlign: "center",
-                          fontSize: "0.85rem",
+                          fontSize: "0.75rem",
                           fontWeight: 600,
-                          color: "#64748b",
+                          color: "#6b7280",
                           textTransform: "uppercase",
-                          letterSpacing: "1px",
+                          letterSpacing: "0.5px",
+                          border: "1px solid #e5e7eb",
                         }}
                       >
                         {selectedOrder.paymentMethod}
@@ -697,21 +828,25 @@ const Orders = () => {
           }
         }
 
-        .modal-content::-webkit-scrollbar {
-          width: 8px;
+        body.modal-open {
+          overflow: hidden;
         }
 
-        .modal-content::-webkit-scrollbar-track {
+        .modal-content > div:last-child::-webkit-scrollbar {
+          width: 6px;
+        }
+
+        .modal-content > div:last-child::-webkit-scrollbar-track {
           background: #f1f5f9;
           border-radius: 10px;
         }
 
-        .modal-content::-webkit-scrollbar-thumb {
+        .modal-content > div:last-child::-webkit-scrollbar-thumb {
           background: #cbd5e1;
           border-radius: 10px;
         }
 
-        .modal-content::-webkit-scrollbar-thumb:hover {
+        .modal-content > div:last-child::-webkit-scrollbar-thumb:hover {
           background: #94a3b8;
         }
       `}</style>
