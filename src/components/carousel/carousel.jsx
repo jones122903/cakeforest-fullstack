@@ -10,6 +10,8 @@ import "swiper/css/pagination";
 import "swiper/css/navigation";
 
 export default function Carousel() {
+
+  const isMobile = window.innerWidth <= 700;
   return (
     <div style={{ width: "100%",maxWidth:"100%", margin: "0 auto", }}>
        
@@ -25,9 +27,10 @@ export default function Carousel() {
           clickable: true,
           el: ".custom-swiper-pagination"
         }}
-        // navigation
+        
         style={{
           borderRadius: "12px",
+         height: isMobile ? "250px" : "300px",
           boxShadow: "0px 4px 12px rgba(0,0,0,0.2)"
         }}
       >
