@@ -374,15 +374,18 @@ const Orders = () => {
             onClick={() => setActiveTab("pending")}
             style={{
               padding: "12px 24px",
-              background: activeTab === "pending" ? "#667eea" : "transparent",
-              color: activeTab === "pending" ? "white" : "#64748b",
+              // background: activeTab === "pending" ? "#667eea" : "transparent",
+              color: activeTab === "pending" ? "#667eea" : "",
+              backgroundColor:"transparent",
               border: "none",
+              borderColor:"transparent",
               borderBottom:
                 activeTab === "pending"
                   ? "3px solid #667eea"
                   : "3px solid transparent",
               cursor: "pointer",
               fontWeight: 600,
+
               fontSize: "1rem",
               transition: "all 0.3s",
               borderRadius: "8px 8px 0 0",
@@ -394,12 +397,12 @@ const Orders = () => {
             onClick={() => setActiveTab("delivered")}
             style={{
               padding: "12px 24px",
-              background: activeTab === "delivered" ? "#10b981" : "transparent",
-              color: activeTab === "delivered" ? "white" : "#64748b",
+              background: "transparent",
+              color: activeTab === "delivered" ? "#667eea": "",
               border: "none",
               borderBottom:
                 activeTab === "delivered"
-                  ? "3px solid #10b981"
+                  ? "3px solid #667eea"
                   : "3px solid transparent",
               cursor: "pointer",
               fontWeight: 600,
@@ -428,278 +431,185 @@ const Orders = () => {
         </div>
 
         {/* Enhanced Order Details Modal */}
-        {isModalOpen && selectedOrder && (
-          <div
-            className="modal-overlay"
-            onClick={closeModal}
-            style={{
-              position: "fixed",
-              top: 0,
-              left: 0,
-              right: 0,
-              bottom: 0,
-              backgroundColor: "rgba(0, 0, 0, 0.7)",
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              zIndex: 10000,
-              padding: "20px",
-              backdropFilter: "blur(4px)",
-              overflowY: "auto", // ✅ PAGE SCROLL
-              
-            }}
-          >
+      {isModalOpen && selectedOrder && (
+  <div
+    onClick={closeModal}
+    style={{
+      position: "fixed",
+      top: 0,
+      left: 0,
+      right: 0,
+      bottom: 0,
+      backgroundColor: "rgba(0, 0, 0, 0.5)",
+      display: "flex",
+      justifyContent: "center",
+      alignItems: "center",
+      zIndex: 10000,
+      padding: "20px",
+    }}
+  >
+    <div
+      onClick={(e) => e.stopPropagation()}
+      style={{
+        backgroundColor: "white",
+        borderRadius: "12px",
+        width: "100%",
+        maxWidth: "600px",
+        maxHeight: "90vh",
+        overflowY: "auto",
+        boxShadow: "0 10px 40px rgba(0, 0, 0, 0.2)",
+      }}
+    >
+      {/* Header */}
+      <div
+        style={{
+          padding: "20px 24px",
+          borderBottom: "1px solid #e5e7eb",
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+        }}
+      >
+        <div>
+          <h2 style={{ margin: 0, fontSize: "20px", fontWeight: "600" }}>
+            Order #{selectedOrder.orderId}
+          </h2>
+          <p style={{ margin: "4px 0 0", fontSize: "14px", color: "#6b7280" }}>
+            {selectedOrder.formattedOrderDate}
+          </p>
+        </div>
+        <button
+          onClick={closeModal}
+          style={{
+            background: "none",
+            border: "none",
+            cursor: "pointer",
+            padding: "8px",
+            borderRadius: "6px",
+          }}
+        >
+          <X size={20} color="#6b7280" />
+        </button>
+      </div>
+
+      {/* Content */}
+      <div style={{ padding: "24px" }}>
+        {/* Status */}
+        <div
+          style={{
+            display: "inline-flex",
+            alignItems: "center",
+            gap: "6px",
+            padding: "6px 12px",
+            borderRadius: "6px",
+            fontSize: "14px",
+            fontWeight: "500",
+            marginBottom: "24px",
+            background: `${getStatusColor(selectedOrder.status)}15`,
+            color: getStatusColor(selectedOrder.status),
+          }}
+        >
+          {getStatusIcon(selectedOrder.status.toLowerCase())}
+          {selectedOrder.status}
+        </div>
+
+        {/* Customer */}
+        <div style={{ marginBottom: "24px" }}>
+          <h3 style={{ fontSize: "13px", fontWeight: "600", color: "#6b7280", marginBottom: "8px" }}>
+            CUSTOMER
+          </h3>
+          <p style={{ margin: "4px 0", fontSize: "15px", fontWeight: "600", color: "#111827" }}>
+            {selectedOrder.deliveryDetails.fullName}
+          </p>
+          <p style={{ margin: "4px 0", fontSize: "14px", color: "#6b7280" }}>
+            {selectedOrder.deliveryDetails.phone}
+          </p>
+        </div>
+
+        {/* Delivery */}
+        <div style={{ marginBottom: "24px" }}>
+          <h3 style={{ fontSize: "13px", fontWeight: "600", color: "#6b7280", marginBottom: "8px" }}>
+            DELIVERY
+          </h3>
+          <p style={{ margin: 0, fontSize: "14px", lineHeight: "1.6", color: "#111827", fontWeight: "500" }}>
+            {selectedOrder.deliveryDetails.address.flatNo}, {selectedOrder.deliveryDetails.address.street},<br />
+            {selectedOrder.deliveryDetails.address.city} - {selectedOrder.deliveryDetails.address.pincode}
+          </p>
+          <p style={{ margin: "10px 0 0", fontSize: "14px", color: "#111827", fontWeight: "500" }}>
+            📅 {selectedOrder.formattedDeliveryDate} • 🕐 {selectedOrder.deliveryTime}
+          </p>
+        </div>
+
+        {/* Items */}
+        <div style={{ marginBottom: "24px" }}>
+          <h3 style={{ fontSize: "13px", fontWeight: "600", color: "#6b7280", marginBottom: "12px" }}>
+            ITEMS
+          </h3>
+          {selectedOrder.cartItems.map((item, idx) => (
             <div
-              className="modal-content"
-              onClick={(e) => e.stopPropagation()}
+              key={idx}
               style={{
-                backgroundColor: "white",
-                borderRadius: "20px",
-                padding: "0",
-                width: "95%",
-                maxWidth: "700px",
-                maxHeight: "92vh",
-                overflowY: "auto",
-                boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.25)",
-                animation: "modalSlideIn 0.3s ease-out",
+                display: "flex",
+                justifyContent: "space-between",
+                padding: "12px 0",
+                borderBottom: idx !== selectedOrder.cartItems.length - 1 ? "1px solid #f3f4f6" : "none",
               }}
             >
-              {/* Modal Header with gradient */}
-              <div
-                style={{
-                  background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
-                  padding: "24px 28px",
-                  borderRadius: "20px 20px 0 0",
-                  display: "flex",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                  color: "white",
-                }}
-              >
-                <div>
-                  <h2 style={{ margin: 0, fontSize: "1.5rem", fontWeight: 700 }}>
-                    Order #{selectedOrder.orderId}
-                  </h2>
-                  <p style={{ margin: "4px 0 0 0", fontSize: "0.9rem", opacity: 0.9 }}>
-                    Placed on {selectedOrder.formattedOrderDate}
-                  </p>
-                </div>
-                <button
-                  onClick={closeModal}
-                  style={{
-                    background: "rgba(255, 255, 255, 0.2)",
-                    border: "none",
-                    cursor: "pointer",
-                    color: "white",
-                    borderRadius: "50%",
-                    width: "40px",
-                    height: "40px",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    transition: "all 0.2s",
-                  }}
-                  onMouseEnter={(e) => (e.currentTarget.style.background = "rgba(255, 255, 255, 0.3)")}
-                  onMouseLeave={(e) => (e.currentTarget.style.background = "rgba(255, 255, 255, 0.2)")}
-                >
-                  <X size={24} />
-                </button>
+              <div>
+                <p style={{ margin: 0, fontSize: "15px", fontWeight: "600", color: "#111827" }}>
+                  {item.cakeName}
+                </p>
+                <p style={{ margin: "4px 0 0", fontSize: "13px", color: "#6b7280" }}>
+                  {item.weight} × {item.quantity}
+                </p>
               </div>
-
-              {/* Modal Body */}
-              <div style={{ padding: "28px" }}>
-                {/* Status Badge - Large and prominent */}
-                <div
-                  style={{
-                    display: "inline-flex",
-                    alignItems: "center",
-                    gap: "8px",
-                    padding: "12px 20px",
-                    borderRadius: "12px",
-                    fontSize: "1.1rem",
-                    fontWeight: 700,
-                    textTransform: "capitalize",
-                    background: `${getStatusColor(selectedOrder.status)}15`,
-                    color: getStatusColor(selectedOrder.status),
-                    border: `2px solid ${getStatusColor(selectedOrder.status)}30`,
-                    marginBottom: "24px",
-                  }}
-                >
-                  {getStatusIcon(selectedOrder.status.toLowerCase())}
-                  {selectedOrder.status}
-                </div>
-
-                <div style={{ display: "grid", gap: "20px" }}>
-                  {/* Customer Info Card */}
-                  <div
-                    style={{
-                      background: "#f8fafc",
-                      padding: "20px",
-                      borderRadius: "12px",
-                      border: "1px solid #e2e8f0",
-                    }}
-                  >
-                    <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "16px" }}>
-                      <div style={{ background: "#667eea", padding: "8px", borderRadius: "8px" }}>
-                        <User size={20} color="white" />
-                      </div>
-                      <h3 style={{ margin: 0, fontSize: "1.1rem", fontWeight: 600 }}>
-                        Customer Details
-                      </h3>
-                    </div>
-                    <div style={{ display: "grid", gap: "10px", paddingLeft: "12px" }}>
-                      <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-                        <strong style={{ minWidth: "60px" }}>Name:</strong>
-                        <span>{selectedOrder.deliveryDetails.fullName}</span>
-                      </div>
-                      <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-                        <strong style={{ minWidth: "60px" }}>Phone:</strong>
-                        <span>{selectedOrder.deliveryDetails.phone}</span>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Delivery Info Card */}
-                  <div
-                    style={{
-                      background: "#f8fafc",
-                      padding: "20px",
-                      borderRadius: "12px",
-                      border: "1px solid #e2e8f0",
-                    }}
-                  >
-                    <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "16px" }}>
-                      <div style={{ background: "#10b981", padding: "8px", borderRadius: "8px" }}>
-                        <MapPin size={20} color="white" />
-                      </div>
-                      <h3 style={{ margin: 0, fontSize: "1.1rem", fontWeight: 600 }}>
-                        Delivery Information
-                      </h3>
-                    </div>
-                    <div style={{ paddingLeft: "12px" }}>
-                      <p style={{ margin: "0 0 16px 0", lineHeight: "1.6", color: "#475569" }}>
-                        {selectedOrder.deliveryDetails.address.flatNo}, {selectedOrder.deliveryDetails.address.street},
-                        <br />
-                        {selectedOrder.deliveryDetails.address.city} - {selectedOrder.deliveryDetails.address.pincode}
-                      </p>
-                      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px" }}>
-                        <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-                          <Calendar size={16} color="#64748b" />
-                          <span style={{ fontSize: "0.9rem" }}>{selectedOrder.formattedDeliveryDate}</span>
-                        </div>
-                        <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-                          <Clock size={16} color="#64748b" />
-                          <span style={{ fontSize: "0.9rem" }}>{selectedOrder.deliveryTime}</span>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Order Items Card */}
-                  <div
-                    style={{
-                      background: "#f8fafc",
-                      padding: "20px",
-                      borderRadius: "12px",
-                      border: "1px solid #e2e8f0",
-                    }}
-                  >
-                    <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "16px" }}>
-                      <div style={{ background: "#f59e0b", padding: "8px", borderRadius: "8px" }}>
-                        <ShoppingBag size={20} color="white" />
-                      </div>
-                      <h3 style={{ margin: 0, fontSize: "1.1rem", fontWeight: 600 }}>
-                        Order Items
-                      </h3>
-                    </div>
-                    <div style={{ background: "white", borderRadius: "8px", overflow: "hidden", border: "1px solid #e2e8f0" }}>
-                      {selectedOrder.cartItems.map((item, idx) => (
-                        <div
-                          key={idx}
-                          style={{
-                            display: "flex",
-                            justifyContent: "space-between",
-                            alignItems: "center",
-                            padding: "16px",
-                            borderBottom: idx < selectedOrder.cartItems.length - 1 ? "1px solid #e2e8f0" : "none",
-                          }}
-                        >
-                          <div>
-                            <div style={{ fontWeight: 600, fontSize: "1rem", marginBottom: "4px" }}>
-                              {item.cakeName}
-                            </div>
-                            <div style={{ fontSize: "0.85rem", color: "#64748b" }}>
-                              {item.weight} × {item.quantity}
-                            </div>
-                          </div>
-                          <div style={{ fontWeight: 700, fontSize: "1.1rem", color: "#059669" }}>
-                            ₹{item.price * item.quantity}
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-
-                  {/* Payment Summary Card */}
-                  <div
-                    style={{
-                      background: "linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%)",
-                      padding: "24px",
-                      borderRadius: "12px",
-                      border: "2px solid #cbd5e1",
-                    }}
-                  >
-                    <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "16px" }}>
-                      <CreditCard size={20} color="#475569" />
-                      <h3 style={{ margin: 0, fontSize: "1.1rem", fontWeight: 600 }}>
-                        Payment Summary
-                      </h3>
-                    </div>
-                    <div style={{ display: "grid", gap: "12px" }}>
-                      <div style={{ display: "flex", justifyContent: "space-between", fontSize: "0.95rem" }}>
-                        <span>Subtotal</span>
-                        <span>₹{selectedOrder.totalAmount - (selectedOrder.deliveryCharge || 0)}</span>
-                      </div>
-                      <div style={{ display: "flex", justifyContent: "space-between", fontSize: "0.95rem" }}>
-                        <span>Delivery Charge</span>
-                        <span>₹{selectedOrder.deliveryCharge || 0}</span>
-                      </div>
-                      <div
-                        style={{
-                          display: "flex",
-                          justifyContent: "space-between",
-                          paddingTop: "12px",
-                          borderTop: "2px solid #94a3b8",
-                          fontSize: "1.4rem",
-                          fontWeight: 700,
-                        }}
-                      >
-                        <span>Total</span>
-                        <span style={{ color: "#059669" }}>₹{selectedOrder.totalAmount}</span>
-                      </div>
-                      <div
-                        style={{
-                          marginTop: "8px",
-                          padding: "8px 12px",
-                          background: "white",
-                          borderRadius: "6px",
-                          textAlign: "center",
-                          fontSize: "0.85rem",
-                          fontWeight: 600,
-                          color: "#64748b",
-                          textTransform: "uppercase",
-                          letterSpacing: "1px",
-                        }}
-                      >
-                        {selectedOrder.paymentMethod}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
+              <p style={{ margin: 0, fontSize: "16px", fontWeight: "700", color: "#059669" }}>
+                ₹{item.price * item.quantity}
+              </p>
             </div>
+          ))}
+        </div>
+
+        {/* Payment */}
+        <div
+          style={{
+            background: "#f9fafb",
+            padding: "16px",
+            borderRadius: "8px",
+            border: "1px solid #e5e7eb",
+          }}
+        >
+          <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "8px" }}>
+            <span style={{ fontSize: "14px", color: "#6b7280" }}>Subtotal</span>
+            <span style={{ fontSize: "14px", fontWeight: "500" }}>
+              ₹{selectedOrder.totalAmount - (selectedOrder.deliveryCharge || 0)}
+            </span>
           </div>
-        )}
+          <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "12px" }}>
+            <span style={{ fontSize: "14px", color: "#6b7280" }}>Delivery</span>
+            <span style={{ fontSize: "14px", fontWeight: "500" }}>₹{selectedOrder.deliveryCharge || 0}</span>
+          </div>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              paddingTop: "12px",
+              borderTop: "2px solid #d1d5db",
+            }}
+          >
+            <span style={{ fontSize: "17px", fontWeight: "700", color: "#111827" }}>Total</span>
+            <span style={{ fontSize: "18px", fontWeight: "700", color: "#059669" }}>
+              ₹{selectedOrder.totalAmount}
+            </span>
+          </div>
+          <div style={{ marginTop: "12px", fontSize: "13px", color: "#6b7280", textAlign: "center", fontWeight: "500" }}>
+            💳 {selectedOrder.paymentMethod}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+)}
       </div>
 
       <style>{`
