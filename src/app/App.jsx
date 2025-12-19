@@ -90,6 +90,7 @@ function App() {
             <Route path="/couponspage" element={<CouponsPage/>} />
             <Route path="/reviews" element={<ReviewsPage/>} />
 
+            <Route path="/rewards" element={<RewardsPage />} />
 
             {/* Admin Routes */}
             <Route path="/admin" element={<AdminLayout />}>
