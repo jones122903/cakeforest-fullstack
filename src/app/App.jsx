@@ -31,7 +31,7 @@ import NewReset from "../components/login/ComfirmPage/NewReset.jsx";
 import CustomerDetails from "../components/customer/customerDetails.jsx";
 import Wishlist from "../components/wishlist/Wishlist.jsx";
 import CouponsPage from "../pages/CouponsPage.jsx";
-import RewardsPage from "../pages/RewardsPage.jsx";
+import ReviewsPage from "../components/Review_page/ReviewsPage.jsx";
 
 
 
@@ -88,6 +88,7 @@ function App() {
             <Route path="/otp" element={<Otp />} />
             <Route path="/comfirm" element={<NewReset />} />
             <Route path="/couponspage" element={<CouponsPage/>} />
+            <Route path="/reviews" element={<ReviewsPage/>} />
 
             <Route path="/rewards" element={<RewardsPage />} />
 
