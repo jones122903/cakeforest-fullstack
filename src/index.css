@@ -11,3 +11,14 @@
 /* .toast-high-zindex {
   z-index: 999999 !important;
 } */
+* {
+  scrollbar-width: thin;
+}
+
+/* Chrome / Edge */
+::-webkit-scrollbar {
+  width: 2px;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(0,0,0,0.2);  /* romba light */
+}
