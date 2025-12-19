@@ -179,6 +179,7 @@
 .product-name {
     font-weight: 600;
     color: #111827;
+    white-space: pre;
 }
 
 .category-badge {
@@ -214,6 +215,7 @@
 .stock-badge.low {
     background: #fee2e2;
     color: #991b1b;
+    white-space: pre;
 }
 
 .status-badge {
@@ -358,6 +360,8 @@
 @media (max-width: 768px) {
     .product-list {
         padding: 0.75rem;
+        overflow-x: hidden;
+        /* Prevent horizontal scroll on entire page */
     }
 
     .page-header {
@@ -371,7 +375,7 @@
     }
 
     .btn-primary {
-        
+
         justify-content: center;
     }
 
@@ -392,114 +396,17 @@
         font-size: 0.8rem;
     }
 
-    /* Transform table to card layout on mobile */
+    /* Keep table layout - enable horizontal scroll */
     .table-container {
         border-radius: 12px;
-        overflow-x: visible;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        /* Smooth iOS scrolling */
     }
 
     .products-table {
-        min-width: 100%;
-        display: block;
-        border-collapse: collapse;
-    }
-
-    .products-table thead {
-        display: none;
-        /* Hide table headers on mobile */
-    }
-
-    .products-table tbody {
-        display: block;
-    }
-
-    .products-table tbody tr {
-        display: block;
-        margin-bottom: 1rem;
-        border: 1px solid #e5e7eb;
-        border-radius: 12px;
-        background: white;
-        padding: 1rem;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-    }
-
-    .products-table tbody tr:hover {
-        background: white;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    }
-
-    .products-table td {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 0.75rem 0;
-        border-top: none;
-        border-bottom: 1px solid #f3f4f6;
-    }
-
-    .products-table td:last-child {
-        border-bottom: none;
-    }
-
-    /* Add labels for mobile */
-    .products-table td::before {
-        content: attr(data-label);
-        font-weight: 600;
-        color: #6b7280;
-        font-size: 0.875rem;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-        flex-shrink: 0;
-        margin-right: 1rem;
-    }
-
-    /* Product cell special handling */
-    .products-table td:first-child {
-        flex-direction: column;
-        align-items: flex-start;
-        padding-bottom: 1rem;
-        margin-bottom: 0.5rem;
-        border-bottom: 2px solid #e5e7eb;
-    }
-
-    .products-table td:first-child::before {
-        display: none;
-    }
-
-    .product-cell {
-        width: 100%;
-        gap: 0.75rem;
-    }
-
-    .product-image {
-        width: 60px;
-        height: 60px;
-    }
-
-    .product-name {
-        font-size: 1rem;
-    }
-
-    /* Action buttons on mobile */
-    .products-table td[data-label="Actions"] {
-        padding-top: 1rem;
-        border-top: 2px solid #e5e7eb;
-    }
-
-    .products-table td[data-label="Actions"]::before {
-        content: "";
-        display: none;
-    }
-
-    .action-buttons {
-        width: 100%;
-        justify-content: flex-end;
-        gap: 0.75rem;
-    }
-
-    .action-btn {
-        width: 40px;
-        height: 40px;
+        min-width: 900px;
+        /* Force horizontal scroll */
     }
 
     /* Pagination responsive */
@@ -529,6 +436,8 @@
 @media (max-width: 480px) {
     .product-list {
         padding: 0.5rem;
+        overflow-x: hidden;
+        /* Prevent horizontal scroll on entire page */
     }
 
     .page-header h1 {
@@ -549,36 +458,12 @@
         font-size: 0.75rem;
     }
 
-    .products-table tbody tr {
-        padding: 0.75rem;
+    .table-container {
+        border-radius: 10px;
     }
 
-    .products-table td {
-        padding: 0.5rem 0;
-    }
-
-    .product-image {
-        width: 50px;
-        height: 50px;
-    }
-
-    .product-name {
-        font-size: 0.9rem;
-    }
-
-    .action-btn {
-        width: 36px;
-        height: 36px;
-    }
-
-    .category-badge,
-    .stock-badge,
-    .status-badge {
-        padding: 0.25rem 0.6rem;
-        font-size: 0.75rem;
-    }
-
-    .price-cell {
-        font-size: 0.95rem;
+    .products-table {
+        min-width: 850px;
+        /* Slightly smaller for very small screens */
     }
 }
