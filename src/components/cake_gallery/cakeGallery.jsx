@@ -222,7 +222,7 @@ const CakeGallery = () => {
               ))}
             </div>
             <div className={styles.sortDropdown}>
-              <FormControl sx={{ m: 1, minWidth: 130 }} size="medium">
+              <FormControl sx={{ minWidth: 130 }} size="small">
                 <Select
                   value={sortBy}
                   onChange={(e) => setSortBy(e.target.value)}
