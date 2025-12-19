@@ -1,11 +1,7 @@
 .containera {
-  max-width: 1400px;
-  margin: 0 auto;
   padding: 40px 20px;
-  
   background-color: #f8f9fa;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
-    'Helvetica Neue', Arial, sans-serif;
+  
 }
 
 .header {
@@ -47,8 +43,7 @@
 
 .swiperWrapper {
   position: relative;
-  padding-bottom: 50px;
-}
+ }
 
 .swiper {
   padding: 10px 5px;

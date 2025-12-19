@@ -12,7 +12,7 @@ import { FaLinkedin } from "react-icons/fa";
 const Footer = () => {
   return (
     <div>
-      <div className="container-fluid">
+      <div className="">
         <div className={`${style.FooterContainer}`}>
           <div className={`${style.flexBetween}`}>
             <div className={` ${style.footerChild1} mb-5 row`}>
