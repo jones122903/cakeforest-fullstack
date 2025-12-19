@@ -9,6 +9,105 @@
   margin: 10px 15px 10px 15px;
 }
 
+.searchContainer {
+  position: relative;
+  flex: 1;
+  max-width: 400px;
+  margin-right: 20px;
+}
+
+.searchInput {
+  padding: 10px 40px 10px 15px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 14px;
+  background-color: #F5F5F5;
+  width: 500px !important;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.searchInput:focus {
+  outline: none;
+  border-color: #2C5F7C;
+  box-shadow: 0 0 0 3px rgba(44, 95, 124, 0.1);
+}
+
+.searchIcon {
+  position: absolute;
+  right: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #666;
+  pointer-events: none;
+}
+
+.searchDropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 100%;
+  background: #fff;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  z-index: 999;
+}
+
+.searchItem {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 15px;
+  cursor: pointer;
+}
+
+.searchItem:hover {
+  background: #f5f5f5;
+}
+
+.searchImg {
+  width: 35px;
+  height: 35px;
+  object-fit: cover;
+  border-radius: 4px;
+}
+
+.noResult {
+  padding: 10px;
+  text-align: center;
+  color: #777;
+}
+
+
+/* Trending section */
+.trending {
+  border-top: 1px solid #eee;
+  margin-top: 5px;
+}
+
+.heading {
+  display: block;
+  padding: 8px 15px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #888;
+}
+
+.trending ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.trending li {
+  padding: 10px 15px;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.trending li:hover {
+  background: #f5f5f5;
+}
+
+
 .userName {
   font-weight: 600;
   color: #2C5F7C;
@@ -92,37 +191,7 @@
   margin-right: 5px;
 }
 
-.searchContainer {
-  position: relative;
-  flex: 1;
-  max-width: 400px;
-  margin-right: 20px;
-}
 
-.searchInput {
-  padding: 10px 40px 10px 15px;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  font-size: 14px;
-  background-color: #F5F5F5;
-  width: 300px !important;
-  transition: border-color 0.2s ease, box-shadow 0.2s ease;
-}
-
-.searchInput:focus {
-  outline: none;
-  border-color: #2C5F7C;
-  box-shadow: 0 0 0 3px rgba(44, 95, 124, 0.1);
-}
-
-.searchIcon {
-  position: absolute;
-  right: 15px;
-  top: 50%;
-  transform: translateY(-50%);
-  color: #666;
-  pointer-events: none;
-}
 
 .iconGroup {
   display: flex;
