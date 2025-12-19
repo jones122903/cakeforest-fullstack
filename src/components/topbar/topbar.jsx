@@ -18,6 +18,7 @@ import {
   Phone,
   Gift,
   Package,
+  Star,
 } from "lucide-react";
 import { IndianRupee } from "lucide-react";
 import styles from "./topbar.module.css";
@@ -262,7 +263,10 @@ const Topbar = () => {
 
                 {showMore && (
                   <div className={styles.dropdownMenu}>
-                    <div className={styles.dropdownItem} onClick={() => navigate('/couponspage')}>
+                    <div
+                      className={styles.dropdownItem}
+                      onClick={() => navigate("/couponspage")}
+                    >
                       <Tag size={18} /> <span>Coupons</span>
                     </div>
                     <div
@@ -276,6 +280,12 @@ const Topbar = () => {
                       onClick={() => navigate("/offers")}
                     >
                       <BadgePercent size={18} /> <span>Offers</span>
+                    </div>
+                    <div
+                      className={styles.dropdownItem}
+                      onClick={() => navigate("/reviews")}
+                    >
+                      <Star size={18} /> <span>Reviews</span>
                     </div>
                     <div
                       className={styles.dropdownItem}
@@ -324,7 +334,7 @@ const Topbar = () => {
           isMobileMenuOpen ? styles.overlayOpen : ""
         }`}
         onClick={toggleMobileMenu}
-      ></div>
+      />
 
       {/* SIDE DRAWER */}
       <div
@@ -332,6 +342,7 @@ const Topbar = () => {
           isMobileMenuOpen ? styles.sideDrawerOpen : ""
         }`}
       >
+        {/* HEADER */}
         <div className={styles.drawerHeader}>
           <span className={styles.drawerTitle}>Menu</span>
           <button
@@ -341,7 +352,9 @@ const Topbar = () => {
             <X size={24} color="#2C5F7C" />
           </button>
         </div>
+
         <div className={styles.drawerMenu}>
+          {/* USER INFO */}
           {token && user && (
             <div className={styles.userInfoSection}>
               <User size={24} color="#2C5F7C" />
@@ -351,6 +364,8 @@ const Topbar = () => {
               </div>
             </div>
           )}
+
+          {/* ORDERS */}
           <div className={styles.drawerMenuItem} onClick={handleOrderClick}>
             <Package size={22} color="#2C5F7C" />
             <span className={styles.drawerMenuText}>Order</span>
@@ -358,6 +373,8 @@ const Topbar = () => {
               <span className={styles.badge}>{pendingCount}</span>
             )}
           </div>
+
+          {/* CART */}
           <div
             className={styles.drawerMenuItem}
             onClick={() => navigate("/cart")}
@@ -366,6 +383,7 @@ const Topbar = () => {
             <span className={styles.drawerMenuText}>Cart</span>
           </div>
 
+          {/* COUPONS */}
           <div
             className={styles.drawerMenuItem}
             onClick={() => navigate("/coupons")}
@@ -373,6 +391,8 @@ const Topbar = () => {
             <Tag size={22} color="#2C5F7C" />
             <span className={styles.drawerMenuText}>Coupons</span>
           </div>
+
+          {/* FAVOURITES */}
           <div
             className={styles.drawerMenuItem}
             onClick={() => navigate("/wishlist")}
@@ -380,6 +400,8 @@ const Topbar = () => {
             <Heart size={22} color="#2C5F7C" />
             <span className={styles.drawerMenuText}>Favourites</span>
           </div>
+
+          {/* OFFERS */}
           <div
             className={styles.drawerMenuItem}
             onClick={() => navigate("/offers")}
@@ -387,6 +409,17 @@ const Topbar = () => {
             <BadgePercent size={22} color="#2C5F7C" />
             <span className={styles.drawerMenuText}>Offers</span>
           </div>
+
+          {/* REVIEWS */}
+          <div
+            className={styles.drawerMenuItem}
+            onClick={() => navigate("/reviews")}
+          >
+            <Star size={22} color="#2C5F7C" />
+            <span className={styles.drawerMenuText}>Reviews</span>
+          </div>
+
+          {/* ABOUT */}
           <div
             className={styles.drawerMenuItem}
             onClick={() => navigate("/about")}
@@ -394,15 +427,17 @@ const Topbar = () => {
             <Info size={22} color="#2C5F7C" />
             <span className={styles.drawerMenuText}>About Us</span>
           </div>
+
+          {/* WHATSAPP */}
           <div
             className={styles.drawerMenuItem}
-            onClick={() =>
-              window.open("https://wa.me/919876543210", "_blank")
-            }
+            onClick={() => window.open("https://wa.me/919876543210", "_blank")}
           >
             <MessageCircle size={22} color="#2C5F7C" />
             <span className={styles.drawerMenuText}>Whatsapp</span>
           </div>
+
+          {/* CONTACT */}
           <div
             className={styles.drawerMenuItem}
             onClick={() => navigate("/contact")}
@@ -410,10 +445,29 @@ const Topbar = () => {
             <Phone size={22} color="#2C5F7C" />
             <span className={styles.drawerMenuText}>Contact</span>
           </div>
+
+          {/* LOGIN – only when NOT logged in */}
           {!token && (
             <div className={styles.drawerMenuItem} onClick={handleLogin}>
               <User size={22} color="#2C5F7C" />
               <span className={styles.drawerMenuText}>Login</span>
+            </div>
+          )}
+
+          {/* LOGOUT – only when logged in */}
+          {token && (
+            <div
+              className={styles.drawerMenuItem}
+              onClick={handleLogout}
+              style={{ borderTop: "1px solid #e5e7eb" }}
+            >
+              <LogOut size={22} color="#e74c3c" />
+              <span
+                className={styles.drawerMenuText}
+                style={{ color: "#e74c3c" }}
+              >
+                Logout
+              </span>
             </div>
           )}
         </div>
