@@ -273,9 +273,9 @@ const Topbar = () => {
                     </div>
                     <div
                       className={styles.dropdownItem}
-                      onClick={() => navigate("/offers")}
+                      onClick={() => navigate("/rewards")}
                     >
-                      <BadgePercent size={18} /> <span>Offers</span>
+                      <BadgePercent size={18} /> <span>Rewards </span>
                     </div>
                     <div
                       className={styles.dropdownItem}

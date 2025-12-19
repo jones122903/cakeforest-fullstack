@@ -31,6 +31,7 @@ import NewReset from "../components/login/ComfirmPage/NewReset.jsx";
 import CustomerDetails from "../components/customer/customerDetails.jsx";
 import Wishlist from "../components/wishlist/Wishlist.jsx";
 import CouponsPage from "../pages/CouponsPage.jsx";
+import RewardsPage from "../pages/RewardsPage.jsx";
 
 
 
@@ -88,6 +89,7 @@ function App() {
             <Route path="/comfirm" element={<NewReset />} />
             <Route path="/couponspage" element={<CouponsPage/>} />
 
+            <Route path="/rewards" element={<RewardsPage />} />
 
             {/* Admin Routes */}
             <Route path="/admin" element={<AdminLayout />}>

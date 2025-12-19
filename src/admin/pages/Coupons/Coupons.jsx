@@ -14,6 +14,7 @@ const Coupons = () => {
         expiryDate: '',
         minOrderValue: '',
         status: 'active',
+        isRewardOnly: false,
     });
 
     const [coupons, setCoupons] = useState([]);
@@ -27,8 +28,8 @@ const Coupons = () => {
 
     const fetchCoupons = async () => {
         try {
-            // Fetching active coupons (You might want an admin endpoint to fetch ALL coupons later)
-            const response = await axios.get(`${API_URL}/active`);
+            // Use the dedicated admin endpoint to see ALL coupons (including rewards)
+            const response = await axios.get(`${API_URL}/scratchcards/admin/all`);
             setCoupons(response.data);
         } catch (error) {
             console.error("Error fetching coupons", error);
@@ -46,7 +47,8 @@ const Coupons = () => {
                 discountType: formData.discountType.toUpperCase(),
                 discountValue: Number(formData.discountValue),
                 minOrderValue: Number(formData.minOrderValue || 0),
-                isActive: formData.status === 'active'
+                isActive: formData.status === 'active',
+                isRewardOnly: formData.isRewardOnly
             };
 
             const response = await axios.post(`${API_URL}/create`, payload);
@@ -139,6 +141,19 @@ const Coupons = () => {
                                     required
                                 />
                             </div>
+
+                            <div className="form-group" style={{ display: 'flex', alignItems: 'center', gap: '10px', marginTop: '10px' }}>
+                                <input
+                                    type="checkbox"
+                                    id="isRewardOnly"
+                                    checked={formData.isRewardOnly}
+                                    onChange={(e) => setFormData({ ...formData, isRewardOnly: e.target.checked })}
+                                    style={{ width: 'auto', cursor: 'pointer' }}
+                                />
+                                <label htmlFor="isRewardOnly" style={{ margin: 0, fontWeight: '600', color: '#0e4d65', cursor: 'pointer' }}>
+                                    Exclusive for Scratch Cards? (Reward Only)
+                                </label>
+                            </div>
                         </div>
 
                         <div className="form-group">
@@ -181,6 +196,7 @@ const Coupons = () => {
                             <th>Min Order</th>
                             <th>Expiry Date</th>
                             <th>Status</th>
+                            <th>Target</th>
                             {/* <th>Actions</th> */}
                         </tr>
                     </thead>
@@ -200,6 +216,18 @@ const Coupons = () => {
                                 <td>
                                     <span className={`status-badge ${coupon.isActive ? 'active' : 'inactive'}`}>
                                         {coupon.isActive ? 'Active' : 'Inactive'}
+                                    </span>
+                                </td>
+                                <td>
+                                    <span style={{ 
+                                        padding: '4px 8px', 
+                                        borderRadius: '6px', 
+                                        fontSize: '11px', 
+                                        fontWeight: '700',
+                                        background: coupon.isRewardOnly ? '#ebf8ff' : '#fef3c7',
+                                        color: coupon.isRewardOnly ? '#3182ce' : '#d97706'
+                                    }}>
+                                        {coupon.isRewardOnly ? '🏆 REWARD' : '🌐 PUBLIC'}
                                     </span>
                                 </td>
                                 {/* <td>
