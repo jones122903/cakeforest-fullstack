@@ -25,7 +25,7 @@ const blogData = [
 
 export default function BlogSection() {
   return (
-    <div className="blog-container-box p-3">
+    <div className="blog-container-box ">
       <div className="prod-category card-blog">
         <h3 className={`heading mb-4 fs-4 semibold ${style.cardHeading}`}>Cakes Related Blogs</h3>
 
