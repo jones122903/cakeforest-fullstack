@@ -25,7 +25,7 @@ const ProductList = () => {
   ];
 
   const token =
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5MzkwZmRkMzg2NjFjOWEwYjU2YTMzNiIsImlhdCI6MTc2NTM1MTk4MSwiZXhwIjoxNzY1OTU2NzgxfQ.qIapHLuh8Ww2WIy_wO74S8rOtBiWOWuABgFFfDgs7No";
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5NDRlMTEzMTI1MzlkNzQzMjdiMzhjMyIsImlhdCI6MTc2NjEyMTc1MywiZXhwIjoxNzY2NzI2NTUzfQ.S2ukDRkxUtWPU4TlLWXQEOhkr2JBqrquGG3FLFHjogI"
 
   const filteredProducts = allCakes.filter((p) => {
     const matchesSearch = p.cakeName
