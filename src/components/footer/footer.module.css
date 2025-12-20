@@ -1,8 +1,6 @@
 .FooterContainer{
-    width: 100%;
-    max-width: 1290px;
-    margin: 0 auto;
-    margin-top: 50px;
+    width: 100%; 
+    margin: 50px 0px;
     border-radius: 25px;
     background-color: #F4F7F8;
     padding: 40px;

@@ -60,6 +60,7 @@ const CouponsPage = () => {
             Exclusive <span style={{ color: "#ff5e00" }}>Offers</span> For You
           </h1>
           <p style={{ color: "#666", fontSize: "1.1rem" }}>
+            
             Grab the best deals on our delicious cakes!
           </p>
         </motion.div>

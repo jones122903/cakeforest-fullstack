@@ -46,11 +46,11 @@ const CakeProductPage = ({ products }) => {
   }, [products]);
 
   const variants = [
-    { name: 'Basic', price: 685, image: redVelvetMain },
-    { name: 'For Anniversary', price: 775, image: 'https://images.pexels.com/photos/1702373/pexels-photo-1702373.jpeg?auto=compress&cs=tinysrgb&w=400' },
-    { name: 'For Birthday', price: 775, image: birthdayCake },
-    { name: 'With Flower', price: 995, image: 'https://images.pexels.com/photos/1721934/pexels-photo-1721934.jpeg?auto=compress&cs=tinysrgb&w=400' },
-    { name: 'With Mixed Fl...', price: 2195, image: 'https://images.pexels.com/photos/1721932/pexels-photo-1721932.jpeg?auto=compress&cs=tinysrgb&w=400' }
+    { name: 'Birthday caps', price: 70, image: 'https://m.media-amazon.com/images/I/617ZmT9mO0S._UL1500_.jpg' },
+    { name: 'Snow Spray', price: 30, image: 'https://n3.sdlcdn.com/imgs/i/k/x/Snow-Spray-for-Party-Celebration-SDL724902112-1-f17c6.jpg' },
+    { name: 'Fire Candle', price: 30, image: 'https://5.imimg.com/data5/XQ/DR/FS/SELLER-27345468/sparkling-fire-candle-for-birthday-12-cm-pack-of-6-candle-multicolor-pack-of-6--500x500.jpeg' },
+    { name: 'Papper Out', price: 70, image: 'https://m.media-amazon.com/images/I/71cfQZ3NODL._AC_SL1200_.jpg' },
+    { name: 'Combo', price: 150, image:'https://www.volonepal.com/wp-content/uploads/2020/07/Combo-8.jpg' },
   ];
 
 

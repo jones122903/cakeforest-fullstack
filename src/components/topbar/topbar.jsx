@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect,useRef } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import {
   MapPin,
@@ -34,6 +34,11 @@ const Topbar = () => {
   const [showMore, setShowMore] = useState(false);
   const [isOrderDrawerOpen, setIsOrderDrawerOpen] = useState(false);
   const [pendingCount, setPendingCount] = useState(0);
+  const [products, setProducts] = useState([]);
+const [filteredProducts, setFilteredProducts] = useState([]);
+const [searchText, setSearchText] = useState("");
+const [showDropdown, setShowDropdown] = useState(false);
+
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -68,6 +73,63 @@ const Topbar = () => {
       console.error("Error fetching pending count:", error);
     }
   };
+
+
+  useEffect(() => {
+  if (searchText.trim() === "") {
+    setFilteredProducts([]);
+    return;
+  }
+
+  const filtered = products.filter((product) =>
+    product.cakeName
+      .toLowerCase()
+      .includes(searchText.toLowerCase())
+  );
+
+  setFilteredProducts(filtered);
+}, [searchText, products]);
+
+
+  useEffect(() => {
+  fetchProducts();
+}, []);
+
+const fetchProducts = async () => {
+  try {
+    const response = await axios.get(
+      `${import.meta.env.VITE_API_URL}/products`
+    );
+    if (response.data.success) {
+      setProducts(response.data.products);
+    }
+  } catch (error) {
+    console.error("Error fetching products:", error);
+  }
+};
+
+const searchRef = useRef(null);
+
+useEffect(() => {
+  const handleClickOutside = (event) => {
+    if (
+      searchRef.current &&
+      !searchRef.current.contains(event.target)
+    ) {
+      setShowDropdown(false);
+    }
+  };
+
+  document.addEventListener("mousedown", handleClickOutside);
+  return () =>
+    document.removeEventListener("mousedown", handleClickOutside);
+}, []);
+
+const handleSearchChange = (e) => {
+  setSearchText(e.target.value);
+  setShowDropdown(true);
+};
+
 
   useEffect(() => {
     if (token && user) {
@@ -201,18 +263,55 @@ const Topbar = () => {
             </button>
 
             {/* SEARCH BAR (DESKTOP) */}
-            <div
-              className={`d-none mx-auto d-lg-block ${styles.searchContainer}`}
-            >
-              <input
-                type="text"
-                placeholder="Search for products..."
-                className={styles.searchInput}
-              />
-              <span className={styles.searchIcon}>
-                <Search size={20} />
-              </span>
-            </div>
+            <div  ref={searchRef} className={`d-none mx-auto d-lg-block ${styles.searchContainer}`}>
+  <input
+    type="text"
+    placeholder="Search for cakes..."
+    className={styles.searchInput}
+    value={searchText}
+    onChange={handleSearchChange}
+    onFocus={() => setShowDropdown(true)}
+   />
+
+  <span className={styles.searchIcon}>
+    <Search size={20} />
+  </span>
+
+  {/* 🔽 Search result dropdown */}
+  {/* 🔽 Search result dropdown */}
+{showDropdown && (
+  <div className={styles.searchDropdown}>
+    {(searchText ? filteredProducts : products)
+      .slice(0, 6)
+      .map((product) => (
+        <div
+          key={product._id}
+          className={styles.searchItem}
+          onClick={() => {
+            navigate(`/buypage/${product._id}`);
+            setShowDropdown(false);
+            setSearchText("");
+          }}
+        >
+          <img
+            src={product.images?.[0]}
+            alt={product.cakeName}
+            className={styles.searchImg}
+          />
+          <span>{product.cakeName}</span>
+        </div>
+      ))}
+
+    {searchText && filteredProducts.length === 0 && (
+      <p className={styles.noResult}>No cakes found</p>
+    )}
+  </div>
+)}
+
+
+ 
+</div>
+
 
             {/* DESKTOP ICONS */}
             <div className={`ms-auto d-none d-lg-flex ${styles.iconGroup}`}>
@@ -277,9 +376,9 @@ const Topbar = () => {
                     </div>
                     <div
                       className={styles.dropdownItem}
-                      onClick={() => navigate("/offers")}
+                      onClick={() => navigate("/rewards")}
                     >
-                      <BadgePercent size={18} /> <span>Offers</span>
+                      <BadgePercent size={18} /> <span>Rewards </span>
                     </div>
                     <div
                       className={styles.dropdownItem}

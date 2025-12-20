@@ -146,7 +146,8 @@ const OrderDrawer = ({ open, setOpen }) => {
       closable={false}
       bodyStyle={{
         padding: 0,
-        overflow: "hidden",
+        overflow: "auto",
+        scrollbarWidth:"none"
       }}
     >
       {/* ===== FIXED HEADER ===== */}
