@@ -1,7 +1,21 @@
 import React, { useState } from "react";
 import styles from "./customerDetails.module.css";
 import {
-  User, Phone, Mail, MessageCircle, MapPin, Navigation, Building, Flag, CreditCard, CheckCircle, ShoppingBag, X
+  User,
+  Phone,
+  Mail,
+  MessageCircle,
+  MapPin,
+  Navigation,
+  Building,
+  Flag,
+  CreditCard,
+  CheckCircle,
+  ShoppingBag,
+  AlignRight,
+  Calendar,
+  Clock,
+  Cake,
 } from "lucide-react";
 import { useSelector } from "react-redux";
 import { useNavigate, useLocation } from "react-router-dom";
@@ -13,7 +27,20 @@ import ScratchCard from "../ScratchCard/ScratchCard";
 
 const CustomerDetails = () => {
   const [formData, setFormData] = useState({
-    fullName: "", phone: "", email: "", whatsapp: "", flatNo: "", street: "", landmark: "", city: "", pincode: "", instructions: "", paymentMethod: "online",
+    fullName: "",
+    phone: "",
+    email: "",
+    whatsapp: "",
+    flatNo: "",
+    street: "",
+    landmark: "",
+    city: "",
+    pincode: "",
+    instructions: "",
+    deliveryDate: new Date().toISOString().split("T")[0],
+    deliveryTime: "",
+    wishesOnCake: "",
+    paymentMethod: "online",
   });
 
   const [errors, setErrors] = useState({});
@@ -71,6 +98,9 @@ const CustomerDetails = () => {
             city: response.data.details.city || "",
             pincode: response.data.details.pincode || "",
             instructions: response.data.details.instructions || "",
+            deliveryDate: response.data.details.deliveryDate || new Date().toISOString().split("T")[0],
+            deliveryTime: response.data.details.deliveryTime || "",
+            wishesOnCake: response.data.details.wishesOnCake || "",
             paymentMethod: response.data.details.paymentMethod || "online",
           });
         }
@@ -90,6 +120,11 @@ const CustomerDetails = () => {
     if (!formData.city.trim()) newErrors.city = "City is required";
     if (!formData.pincode.trim()) newErrors.pincode = "Pincode is required";
     else if (!/^\d{6}$/.test(formData.pincode)) newErrors.pincode = "Enter a valid 6-digit pincode";
+
+    if (!formData.deliveryDate.trim())
+      newErrors.deliveryDate = "Delivery Date is required";
+    if (!formData.deliveryTime.trim())
+      newErrors.deliveryTime = "Delivery Time is required";
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -231,6 +266,70 @@ const CustomerDetails = () => {
     setLoading(true);
 
     try {
+      const userId = user?._id || user?.id;
+
+      // Step 1: Save user details
+      await axios.post(
+        `${import.meta.env.VITE_API_URL}/details`,
+        {
+          userId: userId,
+          ...formData,
+        },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+
+      // Step 2: Place order
+      const orderPayload = {
+        userId: userId,
+        cartItems: [
+          {
+            productId: orderDetails._id, // API might need this
+            cakeName: orderDetails.cakeName,
+            variant: orderDetails.variant,
+            weight: orderDetails.weight,
+            price: orderDetails.price,
+            nameOnCake: orderDetails.nameOnCake,
+            quantity: orderDetails.quantity,
+          },
+        ],
+        deliveryDetails: {
+          fullName: formData.fullName,
+          phone: formData.phone,
+          email: formData.email,
+          whatsapp: formData.whatsapp,
+          address: {
+            flatNo: formData.flatNo,
+            street: formData.street,
+            landmark: formData.landmark,
+            city: formData.city,
+            pincode: formData.pincode,
+          },
+          instructions: formData.instructions,
+        },
+        deliveryDate: formData.deliveryDate,
+        deliveryTime: formData.deliveryTime,
+        wishesOnCake: formData.wishesOnCake,
+        paymentMethod: formData.paymentMethod,
+        totalAmount: totalAmount,
+        deliveryCharge: orderDetails.deliveryCharge,
+      };
+
+      const orderResponse = await axios.post(
+        `${import.meta.env.VITE_API_URL}/orders`,
+        orderPayload,
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+
+      if (orderResponse.data.success) {
+        // Success message
+        await Swal.fire({
+          icon: "success",
+          title: "Order Placed Successfully!",
+          text: `Order ID: ${orderResponse.data.orderId}`,
+          confirmButtonColor: "#0e4d65",
+        });
+
+        // Handle payment
         if (formData.paymentMethod === "online") {
             payment(totalAmount * 100);
         } else {
@@ -297,7 +396,19 @@ const CustomerDetails = () => {
               <path d="M30 20 L40 35 L50 20 L40 28 L30 20 Z" fill="#244B64" />
               <path d="M22 28 L40 45 L58 28 L40 36 L22 28 Z" fill="#2C5F7C" />
               <path d="M15 36 L40 57 L65 36 L40 46 L15 36 Z" fill="#387C9D" />
-              <text x="85" y="52" fill="#2C5F7C" fontSize="55" fontWeight="800" fontFamily="Poppins, sans-serif" letterSpacing="1px">Cake Forest</text>
+
+              <text
+                x="85"
+                y="52"
+                fill="#2C5F7C"
+                fontSize="55"
+                fontWeight="800"
+                fontFamily="Poppins, sans-serif"
+                letterSpacing="1px"
+              // width= "100px"
+              >
+                Cake Forest
+              </text>
             </svg>
           </div>
           <div className={styles.headerRight}>
@@ -322,19 +433,51 @@ const CustomerDetails = () => {
       <div className={styles.content}>
         <div className={styles.mainSection}>
           <form onSubmit={handleSubmit}>
+            {/* 1. Customer Information Section */}
             <section className={styles.section}>
               <div className={styles.sectionTitle}>
                 <User size={18} color="#0e4d65" />
                 <span>Customer Information</span>
               </div>
 
-              <div className={styles.inputGroup}>
-                <label className={styles.label}>Full Name <span style={{ color: "#ff6161" }}>*</span></label>
-                <div className={styles.inputWrapper}>
-                  <User size={16} className={styles.icon} />
-                  <input type="text" name="fullName" value={formData.fullName} onChange={handleChange} className={styles.input} placeholder="Enter your full name" />
+              <div className={styles.row}>
+                <div className={styles.col}>
+                  <div className={styles.inputGroup}>
+                    <label className={styles.label}>
+                      Full Name <span style={{ color: "#ff6161" }}>*</span>
+                    </label>
+                    <div className={styles.inputWrapper}>
+                      <User size={16} className={styles.icon} />
+                      <input
+                        type="text"
+                        name="fullName"
+                        value={formData.fullName}
+                        onChange={handleChange}
+                        className={styles.input}
+                        placeholder="Enter your full name"
+                      />
+                    </div>
+                    {errors.fullName && (
+                      <p className={styles.errorMsg}>{errors.fullName}</p>
+                    )}
+                  </div>
                 </div>
-                {errors.fullName && <p className={styles.errorMsg}>{errors.fullName}</p>}
+                <div className={styles.col}>
+                  <div className={styles.inputGroup}>
+                    <label className={styles.label}>Email Address</label>
+                    <div className={styles.inputWrapper}>
+                      <Mail size={16} className={styles.icon} />
+                      <input
+                        type="email"
+                        name="email"
+                        value={formData.email}
+                        onChange={handleChange}
+                        className={styles.input}
+                        placeholder="example@email.com"
+                      />
+                    </div>
+                  </div>
+                </div>
               </div>
 
               <div className={styles.row}>
@@ -358,16 +501,86 @@ const CustomerDetails = () => {
                   </div>
                 </div>
               </div>
+            </section>
+
+            {/* 2. Delivery Details Section */}
+            <section className={styles.section}>
+              <div className={styles.sectionTitle}>
+                <Cake size={18} color="#0e4d65" />
+                <span>Delivery Details</span>
+              </div>
+
+              <div className={styles.row}>
+                <div className={styles.col}>
+                  <div className={styles.inputGroup}>
+                    <label className={styles.label}>
+                      Delivery Date <span style={{ color: "#ff6161" }}>*</span>
+                    </label>
+                    <div className={styles.inputWrapper}>
+                      <Calendar size={16} className={styles.icon} />
+                      <input
+                        type="date"
+                        name="deliveryDate"
+                        value={formData.deliveryDate}
+                        onChange={handleChange}
+                        className={styles.input}
+                        min={new Date().toISOString().split("T")[0]}
+                      />
+                    </div>
+                    {errors.deliveryDate && (
+                      <p className={styles.errorMsg}>{errors.deliveryDate}</p>
+                    )}
+                  </div>
+                </div>
+                <div className={styles.col}>
+                  <div className={styles.inputGroup}>
+                    <label className={styles.label}>
+                      Delivery Time <span style={{ color: "#ff6161" }}>*</span>
+                    </label>
+                    <div className={styles.inputWrapper}>
+                      <Clock size={16} className={styles.icon} />
+                      <select
+                        name="deliveryTime"
+                        value={formData.deliveryTime}
+                        onChange={handleChange}
+                        className={styles.input}
+                      >
+                        <option value="">Select Time Slot</option>
+                        <option value="morning">Morning (9 AM - 12 PM)</option>
+                        <option value="afternoon">Afternoon (12 PM - 4 PM)</option>
+                        <option value="evening">Evening (4 PM - 8 PM)</option>
+                        <option value="night">Night (8 PM - 11 PM)</option>
+                        <option value="midnight">Midnight Delivery</option>
+                      </select>
+                    </div>
+                    {errors.deliveryTime && (
+                      <p className={styles.errorMsg}>{errors.deliveryTime}</p>
+                    )}
+                  </div>
+                </div>
+              </div>
 
               <div className={styles.inputGroup}>
-                <label className={styles.label}>Email Address</label>
+                <label className={styles.label}>Wishes on the Cake</label>
                 <div className={styles.inputWrapper}>
-                  <Mail size={16} className={styles.icon} />
-                  <input type="email" name="email" value={formData.email} onChange={handleChange} className={styles.input} placeholder="example@email.com" />
+                  <Cake size={16} className={styles.icon} />
+                  <input
+                    type="text"
+                    name="wishesOnCake"
+                    value={formData.wishesOnCake}
+                    onChange={handleChange}
+                    className={styles.input}
+                    placeholder="e.g., Happy Birthday Sarah!"
+                    maxLength={50}
+                  />
                 </div>
+                <p className={styles.helperText}>
+                  {formData.wishesOnCake.length}/50 characters
+                </p>
               </div>
             </section>
 
+            {/* 3. Delivery Address Section */}
             <section className={styles.section}>
               <div className={styles.sectionTitle}>
                 <MapPin size={18} color="#0e4d65" />
@@ -440,14 +653,36 @@ const CustomerDetails = () => {
                 <span>Payment Method</span>
               </div>
 
-              <label className={`${styles.paymentOption} ${formData.paymentMethod === "online" ? styles.selected : ""}`}>
-                <input type="radio" name="paymentMethod" value="online" checked={formData.paymentMethod === "online"} onChange={handleChange} className={styles.radio} />
-                <span className={styles.paymentLabel}>Pay Online (UPI / Card / NetBanking)</span>
+              <label
+                className={`${styles.paymentOption} ${formData.paymentMethod === "online" ? styles.selected : ""
+                  }`}
+              >
+                {/* <input
+                  type="radio"
+                  name="paymentMethod"
+                  value="online"
+                  checked={formData.paymentMethod === "online"}
+                  onChange={handleChange}
+                  className={styles.radio}
+                />
+                <span className={styles.paymentLabel}>
+                  Pay Online (UPI / Card / NetBanking)
+                </span>
                 <CreditCard size={18} color="#67a6b1" />
               </label>
 
-              <label className={`${styles.paymentOption} ${formData.paymentMethod === "cod" ? styles.selected : ""}`}>
-                <input type="radio" name="paymentMethod" value="cod" checked={formData.paymentMethod === "cod"} onChange={handleChange} className={styles.radio} />
+              <label
+                className={`${styles.paymentOption} ${formData.paymentMethod === "cod" ? styles.selected : ""
+                  }`}
+              > */}
+                <input
+                  type="radio"
+                  name="paymentMethod"
+                  value="cod"
+                  checked={formData.paymentMethod === "cod"}
+                  onChange={handleChange}
+                  className={styles.radio}
+                />
                 <span className={styles.paymentLabel}>Cash on Delivery</span>
                 <CheckCircle size={18} color={formData.paymentMethod === "cod" ? "#0e4d65" : "#aaa"} />
               </label>
