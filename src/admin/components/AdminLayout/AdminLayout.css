@@ -8,6 +8,7 @@
     flex: 1;
     margin-left: 260px;
     transition: margin-left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    min-width: 0;
 }
 
 .admin-main.sidebar-collapsed {
@@ -17,18 +18,22 @@
 .admin-content {
     margin-top: 70px;
     min-height: calc(100vh - 70px);
+    overflow-x: hidden;
+    width: 100%;
 }
 
 @media (max-width: 768px) {
     .admin-main {
         margin-left: 0px;
     }
+
     .admin-main {
-    flex: 1;
-    margin-left: 0px;
-    transition: margin-left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-}
-.admin-main.sidebar-collapsed {
-    margin-left: 0px;
-}
+        flex: 1;
+        margin-left: 0px;
+        transition: margin-left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .admin-main.sidebar-collapsed {
+        margin-left: 0px;
+    }
 }

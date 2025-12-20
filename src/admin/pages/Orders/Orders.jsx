@@ -36,23 +36,40 @@ const Orders = () => {
         `${import.meta.env.VITE_API_URL}/orders`
       );
       if (response.data.success) {
-        const mappedOrders = response.data.orders.map((order) => ({
-          id: order.orderId,
-          mongoId: order._id,
-          customer: order.deliveryDetails?.fullName || "Unknown",
-          cake: order.cartItems.map((item) => item.cakeName).join(", "),
-          amount: order.totalAmount,
-          status: order.status,
-          date: new Date(order.createdAt).toLocaleDateString(),
-          rawDate: new Date(order.createdAt),
-          fullDetails: {
-            ...order,
-            formattedOrderDate: new Date(order.createdAt).toLocaleString(),
-            formattedDeliveryDate: new Date(
-              order.deliveryDate
-            ).toLocaleDateString(),
-          },
-        }));
+        const mappedOrders = response.data.orders.map((order) => {
+          // Robust mapping for delivery fields
+          let rawDDate = order.deliveryDate || order.deliveryDetails?.deliveryDate || "N/A";
+          let formattedDDate = rawDDate;
+
+          if (rawDDate && rawDDate !== "N/A" && rawDDate.includes("-")) {
+            const parts = rawDDate.split("-");
+            if (parts.length === 3) formattedDDate = `${parts[2]}/${parts[1]}/${parts[0]}`;
+          }
+
+          const dTime = order.deliveryTime || order.deliveryDetails?.deliveryTime || "N/A";
+          const wishes = order.wishesOnCake || order.deliveryDetails?.cakeWishes || order.deliveryDetails?.wishesOnCake || "";
+
+          return {
+            id: order.orderId,
+            mongoId: order._id,
+            customer: order.deliveryDetails?.fullName || "Unknown",
+            cake: order.cartItems.map((item) => item.cakeName).join(", "),
+            amount: order.totalAmount,
+            status: order.status,
+            orderDate: new Date(order.createdAt).toLocaleDateString("en-GB"),
+            deliveryDate: formattedDDate,
+            deliveryTime: dTime,
+            rawDate: new Date(order.createdAt),
+            fullDetails: {
+              ...order,
+              deliveryDate: formattedDDate,
+              deliveryTime: dTime,
+              wishesOnCake: wishes,
+              formattedOrderDate: new Date(order.createdAt).toLocaleString("en-GB"),
+              formattedDeliveryDate: formattedDDate,
+            },
+          };
+        });
         mappedOrders.sort((a, b) => b.rawDate - a.rawDate);
         setOrders(mappedOrders);
       }
@@ -156,7 +173,9 @@ const Orders = () => {
           <th>Cake</th>
           <th>Amount</th>
           <th>Status</th>
-          <th>Date</th>
+          <th>Order Date</th>
+          <th>Delivery Date</th>
+          <th>Delivery Time</th>
           <th>Actions</th>
         </tr>
       </thead>
@@ -246,7 +265,9 @@ const Orders = () => {
                     </span>
                   )}
                 </td>
-                <td>{order.date}</td>
+                <td>{order.orderDate}</td>
+                <td style={{ fontWeight: 600 }}>{order.deliveryDate}</td>
+                <td style={{ color: "#4b5563" }}>{order.deliveryTime}</td>
                 <td>
                   <div
                     style={{
@@ -323,7 +344,7 @@ const Orders = () => {
           })
         ) : (
           <tr>
-            <td colSpan="7" style={{ textAlign: "center", padding: "20px" }}>
+            <td colSpan="9" style={{ textAlign: "center", padding: "20px" }}>
               No {isDelivered ? "delivered" : "pending"} orders found
             </td>
           </tr>
@@ -519,8 +540,27 @@ const Orders = () => {
                     {selectedOrder.deliveryDetails.address.city} - {selectedOrder.deliveryDetails.address.pincode}
                   </p>
                   <p style={{ margin: "10px 0 0", fontSize: "14px", color: "#111827", fontWeight: "500" }}>
-                    📅 {selectedOrder.formattedDeliveryDate} • 🕐 {selectedOrder.deliveryTime}
+                    📅 {selectedOrder.deliveryDate} • 🕐 {selectedOrder.deliveryTime}
                   </p>
+                  {selectedOrder.wishesOnCake && (
+                    <div style={{
+                      marginTop: "12px",
+                      padding: "10px",
+                      background: "#fef3f2",
+                      borderRadius: "6px",
+                      border: "1px dashed #f87171",
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "10px"
+                    }}>
+                      <span style={{ fontSize: "11px", fontWeight: "700", color: "#991b1b", textTransform: "uppercase", letterSpacing: "0.5px", whiteSpace: "nowrap" }}>
+                        Wishes on Cake:
+                      </span>
+                      <span style={{ fontSize: "15px", fontWeight: "600", color: "#b91c1c", fontStyle: "italic" }}>
+                        "{selectedOrder.wishesOnCake}"
+                      </span>
+                    </div>
+                  )}
                 </div>
 
                 {/* Items */}
@@ -585,9 +625,7 @@ const Orders = () => {
                       ₹{selectedOrder.totalAmount}
                     </span>
                   </div>
-                  <div style={{ marginTop: "12px", fontSize: "13px", color: "#6b7280", textAlign: "center", fontWeight: "500" }}>
-                    💳 {selectedOrder.paymentMethod}
-                  </div>
+
                 </div>
               </div>
             </div>
@@ -596,6 +634,75 @@ const Orders = () => {
       </div>
 
       <style>{`
+        .dashboard {
+          width: 100%;
+          max-width: 100%;
+          box-sizing: border-box;
+          padding: 1.5rem;
+          overflow-x: hidden;
+        }
+
+        .table-container {
+          width: 100%;
+          max-width: 100%;
+          overflow-x: auto;
+          overflow-y: hidden;
+          background: white;
+          border-radius: 12px;
+          box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+          margin-top: 1rem;
+          border: 1px solid #e2e8f0;
+          display: block;
+          position: relative;
+          /* Ensure scrollbar works for non-webkit */
+          scrollbar-width: thin;
+          scrollbar-color: #cbd5e1 #f3f4f6;
+        }
+
+        /* Custom Scrollbar for Table */
+        .table-container::-webkit-scrollbar {
+          height: 8px;
+        }
+
+        .table-container::-webkit-scrollbar-track {
+          background: #f3f4f6;
+          border-radius: 10px;
+        }
+
+        .table-container::-webkit-scrollbar-thumb {
+          background: #cbd5e1;
+          border-radius: 10px;
+        }
+
+        .products-table {
+          width: 100%;
+          min-width: 1100px;
+          border-collapse: collapse;
+          text-align: left;
+        }
+
+        .products-table thead {
+          background: #a6afb8;
+        }
+
+        .products-table th {
+          padding: 16px;
+          font-weight: 600;
+          color: #374151;
+          font-size: 0.8rem;
+          text-transform: uppercase;
+          border-bottom: 1px solid #e2e8f0;
+          white-space: nowrap;
+        }
+
+        .products-table td {
+          padding: 16px;
+          border-bottom: 1px solid #f1f5f9;
+          font-size: 0.9rem;
+          color: #1e293b;
+          vertical-align: middle;
+        }
+
         @keyframes modalSlideIn {
           from {
             opacity: 0;
