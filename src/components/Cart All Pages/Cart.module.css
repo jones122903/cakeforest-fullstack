@@ -10,6 +10,95 @@
   gap: 20px;
   align-items: flex-start;
 }
+ 
+
+.addonsSection {
+  margin-top: 12px;
+}
+
+.addonsTitle {
+  font-weight: 600;
+  margin-bottom: 10px;
+  color: #333;
+}
+
+.addonTitle {
+  margin-top: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #444;
+}
+
+.addonTotal {
+  border-top: 1px dashed #ccc;
+  padding-top: 6px;
+  margin-top: 6px;
+  font-weight: 600;
+}
+
+
+.addonItem {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  gap: 12px;
+  background: #f9f9f9;
+  padding: 10px;
+  border-radius: 10px;
+  margin-bottom: 8px;
+}
+
+.addonItem img {
+  width: 50px;
+  height: 50px;
+  border-radius: 8px;
+  object-fit: cover;
+}
+
+.addonInfo {
+  flex: 1;
+}
+
+.addonName {
+  display: block;
+  font-weight: 500;
+}
+
+.addonPrice {
+  font-size: 14px;
+  color: #777;
+}
+
+.qtyControl {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.qtyControl button {
+  border: none;
+  background: #eee;
+  padding: 4px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.qtyControl span {
+  min-width: 18px;
+  text-align: center;
+  font-weight: 500;
+}
+
+.deleteBtn {
+  border: none;
+  background: #ffe5e5;
+  color: #e63946;
+  padding: 6px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+
 
 .deliverySection {
   flex: 1;
@@ -50,6 +139,16 @@
 
 .productCard {
   display: flex;
+  width: 100%;
+  gap: 20px;
+  background-color: white;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+}
+.productCard2 {
+   
+  width: 100%;
   gap: 20px;
   background-color: white;
   padding: 20px;

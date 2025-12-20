@@ -20,9 +20,7 @@ import Buypage from "../pages/buypage.jsx";
 import Footer from "../components/footer/footer.jsx";
 import CakeGallery from "../components/cake_gallery/cakeGallery.jsx";
 import PWAInstallPrompt from "../components/PWAInstallPrompt/PWAInstallPrompt.jsx";
-
 import "bootstrap/dist/css/bootstrap.min.css";
-
 import { AuthProvider } from "../admin/context/AuthContext.jsx";
 import Login from "../components/login/login.jsx";
 import NewForget from "../components/login/forget/NewForget.jsx";
@@ -32,6 +30,7 @@ import CustomerDetails from "../components/customer/customerDetails.jsx";
 import Wishlist from "../components/wishlist/Wishlist.jsx";
 import CouponsPage from "../pages/CouponsPage.jsx";
 import ReviewsPage from "../components/Review_page/ReviewsPage.jsx";
+import RewardsPage from "../pages/RewardsPage.jsx";
 
 
 
