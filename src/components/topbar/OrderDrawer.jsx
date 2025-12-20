@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Drawer, Empty, Spin } from "antd";
-import { CloseOutlined } from "@ant-design/icons";
+import { CloseOutlined, DeleteOutlined } from "@ant-design/icons";
+import toast from "react-hot-toast";
 import axios from "axios";
 import { useSelector } from "react-redux";
 import styles from "./orderDrawer.module.css";
@@ -8,6 +9,7 @@ import styles from "./orderDrawer.module.css";
 const OrderDrawer = ({ open, setOpen }) => {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [deleting, setDeleting] = useState(null);
   const { user, token } = useSelector((state) => state.auth);
   const api_url = import.meta.env.VITE_API_URL;
 
@@ -56,6 +58,81 @@ const OrderDrawer = ({ open, setOpen }) => {
         {status}
       </span>
     );
+  };
+
+  const handleDeleteOrder = (orderId) => {
+    toast(
+      (t) => (
+        <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+          <div>
+            <strong>Delete Order</strong>
+            <p style={{ margin: "4px 0 0 0", fontSize: "14px", color: "#666" }}>
+              Are you sure you want to delete this order?
+            </p>
+          </div>
+          <div style={{ display: "flex", gap: "8px", justifyContent: "flex-end" }}>
+            <button
+              onClick={() => toast.dismiss(t.id)}
+              style={{
+                padding: "6px 16px",
+                border: "1px solid #d1d5db",
+                borderRadius: "6px",
+                background: "white",
+                cursor: "pointer",
+                fontSize: "14px",
+              }}
+            >
+              Cancel
+            </button>
+            <button
+              onClick={() => {
+                toast.dismiss(t.id);
+                confirmDelete(orderId);
+              }}
+              style={{
+                padding: "6px 16px",
+                border: "none",
+                borderRadius: "6px",
+                background: "#ef4444",
+                color: "white",
+                cursor: "pointer",
+                fontSize: "14px",
+              }}
+            >
+              Delete
+            </button>
+          </div>
+        </div>
+      ),
+      {
+        duration: 6000,
+        position: "top-center",
+      }
+    );
+  };
+
+  const confirmDelete = async (orderId) => {
+    setDeleting(orderId);
+    try {
+      const res = await axios.delete(`${api_url}/orders/${orderId}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (res.data.success) {
+        setOrders(orders.filter((order) => order._id !== orderId));
+        toast.success("Order deleted successfully", {
+          duration: 3000,
+          position: "top-center",
+        });
+      }
+    } catch (err) {
+      console.error(err);
+      toast.error("Failed to delete order", {
+        duration: 3000,
+        position: "top-center",
+      });
+    } finally {
+      setDeleting(null);
+    }
   };
 
   return (
@@ -114,9 +191,8 @@ const OrderDrawer = ({ open, setOpen }) => {
 
       {/* ===== SCROLLABLE CONTENT ===== */}
       <div
-        className={`${styles.drawerContent} ${
-          orders.length === 0 ? styles.noScroll : ""
-        }`}
+        className={`${styles.drawerContent} ${orders.length === 0 ? styles.noScroll : ""
+          }`}
         style={{
           padding: "16px",
           height: "calc(100vh - 56px)",
@@ -131,9 +207,11 @@ const OrderDrawer = ({ open, setOpen }) => {
             <div key={order._id} className={styles.notificationCard}>
               <div className={styles.orderHeader}>
                 <span className={styles.orderId}>{order.orderId}</span>
-                <span className={styles.orderTime}>
-                  {new Date(order.createdAt).toLocaleString()}
-                </span>
+                <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
+                  <span className={styles.orderTime}>
+                    {new Date(order.createdAt).toLocaleString()}
+                  </span>
+                </div>
               </div>
 
               <div className={styles.orderDetails}>
@@ -148,8 +226,28 @@ const OrderDrawer = ({ open, setOpen }) => {
               </div>
 
               {order.cartItems?.map((item, i) => (
-                <div key={i} className={styles.cakeItem}>
-                  🎂 {item.cakeName} ({item.weight} × {item.quantity})
+                <div key={i} className={styles.cakeItem} style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                  <span>🎂 {item.cakeName} ({item.weight} × {item.quantity})</span>
+
+                  {/* Show delete icon only on the first item of a delivered order to represent deleting the whole order */}
+                  {i === 0 && order.status?.toLowerCase() === "delivered" && (
+                    <button
+                      onClick={() => handleDeleteOrder(order._id)}
+                      disabled={deleting === order._id}
+                      style={{
+                        border: "none",
+                        background: "transparent",
+                        cursor: deleting === order._id ? "not-allowed" : "pointer",
+                        color: deleting === order._id ? "#9ca3af" : "#ef4444",
+                        fontSize: "16px",
+                        padding: "0 4px",
+                        opacity: deleting === order._id ? 0.5 : 1,
+                        marginLeft: "8px"
+                      }}
+                    >
+                      <DeleteOutlined />
+                    </button>
+                  )}
                 </div>
               ))}
             </div>

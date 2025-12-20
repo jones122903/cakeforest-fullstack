@@ -14,6 +14,9 @@ import {
   CheckCircle,
   ShoppingBag,
   AlignRight,
+  Calendar,
+  Clock,
+  Cake,
 } from "lucide-react";
 import { useSelector } from "react-redux";
 import { useNavigate, useLocation } from "react-router-dom";
@@ -34,6 +37,9 @@ const CustomerDetails = () => {
     city: "",
     pincode: "",
     instructions: "",
+    deliveryDate: new Date().toISOString().split("T")[0],
+    deliveryTime: "",
+    wishesOnCake: "",
     paymentMethod: "online",
   });
 
@@ -100,6 +106,9 @@ const CustomerDetails = () => {
             city: response.data.details.city || "",
             pincode: response.data.details.pincode || "",
             instructions: response.data.details.instructions || "",
+            deliveryDate: response.data.details.deliveryDate || new Date().toISOString().split("T")[0],
+            deliveryTime: response.data.details.deliveryTime || "",
+            wishesOnCake: response.data.details.wishesOnCake || "",
             paymentMethod: response.data.details.paymentMethod || "online",
           });
         }
@@ -127,6 +136,11 @@ const CustomerDetails = () => {
     if (!formData.pincode.trim()) newErrors.pincode = "Pincode is required";
     else if (!/^\d{6}$/.test(formData.pincode))
       newErrors.pincode = "Enter a valid 6-digit pincode";
+
+    if (!formData.deliveryDate.trim())
+      newErrors.deliveryDate = "Delivery Date is required";
+    if (!formData.deliveryTime.trim())
+      newErrors.deliveryTime = "Delivery Time is required";
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -231,8 +245,9 @@ const CustomerDetails = () => {
           },
           instructions: formData.instructions,
         },
-        deliveryDate: orderDetails.deliveryDate,
-        deliveryTime: orderDetails.deliveryTime,
+        deliveryDate: formData.deliveryDate,
+        deliveryTime: formData.deliveryTime,
+        wishesOnCake: formData.wishesOnCake,
         paymentMethod: formData.paymentMethod,
         totalAmount: totalAmount,
         deliveryCharge: orderDetails.deliveryCharge,
@@ -303,7 +318,7 @@ const CustomerDetails = () => {
                 fontWeight="800"
                 fontFamily="Poppins, sans-serif"
                 letterSpacing="1px"
-                // width= "100px"
+              // width= "100px"
               >
                 Cake Forest
               </text>
@@ -356,31 +371,51 @@ const CustomerDetails = () => {
         {/* Left Column - Form */}
         <div className={styles.mainSection}>
           <form onSubmit={handleSubmit}>
-            {/* Customer Info Section */}
+            {/* 1. Customer Information Section */}
             <section className={styles.section}>
               <div className={styles.sectionTitle}>
                 <User size={18} color="#0e4d65" />
                 <span>Customer Information</span>
               </div>
 
-              <div className={styles.inputGroup}>
-                <label className={styles.label}>
-                  Full Name <span style={{ color: "#ff6161" }}>*</span>
-                </label>
-                <div className={styles.inputWrapper}>
-                  <User size={16} className={styles.icon} />
-                  <input
-                    type="text"
-                    name="fullName"
-                    value={formData.fullName}
-                    onChange={handleChange}
-                    className={styles.input}
-                    placeholder="Enter your full name"
-                  />
+              <div className={styles.row}>
+                <div className={styles.col}>
+                  <div className={styles.inputGroup}>
+                    <label className={styles.label}>
+                      Full Name <span style={{ color: "#ff6161" }}>*</span>
+                    </label>
+                    <div className={styles.inputWrapper}>
+                      <User size={16} className={styles.icon} />
+                      <input
+                        type="text"
+                        name="fullName"
+                        value={formData.fullName}
+                        onChange={handleChange}
+                        className={styles.input}
+                        placeholder="Enter your full name"
+                      />
+                    </div>
+                    {errors.fullName && (
+                      <p className={styles.errorMsg}>{errors.fullName}</p>
+                    )}
+                  </div>
                 </div>
-                {errors.fullName && (
-                  <p className={styles.errorMsg}>{errors.fullName}</p>
-                )}
+                <div className={styles.col}>
+                  <div className={styles.inputGroup}>
+                    <label className={styles.label}>Email Address</label>
+                    <div className={styles.inputWrapper}>
+                      <Mail size={16} className={styles.icon} />
+                      <input
+                        type="email"
+                        name="email"
+                        value={formData.email}
+                        onChange={handleChange}
+                        className={styles.input}
+                        placeholder="example@email.com"
+                      />
+                    </div>
+                  </div>
+                </div>
               </div>
 
               <div className={styles.row}>
@@ -424,24 +459,86 @@ const CustomerDetails = () => {
                   </div>
                 </div>
               </div>
+            </section>
+
+            {/* 2. Delivery Details Section */}
+            <section className={styles.section}>
+              <div className={styles.sectionTitle}>
+                <Cake size={18} color="#0e4d65" />
+                <span>Delivery Details</span>
+              </div>
+
+              <div className={styles.row}>
+                <div className={styles.col}>
+                  <div className={styles.inputGroup}>
+                    <label className={styles.label}>
+                      Delivery Date <span style={{ color: "#ff6161" }}>*</span>
+                    </label>
+                    <div className={styles.inputWrapper}>
+                      <Calendar size={16} className={styles.icon} />
+                      <input
+                        type="date"
+                        name="deliveryDate"
+                        value={formData.deliveryDate}
+                        onChange={handleChange}
+                        className={styles.input}
+                        min={new Date().toISOString().split("T")[0]}
+                      />
+                    </div>
+                    {errors.deliveryDate && (
+                      <p className={styles.errorMsg}>{errors.deliveryDate}</p>
+                    )}
+                  </div>
+                </div>
+                <div className={styles.col}>
+                  <div className={styles.inputGroup}>
+                    <label className={styles.label}>
+                      Delivery Time <span style={{ color: "#ff6161" }}>*</span>
+                    </label>
+                    <div className={styles.inputWrapper}>
+                      <Clock size={16} className={styles.icon} />
+                      <select
+                        name="deliveryTime"
+                        value={formData.deliveryTime}
+                        onChange={handleChange}
+                        className={styles.input}
+                      >
+                        <option value="">Select Time Slot</option>
+                        <option value="morning">Morning (9 AM - 12 PM)</option>
+                        <option value="afternoon">Afternoon (12 PM - 4 PM)</option>
+                        <option value="evening">Evening (4 PM - 8 PM)</option>
+                        <option value="night">Night (8 PM - 11 PM)</option>
+                        <option value="midnight">Midnight Delivery</option>
+                      </select>
+                    </div>
+                    {errors.deliveryTime && (
+                      <p className={styles.errorMsg}>{errors.deliveryTime}</p>
+                    )}
+                  </div>
+                </div>
+              </div>
 
               <div className={styles.inputGroup}>
-                <label className={styles.label}>Email Address</label>
+                <label className={styles.label}>Wishes on the Cake</label>
                 <div className={styles.inputWrapper}>
-                  <Mail size={16} className={styles.icon} />
+                  <Cake size={16} className={styles.icon} />
                   <input
-                    type="email"
-                    name="email"
-                    value={formData.email}
+                    type="text"
+                    name="wishesOnCake"
+                    value={formData.wishesOnCake}
                     onChange={handleChange}
                     className={styles.input}
-                    placeholder="example@email.com"
+                    placeholder="e.g., Happy Birthday Sarah!"
+                    maxLength={50}
                   />
                 </div>
+                <p className={styles.helperText}>
+                  {formData.wishesOnCake.length}/50 characters
+                </p>
               </div>
             </section>
 
-            {/* Delivery Address Section */}
+            {/* 3. Delivery Address Section */}
             <section className={styles.section}>
               <div className={styles.sectionTitle}>
                 <MapPin size={18} color="#0e4d65" />
@@ -575,11 +672,10 @@ const CustomerDetails = () => {
               </div>
 
               <label
-                className={`${styles.paymentOption} ${
-                  formData.paymentMethod === "online" ? styles.selected : ""
-                }`}
+                className={`${styles.paymentOption} ${formData.paymentMethod === "online" ? styles.selected : ""
+                  }`}
               >
-                <input
+                {/* <input
                   type="radio"
                   name="paymentMethod"
                   value="online"
@@ -594,10 +690,9 @@ const CustomerDetails = () => {
               </label>
 
               <label
-                className={`${styles.paymentOption} ${
-                  formData.paymentMethod === "cod" ? styles.selected : ""
-                }`}
-              >
+                className={`${styles.paymentOption} ${formData.paymentMethod === "cod" ? styles.selected : ""
+                  }`}
+              > */}
                 <input
                   type="radio"
                   name="paymentMethod"

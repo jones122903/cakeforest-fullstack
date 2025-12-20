@@ -110,7 +110,7 @@ const Orders = () => {
   const getStatusIcon = (status) => {
     if (status === "pending")
       return <CheckCircle size={18} />;
-    if (status === "ready") 
+    if (status === "ready")
       return <Truck size={18} />;
     if (status === "delivered")
       return <Package size={18} />;
@@ -359,9 +359,9 @@ const Orders = () => {
               padding: "12px 24px",
               // background: activeTab === "pending" ? "#667eea" : "transparent",
               color: activeTab === "pending" ? "#667eea" : "",
-              backgroundColor:"transparent",
+              backgroundColor: "transparent",
               border: "none",
-              borderColor:"transparent",
+              borderColor: "transparent",
               borderBottom:
                 activeTab === "pending"
                   ? "3px solid #667eea"
@@ -381,7 +381,7 @@ const Orders = () => {
             style={{
               padding: "12px 24px",
               background: "transparent",
-              color: activeTab === "delivered" ? "#667eea": "",
+              color: activeTab === "delivered" ? "#667eea" : "",
               border: "none",
               borderBottom:
                 activeTab === "delivered"
@@ -414,185 +414,185 @@ const Orders = () => {
         </div>
 
         {/* Enhanced Order Details Modal */}
-      {isModalOpen && selectedOrder && (
-  <div
-    onClick={closeModal}
-    style={{
-      position: "fixed",
-      top: 0,
-      left: 0,
-      right: 0,
-      bottom: 0,
-      backgroundColor: "rgba(0, 0, 0, 0.5)",
-      display: "flex",
-      justifyContent: "center",
-      alignItems: "center",
-      zIndex: 10000,
-      padding: "20px",
-    }}
-  >
-    <div
-      onClick={(e) => e.stopPropagation()}
-      style={{
-        backgroundColor: "white",
-        borderRadius: "12px",
-        width: "100%",
-        maxWidth: "600px",
-        maxHeight: "90vh",
-        overflowY: "auto",
-        boxShadow: "0 10px 40px rgba(0, 0, 0, 0.2)",
-      }}
-    >
-      {/* Header */}
-      <div
-        style={{
-          padding: "20px 24px",
-          borderBottom: "1px solid #e5e7eb",
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-        }}
-      >
-        <div>
-          <h2 style={{ margin: 0, fontSize: "20px", fontWeight: "600" }}>
-            Order #{selectedOrder.orderId}
-          </h2>
-          <p style={{ margin: "4px 0 0", fontSize: "14px", color: "#6b7280" }}>
-            {selectedOrder.formattedOrderDate}
-          </p>
-        </div>
-        <button
-          onClick={closeModal}
-          style={{
-            background: "none",
-            border: "none",
-            cursor: "pointer",
-            padding: "8px",
-            borderRadius: "6px",
-          }}
-        >
-          <X size={20} color="#6b7280" />
-        </button>
-      </div>
-
-      {/* Content */}
-      <div style={{ padding: "24px" }}>
-        {/* Status */}
-        <div
-          style={{
-            display: "inline-flex",
-            alignItems: "center",
-            gap: "6px",
-            padding: "6px 12px",
-            borderRadius: "6px",
-            fontSize: "14px",
-            fontWeight: "500",
-            marginBottom: "24px",
-            background: `${getStatusColor(selectedOrder.status)}15`,
-            color: getStatusColor(selectedOrder.status),
-          }}
-        >
-          {getStatusIcon(selectedOrder.status.toLowerCase())}
-          {selectedOrder.status}
-        </div>
-
-        {/* Customer */}
-        <div style={{ marginBottom: "24px" }}>
-          <h3 style={{ fontSize: "13px", fontWeight: "600", color: "#6b7280", marginBottom: "8px" }}>
-            CUSTOMER
-          </h3>
-          <p style={{ margin: "4px 0", fontSize: "15px", fontWeight: "600", color: "#111827" }}>
-            {selectedOrder.deliveryDetails.fullName}
-          </p>
-          <p style={{ margin: "4px 0", fontSize: "14px", color: "#6b7280" }}>
-            {selectedOrder.deliveryDetails.phone}
-          </p>
-        </div>
-
-        {/* Delivery */}
-        <div style={{ marginBottom: "24px" }}>
-          <h3 style={{ fontSize: "13px", fontWeight: "600", color: "#6b7280", marginBottom: "8px" }}>
-            DELIVERY
-          </h3>
-          <p style={{ margin: 0, fontSize: "14px", lineHeight: "1.6", color: "#111827", fontWeight: "500" }}>
-            {selectedOrder.deliveryDetails.address.flatNo}, {selectedOrder.deliveryDetails.address.street},<br />
-            {selectedOrder.deliveryDetails.address.city} - {selectedOrder.deliveryDetails.address.pincode}
-          </p>
-          <p style={{ margin: "10px 0 0", fontSize: "14px", color: "#111827", fontWeight: "500" }}>
-            📅 {selectedOrder.formattedDeliveryDate} • 🕐 {selectedOrder.deliveryTime}
-          </p>
-        </div>
-
-        {/* Items */}
-        <div style={{ marginBottom: "24px" }}>
-          <h3 style={{ fontSize: "13px", fontWeight: "600", color: "#6b7280", marginBottom: "12px" }}>
-            ITEMS
-          </h3>
-          {selectedOrder.cartItems.map((item, idx) => (
-            <div
-              key={idx}
-              style={{
-                display: "flex",
-                justifyContent: "space-between",
-                padding: "12px 0",
-                borderBottom: idx !== selectedOrder.cartItems.length - 1 ? "1px solid #f3f4f6" : "none",
-              }}
-            >
-              <div>
-                <p style={{ margin: 0, fontSize: "15px", fontWeight: "600", color: "#111827" }}>
-                  {item.cakeName}
-                </p>
-                <p style={{ margin: "4px 0 0", fontSize: "13px", color: "#6b7280" }}>
-                  {item.weight} × {item.quantity}
-                </p>
-              </div>
-              <p style={{ margin: 0, fontSize: "16px", fontWeight: "700", color: "#059669" }}>
-                ₹{item.price * item.quantity}
-              </p>
-            </div>
-          ))}
-        </div>
-
-        {/* Payment */}
-        <div
-          style={{
-            background: "#f9fafb",
-            padding: "16px",
-            borderRadius: "8px",
-            border: "1px solid #e5e7eb",
-          }}
-        >
-          <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "8px" }}>
-            <span style={{ fontSize: "14px", color: "#6b7280" }}>Subtotal</span>
-            <span style={{ fontSize: "14px", fontWeight: "500" }}>
-              ₹{selectedOrder.totalAmount - (selectedOrder.deliveryCharge || 0)}
-            </span>
-          </div>
-          <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "12px" }}>
-            <span style={{ fontSize: "14px", color: "#6b7280" }}>Delivery</span>
-            <span style={{ fontSize: "14px", fontWeight: "500" }}>₹{selectedOrder.deliveryCharge || 0}</span>
-          </div>
+        {isModalOpen && selectedOrder && (
           <div
+            onClick={closeModal}
             style={{
+              position: "fixed",
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              backgroundColor: "rgba(0, 0, 0, 0.5)",
               display: "flex",
-              justifyContent: "space-between",
-              paddingTop: "12px",
-              borderTop: "2px solid #d1d5db",
+              justifyContent: "center",
+              alignItems: "center",
+              zIndex: 10000,
+              padding: "20px",
             }}
           >
-            <span style={{ fontSize: "17px", fontWeight: "700", color: "#111827" }}>Total</span>
-            <span style={{ fontSize: "18px", fontWeight: "700", color: "#059669" }}>
-              ₹{selectedOrder.totalAmount}
-            </span>
+            <div
+              onClick={(e) => e.stopPropagation()}
+              style={{
+                backgroundColor: "white",
+                borderRadius: "12px",
+                width: "100%",
+                maxWidth: "600px",
+                maxHeight: "90vh",
+                overflowY: "auto",
+                boxShadow: "0 10px 40px rgba(0, 0, 0, 0.2)",
+              }}
+            >
+              {/* Header */}
+              <div
+                style={{
+                  padding: "20px 24px",
+                  borderBottom: "1px solid #e5e7eb",
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                }}
+              >
+                <div>
+                  <h2 style={{ margin: 0, fontSize: "20px", fontWeight: "600" }}>
+                    Order #{selectedOrder.orderId}
+                  </h2>
+                  <p style={{ margin: "4px 0 0", fontSize: "14px", color: "#6b7280" }}>
+                    {selectedOrder.formattedOrderDate}
+                  </p>
+                </div>
+                <button
+                  onClick={closeModal}
+                  style={{
+                    background: "none",
+                    border: "none",
+                    cursor: "pointer",
+                    padding: "8px",
+                    borderRadius: "6px",
+                  }}
+                >
+                  <X size={20} color="#6b7280" />
+                </button>
+              </div>
+
+              {/* Content */}
+              <div style={{ padding: "24px" }}>
+                {/* Status */}
+                <div
+                  style={{
+                    display: "inline-flex",
+                    alignItems: "center",
+                    gap: "6px",
+                    padding: "6px 12px",
+                    borderRadius: "6px",
+                    fontSize: "14px",
+                    fontWeight: "500",
+                    marginBottom: "24px",
+                    background: `${getStatusColor(selectedOrder.status)}15`,
+                    color: getStatusColor(selectedOrder.status),
+                  }}
+                >
+                  {getStatusIcon(selectedOrder.status.toLowerCase())}
+                  {selectedOrder.status}
+                </div>
+
+                {/* Customer */}
+                <div style={{ marginBottom: "24px" }}>
+                  <h3 style={{ fontSize: "13px", fontWeight: "600", color: "#6b7280", marginBottom: "8px" }}>
+                    CUSTOMER
+                  </h3>
+                  <p style={{ margin: "4px 0", fontSize: "15px", fontWeight: "600", color: "#111827" }}>
+                    {selectedOrder.deliveryDetails.fullName}
+                  </p>
+                  <p style={{ margin: "4px 0", fontSize: "14px", color: "#6b7280" }}>
+                    {selectedOrder.deliveryDetails.phone}
+                  </p>
+                </div>
+
+                {/* Delivery */}
+                <div style={{ marginBottom: "24px" }}>
+                  <h3 style={{ fontSize: "13px", fontWeight: "600", color: "#6b7280", marginBottom: "8px" }}>
+                    DELIVERY
+                  </h3>
+                  <p style={{ margin: 0, fontSize: "14px", lineHeight: "1.6", color: "#111827", fontWeight: "500" }}>
+                    {selectedOrder.deliveryDetails.address.flatNo}, {selectedOrder.deliveryDetails.address.street},<br />
+                    {selectedOrder.deliveryDetails.address.city} - {selectedOrder.deliveryDetails.address.pincode}
+                  </p>
+                  <p style={{ margin: "10px 0 0", fontSize: "14px", color: "#111827", fontWeight: "500" }}>
+                    📅 {selectedOrder.formattedDeliveryDate} • 🕐 {selectedOrder.deliveryTime}
+                  </p>
+                </div>
+
+                {/* Items */}
+                <div style={{ marginBottom: "24px" }}>
+                  <h3 style={{ fontSize: "13px", fontWeight: "600", color: "#6b7280", marginBottom: "12px" }}>
+                    ITEMS
+                  </h3>
+                  {selectedOrder.cartItems.map((item, idx) => (
+                    <div
+                      key={idx}
+                      style={{
+                        display: "flex",
+                        justifyContent: "space-between",
+                        padding: "12px 0",
+                        borderBottom: idx !== selectedOrder.cartItems.length - 1 ? "1px solid #f3f4f6" : "none",
+                      }}
+                    >
+                      <div>
+                        <p style={{ margin: 0, fontSize: "15px", fontWeight: "600", color: "#111827" }}>
+                          {item.cakeName}
+                        </p>
+                        <p style={{ margin: "4px 0 0", fontSize: "13px", color: "#6b7280" }}>
+                          {item.weight} × {item.quantity}
+                        </p>
+                      </div>
+                      <p style={{ margin: 0, fontSize: "16px", fontWeight: "700", color: "#059669" }}>
+                        ₹{item.price * item.quantity}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Payment */}
+                <div
+                  style={{
+                    background: "#f9fafb",
+                    padding: "16px",
+                    borderRadius: "8px",
+                    border: "1px solid #e5e7eb",
+                  }}
+                >
+                  <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "8px" }}>
+                    <span style={{ fontSize: "14px", color: "#6b7280" }}>Subtotal</span>
+                    <span style={{ fontSize: "14px", fontWeight: "500" }}>
+                      ₹{selectedOrder.totalAmount - (selectedOrder.deliveryCharge || 0)}
+                    </span>
+                  </div>
+                  <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "12px" }}>
+                    <span style={{ fontSize: "14px", color: "#6b7280" }}>Delivery</span>
+                    <span style={{ fontSize: "14px", fontWeight: "500" }}>₹{selectedOrder.deliveryCharge || 0}</span>
+                  </div>
+                  <div
+                    style={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      paddingTop: "12px",
+                      borderTop: "2px solid #d1d5db",
+                    }}
+                  >
+                    <span style={{ fontSize: "17px", fontWeight: "700", color: "#111827" }}>Total</span>
+                    <span style={{ fontSize: "18px", fontWeight: "700", color: "#059669" }}>
+                      ₹{selectedOrder.totalAmount}
+                    </span>
+                  </div>
+                  <div style={{ marginTop: "12px", fontSize: "13px", color: "#6b7280", textAlign: "center", fontWeight: "500" }}>
+                    💳 {selectedOrder.paymentMethod}
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
-          <div style={{ marginTop: "12px", fontSize: "13px", color: "#6b7280", textAlign: "center", fontWeight: "500" }}>
-            💳 {selectedOrder.paymentMethod}
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-)}
+        )}
       </div>
 
       <style>{`
