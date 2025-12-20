@@ -74,3 +74,21 @@
     opacity: 0;
   }
 }
+
+.addonsSection {
+  margin-top: 10px;
+}
+
+.addonItem {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 13px;
+}
+
+.addonItem img {
+  width: 35px;
+  height: 35px;
+  object-fit: cover;
+  border-radius: 6px;
+}
