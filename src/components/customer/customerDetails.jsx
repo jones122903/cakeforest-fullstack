@@ -380,6 +380,7 @@ const CustomerDetails = () => {
         } else {
             handleOrderPlacement(false);
         }
+      }
     } catch(err) {
         console.error(err);
     } finally {
