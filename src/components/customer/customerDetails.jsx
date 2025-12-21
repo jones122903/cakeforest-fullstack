@@ -56,12 +56,13 @@ const CustomerDetails = () => {
   const orderDetails = {
     _id: incomingOrderDetails?._id,
     cakeName: incomingOrderDetails?.cakeName || "Red Velvet Bliss",
-    variant: incomingOrderDetails?.variant || "Heart Shape",
+    variant: incomingOrderDetails?.variant || "Classic",
     weight: incomingOrderDetails?.weight || "1 kg",
-    price: incomingOrderDetails?.price || 1200,
-    nameOnCake: incomingOrderDetails?.nameOnCake || "Happy Birthday",
-    deliveryDate: new Date().toISOString().split("T")[0],
-    deliveryTime: "Standard Delivery",
+    addons: incomingOrderDetails?.addons.length || "1",
+    price: incomingOrderDetails?.grandTotal || 1200,
+    // nameOnCake: incomingOrderDetails?.nameOnCake || "Happy Birthday",
+    // deliveryDate: new Date().toISOString().split("T")[0],
+    // deliveryTime: "Standard Delivery",
     deliveryCharge: 50,
     quantity: incomingOrderDetails?.quantity || 1,
   };
@@ -575,17 +576,17 @@ const CustomerDetails = () => {
                   <span className={styles.orderValue}>{orderDetails.weight}</span>
                 </div>
                 <div className={styles.orderItem}>
-                  <span className={styles.orderLabel}>Name on Cake</span>
-                  <span className={styles.orderValue}>{orderDetails.nameOnCake}</span>
+                  <span className={styles.orderLabel}>Add-ons</span>
+                  <span className={styles.orderValue}>{orderDetails.addons}</span>
                 </div>
-                <div className={styles.orderItem}>
+                {/* <div className={styles.orderItem}>
                   <span className={styles.orderLabel}>Delivery Date</span>
                   <span className={styles.orderValue}>{orderDetails.deliveryDate}</span>
                 </div>
                 <div className={styles.orderItem}>
                   <span className={styles.orderLabel}>Time Slot</span>
                   <span className={styles.orderValue}>{orderDetails.deliveryTime}</span>
-                </div>
+                </div> */}
 
                 <div className={styles.priceSummary}>
                   <div className={styles.orderItem}>

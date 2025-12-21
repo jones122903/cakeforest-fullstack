@@ -304,8 +304,8 @@ const finalTotal = totalPrice + addonsTotal;
               </div>
             </div>
 
-              <div className={`${styles.productCard2} mt-3`}>
       {addons.length > 0 && (
+              <div className={`${styles.productCard2} mt-3`}>
         <div className={styles.addonsSection}>
           <p className={styles.addonsTitle}>Add-ons</p>
 
@@ -365,8 +365,8 @@ const finalTotal = totalPrice + addonsTotal;
             </div>
           ))}
         </div>
-      )}
     </div>
+      )}
 
 
           
