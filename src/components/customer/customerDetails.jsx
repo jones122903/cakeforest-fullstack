@@ -58,11 +58,8 @@ const CustomerDetails = () => {
     cakeName: incomingOrderDetails?.cakeName || "Red Velvet Bliss",
     variant: incomingOrderDetails?.variant || "Classic",
     weight: incomingOrderDetails?.weight || "1 kg",
-    addons: incomingOrderDetails?.addons.length || "1",
+    addons: incomingOrderDetails?.addons || "1",
     price: incomingOrderDetails?.grandTotal || 1200,
-    // nameOnCake: incomingOrderDetails?.nameOnCake || "Happy Birthday",
-    // deliveryDate: new Date().toISOString().split("T")[0],
-    // deliveryTime: "Standard Delivery",
     deliveryCharge: 50,
     quantity: incomingOrderDetails?.quantity || 1,
   };
@@ -105,7 +102,6 @@ const CustomerDetails = () => {
     if (!formData.fullName.trim()) newErrors.fullName = "Full Name is required";
     if (!formData.phone.trim()) newErrors.phone = "Phone Number is required";
     else if (!/^\d{10}$/.test(formData.phone)) newErrors.phone = "Enter a valid 10-digit number";
-
     if (!formData.deliveryDate.trim()) newErrors.deliveryDate = "Delivery Date is required";
     if (!formData.deliveryTime.trim()) newErrors.deliveryTime = "Delivery Time is required";
     if (!formData.flatNo.trim()) newErrors.flatNo = "Flat / Door No is required";
@@ -141,9 +137,10 @@ const CustomerDetails = () => {
           cakeName: orderDetails.cakeName,
           variant: orderDetails.variant,
           weight: orderDetails.weight,
-          price: orderDetails.price,
+          price: orderDetails.grandTotal,
           nameOnCake: orderDetails.nameOnCake,
           quantity: orderDetails.quantity,
+          addons: orderDetails.addons,
         }],
         deliveryDetails: {
           fullName: formData.fullName,
@@ -577,7 +574,7 @@ const CustomerDetails = () => {
                 </div>
                 <div className={styles.orderItem}>
                   <span className={styles.orderLabel}>Add-ons</span>
-                  <span className={styles.orderValue}>{orderDetails.addons}</span>
+                  <span className={styles.orderValue}>{orderDetails.addons.length}</span>
                 </div>
                 {/* <div className={styles.orderItem}>
                   <span className={styles.orderLabel}>Delivery Date</span>

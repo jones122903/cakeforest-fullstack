@@ -29,6 +29,19 @@ const Orders = () => {
     fetchOrders();
   }, []);
 
+  // 🔄 Listen for order refresh events from notification drawer
+  useEffect(() => {
+    const handleRefresh = () => {
+      fetchOrders();
+    };
+
+    window.addEventListener("refreshOrders", handleRefresh);
+
+    return () => {
+      window.removeEventListener("refreshOrders", handleRefresh);
+    };
+  }, []);
+
   const fetchOrders = async () => {
     try {
       setLoading(true);
@@ -36,7 +49,7 @@ const Orders = () => {
         `${import.meta.env.VITE_API_URL}/orders`
       );
       if (response.data.success) {
-        const mappedOrders = response.data.orders.map((order) => {
+        const mappedOrders = response.data.orders .filter(order => order.notificationstatus === true).map((order) => {
           // Robust mapping for delivery fields
           let rawDDate = order.deliveryDate || order.deliveryDetails?.deliveryDate || "N/A";
           let formattedDDate = rawDDate;
