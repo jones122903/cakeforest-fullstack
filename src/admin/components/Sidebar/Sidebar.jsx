@@ -23,14 +23,14 @@ const Sidebar = ({ setSideWidth, sideWidth }) => {
   const navigate = useNavigate();
 
   const menuItems = [
-    { path: "/admin/dashboard", icon: LayoutDashboard, label: "Dashboard" },
+    // { path: "/admin/dashboard", icon: LayoutDashboard, label: "Dashboard" },
     { path: "/admin/products", icon: ShoppingBag, label: "Products" },
     { path: "/admin/orders", icon: ShoppingCart, label: "Orders" },
     { path: "/admin/customers", icon: Users, label: "Customers" },
-    { path: "/admin/expenses", icon: Receipt, label: "Expenses" },
+    // { path: "/admin/expenses", icon: Receipt, label: "Expenses" },
     { path: "/admin/coupons", icon: Tag, label: "Coupons" },
-    { path: "/admin/reports", icon: BarChart3, label: "Reports" },
-    { path: "/admin/settings", icon: Settings, label: "Settings" },
+    // { path: "/admin/reports", icon: BarChart3, label: "Reports" },
+    // { path: "/admin/settings", icon: Settings, label: "Settings" },
   ];
 
   const closeSidebar = () => {
