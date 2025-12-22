@@ -17,10 +17,11 @@ import {
   removeFromWishlistAsync,
   fetchWishlist,
 } from "../../redux/slice/wishlistSlice";
-import toast, { Toaster } from "react-hot-toast";
 // import "../Cart All Pages/Cartuialert.css";
 import Swal from "sweetalert2";
 import { useNavigate } from "react-router-dom";
+import { Toaster } from "react-hot-toast";
+import { showHotToast } from "../../admin/utils/showToast.jsx";
 
 const CakeGallery = () => {
   const [selectedFilter, setSelectedFilter] = useState("All");
@@ -67,9 +68,6 @@ const CakeGallery = () => {
   }, [dispatch, userId]);
 
   const toggleWishlist = (cakeId) => {
-    console.log("Toggle wishlist called with cakeId:", cakeId);
-    console.log("Current userId:", userId);
-
     if (!userId) {
       Swal.fire({
         title: "Login Required!",
@@ -80,41 +78,24 @@ const CakeGallery = () => {
         cancelButtonColor: "#d33",
         confirmButtonText: "Login Now",
       }).then((result) => {
-        if (result.isConfirmed) {
-          navigate("/login");
-        }
+        if (result.isConfirmed) navigate("/login");
       });
       return;
     }
 
-    const isInWishlist = wishlistItems.some((item) => {
-      const id = typeof item === "string" ? item : item._id;
-      return id === cakeId;
-    });
+    const isInWishlist = wishlistItems.some(
+      (item) => (typeof item === "string" ? item : item._id) === cakeId
+    );
 
     if (isInWishlist) {
       dispatch(
         removeFromWishlistAsync({
-          userId: userId,
+          userId,
           productId: cakeId,
         })
       );
-      toast.custom(
-        (t) => (
-          <div
-            className={`re-bk-toast-wrapper ${
-              t.visible ? "slide-in" : "slide-out"
-            }`}
-            style={{ zIndex: 999999999 }}
-          >
-            <div className="re-bk-toast">
-              <span className="re-bk-text-toast">Removed from Favourites</span>
-            </div>
-            <div className="re-bk-progress" />
-          </div>
-        ),
-        { duration: 2000, position: "top-right" }
-      );
+
+      showHotToast("error", "Removed from Favourites"); // 🔴 red bg
     } else {
       dispatch(
         addToWishlistAsync({
@@ -122,26 +103,8 @@ const CakeGallery = () => {
           productId: cakeId,
         })
       );
-      toast.custom(
-        (t) => (
-          <div
-            className={`re-bk-toast-wrapper ${
-              t.visible ? "slide-in" : "slide-out"
-            }`}
-            style={{ zIndex: 999999999 }}
-          >
-            <div className="re-bk-toast">
-              <img
-                src="https://bkassets.bakingo.com/bakingo-ssr/static/media/check.adfc0424.svg"
-                alt="check mark"
-              />
-              <span className="re-bk-text-toast">Added to Favourites</span>
-            </div>
-            <div className="re-bk-progress" />
-          </div>
-        ),
-        { duration: 2000, position: "top-right" }
-      );
+
+      showHotToast("success", "Added to Favourites"); // 🔵 success bg + tick
     }
   };
 
