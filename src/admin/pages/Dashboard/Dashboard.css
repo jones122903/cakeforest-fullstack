@@ -130,3 +130,21 @@
         grid-template-columns: 1fr;
     }
 }
+/* =========================
+   TABLE COMPACT SPACING
+========================= */
+
+.products-table th,
+.products-table td {
+  padding: 8px 12px;   /* 👈 reduced */
+  font-size: 13px;
+  vertical-align: middle;
+}
+
+.products-table th {
+  font-weight: 600;
+}
+
+.products-table td {
+  line-height: 1.4;
+}
