@@ -75,8 +75,9 @@ const OrderSummary = () => {
           // 🧁 Product details
           productId: product._id,
           productName: product.cakeName,
-          price: product.price,
+          price: finalTotal,
           quantity,
+          cakePrice:cakesTotal,
 
           // ➕ Add-ons full details
           addons: selectedAddons.map((a) => ({
@@ -88,7 +89,7 @@ const OrderSummary = () => {
           })),
 
           // 💰 Amounts
-          productTotal: totalPrice,
+          productTotal:finalTotal,
           addonsTotal,
           grandTotal: finalTotal,
         },
@@ -183,8 +184,19 @@ const addonsTotal = selectedAddons.reduce(
   0
 );
 
+const weightInKg = product?.weight
+  ? parseFloat(product.weight)   // "0.5 Kg" → 0.5
+  : 0.5;
+
+const singleCakePrice = itemPrice * weightInKg;
+
+const cakesTotal = singleCakePrice * quantity;
+
+
+
+
 // ✅ Final total
-const finalTotal = totalPrice + addonsTotal;
+const finalTotal = cakesTotal + addonsTotal;
 
   return (
     <div>
@@ -225,7 +237,7 @@ const finalTotal = totalPrice + addonsTotal;
                     <h3 className={styles.productName}>
                       {product?.cakeName || "Red Velvet Crumb Birthday Cake"}
                     </h3>
-                    <p className={styles.productPrice}>₹ {itemPrice}</p>
+                    <p className={styles.productPrice}>₹ {cakesTotal}</p>
                     <p className={styles.productWeight}>
                       Weight: {product?.weight || "0.5 Kg"}
                     </p>
@@ -387,7 +399,7 @@ const finalTotal = totalPrice + addonsTotal;
         <HiDocumentCurrencyRupee className={styles.billIcon} />
         Cake Price
       </span>
-      <span className={styles.billAmount}>₹ {totalPrice}</span>
+      <span className={styles.billAmount}>₹ {cakesTotal}</span>
     </div>
 
     {/* ➕ Add-ons Section */}

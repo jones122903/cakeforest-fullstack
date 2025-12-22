@@ -169,6 +169,15 @@ const Orders = () => {
     setSelectedOrder(null);
   };
 
+  // 🧮 Addons total
+const getAddonsTotal = (addons = []) =>
+  addons.reduce((sum, a) => sum + a.total, 0);
+
+// 🧁 Cake total
+const getCakeTotal = (item) =>
+  item.cakePrice * item.quantity;
+
+
   const pendingOrders = orders.filter((order) =>
     ["pending", "ready"].includes(order.status.toLowerCase())
   );
@@ -448,202 +457,240 @@ const Orders = () => {
         </div>
 
         {/* Enhanced Order Details Modal */}
-        {isModalOpen && selectedOrder && (
-          <div
-            onClick={closeModal}
+        {/* Enhanced Order Details Modal */}
+{isModalOpen && selectedOrder && (
+  <div
+    onClick={closeModal}
+    style={{
+      position: "fixed",
+      top: 0,
+      left: 0,
+      right: 0,
+      bottom: 0,
+      backgroundColor: "rgba(0, 0, 0, 0.5)",
+      display: "flex",
+      justifyContent: "center",
+      alignItems: "center",
+      zIndex: 10000,
+      padding: "20px",
+    }}
+  >
+    <div
+      onClick={(e) => e.stopPropagation()}
+      style={{
+        backgroundColor: "white",
+        borderRadius: "12px",
+        width: "100%",
+        maxWidth: "600px",
+        maxHeight: "90vh",
+        overflowY: "auto",
+        boxShadow: "0 10px 40px rgba(0, 0, 0, 0.2)",
+      }}
+    >
+      {/* Header */}
+      <div
+        style={{
+          padding: "20px 24px",
+          borderBottom: "1px solid #e5e7eb",
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+        }}
+      >
+        <div>
+          <h2 style={{ margin: 0, fontSize: "20px", fontWeight: "600" }}>
+            Order #{selectedOrder.orderId}
+          </h2>
+          <p style={{ margin: "4px 0 0", fontSize: "14px", color: "#6b7280" }}>
+            {selectedOrder.formattedOrderDate}
+          </p>
+        </div>
+
+        <button
+          onClick={closeModal}
+          style={{
+            background: "none",
+            border: "none",
+            cursor: "pointer",
+            padding: "8px",
+          }}
+        >
+          ✕
+        </button>
+      </div>
+
+      {/* Content */}
+      <div style={{ padding: "24px" }}>
+        {/* Status */}
+        <div
+          style={{
+            display: "inline-flex",
+            alignItems: "center",
+            gap: "6px",
+            padding: "6px 12px",
+            borderRadius: "6px",
+            fontSize: "14px",
+            fontWeight: "500",
+            marginBottom: "24px",
+            background: "#e0f2fe",
+            color: "#0369a1",
+          }}
+        >
+          {selectedOrder.status}
+        </div>
+
+        {/* Customer */}
+        <div style={{ marginBottom: "24px" }}>
+          <h3 style={{ fontSize: "13px", color: "#6b7280" }}>CUSTOMER</h3>
+          <p style={{ fontSize: "15px", fontWeight: "600" }}>
+            {selectedOrder.deliveryDetails.fullName}
+          </p>
+          <p style={{ fontSize: "14px", color: "#6b7280" }}>
+            {selectedOrder.deliveryDetails.phone}
+          </p>
+        </div>
+
+        {/* Delivery */}
+        <div style={{ marginBottom: "24px" }}>
+          <h3 style={{ fontSize: "13px", color: "#6b7280" }}>DELIVERY</h3>
+          <p style={{ fontSize: "14px", lineHeight: "1.6" }}>
+            {selectedOrder.deliveryDetails.address.flatNo}, 
+            {selectedOrder.deliveryDetails.address.street}, 
+            {selectedOrder.deliveryDetails.address.city} - 
+            {selectedOrder.deliveryDetails.address.pincode}
+          </p>
+
+          <p style={{ marginTop: "8px", fontSize: "14px" }}>
+            📅 {selectedOrder.deliveryDetails.deliveryDate} • 🕐{" "}
+            {selectedOrder.deliveryDetails.deliveryTime}
+          </p>
+        </div>
+
+        {/* ITEMS – SINGLE LINE */}
+        <div style={{ marginBottom: "24px" }}>
+  <h3 style={{ fontSize: "13px", color: "#6b7280", marginBottom: "12px" }}>
+    ITEMS
+  </h3>
+
+  {selectedOrder.cartItems.map((item, idx) => {
+    const cakeTotal = item.cakePrice * item.quantity;
+
+    return (
+      <div key={idx}>
+        {/* 🎂 Cake Row */}
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            padding: "12px 0",
+            borderBottom:
+              item.addons && item.addons.length > 0
+                ? "1px dashed #e5e7eb"
+                : "1px solid #f3f4f6",
+          }}
+        >
+          <p style={{ margin: 0, fontSize: "15px", fontWeight: "600" }}>
+            {item.cakeName} ({item.weight} × {item.quantity})
+          </p>
+
+          <p
             style={{
-              position: "fixed",
-              top: 0,
-              left: 0,
-              right: 0,
-              bottom: 0,
-              backgroundColor: "rgba(0, 0, 0, 0.5)",
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              zIndex: 10000,
-              padding: "20px",
+              margin: 0,
+              fontSize: "15px",
+              fontWeight: "700",
+              color: "#059669",
             }}
           >
+            ₹{cakeTotal}
+          </p>
+        </div>
+
+        {/* ➕ Addons Rows */}
+        {item.addons &&
+          item.addons.map((addon, aIdx) => (
             <div
-              onClick={(e) => e.stopPropagation()}
+              key={aIdx}
               style={{
-                backgroundColor: "white",
-                borderRadius: "12px",
-                width: "100%",
-                maxWidth: "600px",
-                maxHeight: "90vh",
-                overflowY: "auto",
-                boxShadow: "0 10px 40px rgba(0, 0, 0, 0.2)",
+                display: "flex",
+                justifyContent: "space-between",
+                padding: "6px 0 6px 16px",
               }}
             >
-              {/* Header */}
-              <div
+              <p
                 style={{
-                  padding: "20px 24px",
-                  borderBottom: "1px solid #e5e7eb",
-                  display: "flex",
-                  justifyContent: "space-between",
-                  alignItems: "center",
+                  margin: 0,
+                  fontSize: "14px",
+                  color: "#6b7280",
                 }}
               >
-                <div>
-                  <h2 style={{ margin: 0, fontSize: "20px", fontWeight: "600" }}>
-                    Order #{selectedOrder.orderId}
-                  </h2>
-                  <p style={{ margin: "4px 0 0", fontSize: "14px", color: "#6b7280" }}>
-                    {selectedOrder.formattedOrderDate}
-                  </p>
-                </div>
-                <button
-                  onClick={closeModal}
-                  style={{
-                    background: "none",
-                    border: "none",
-                    cursor: "pointer",
-                    padding: "8px",
-                    borderRadius: "6px",
-                  }}
-                >
-                  <X size={20} color="#6b7280" />
-                </button>
-              </div>
+                + {addon.name} × {addon.qty}
+              </p>
 
-              {/* Content */}
-              <div style={{ padding: "24px" }}>
-                {/* Status */}
-                <div
-                  style={{
-                    display: "inline-flex",
-                    alignItems: "center",
-                    gap: "6px",
-                    padding: "6px 12px",
-                    borderRadius: "6px",
-                    fontSize: "14px",
-                    fontWeight: "500",
-                    marginBottom: "24px",
-                    background: `${getStatusColor(selectedOrder.status)}15`,
-                    color: getStatusColor(selectedOrder.status),
-                  }}
-                >
-                  {getStatusIcon(selectedOrder.status.toLowerCase())}
-                  {selectedOrder.status}
-                </div>
-
-                {/* Customer */}
-                <div style={{ marginBottom: "24px" }}>
-                  <h3 style={{ fontSize: "13px", fontWeight: "600", color: "#6b7280", marginBottom: "8px" }}>
-                    CUSTOMER
-                  </h3>
-                  <p style={{ margin: "4px 0", fontSize: "15px", fontWeight: "600", color: "#111827" }}>
-                    {selectedOrder.deliveryDetails.fullName}
-                  </p>
-                  <p style={{ margin: "4px 0", fontSize: "14px", color: "#6b7280" }}>
-                    {selectedOrder.deliveryDetails.phone}
-                  </p>
-                </div>
-
-                {/* Delivery */}
-                <div style={{ marginBottom: "24px" }}>
-                  <h3 style={{ fontSize: "13px", fontWeight: "600", color: "#6b7280", marginBottom: "8px" }}>
-                    DELIVERY
-                  </h3>
-                  <p style={{ margin: 0, fontSize: "14px", lineHeight: "1.6", color: "#111827", fontWeight: "500" }}>
-                    {selectedOrder.deliveryDetails.address.flatNo}, {selectedOrder.deliveryDetails.address.street},<br />
-                    {selectedOrder.deliveryDetails.address.city} - {selectedOrder.deliveryDetails.address.pincode}
-                  </p>
-                  <p style={{ margin: "10px 0 0", fontSize: "14px", color: "#111827", fontWeight: "500" }}>
-                    📅 {selectedOrder.deliveryDate} • 🕐 {selectedOrder.deliveryTime}
-                  </p>
-                  {selectedOrder.wishesOnCake && (
-                    <div style={{
-                      marginTop: "12px",
-                      padding: "10px",
-                      background: "#fef3f2",
-                      borderRadius: "6px",
-                      border: "1px dashed #f87171",
-                      display: "flex",
-                      alignItems: "center",
-                      gap: "10px"
-                    }}>
-                      <span style={{ fontSize: "11px", fontWeight: "700", color: "#991b1b", textTransform: "uppercase", letterSpacing: "0.5px", whiteSpace: "nowrap" }}>
-                        Wishes on Cake:
-                      </span>
-                      <span style={{ fontSize: "15px", fontWeight: "600", color: "#b91c1c", fontStyle: "italic" }}>
-                        "{selectedOrder.wishesOnCake}"
-                      </span>
-                    </div>
-                  )}
-                </div>
-
-                {/* Items */}
-                <div style={{ marginBottom: "24px" }}>
-                  <h3 style={{ fontSize: "13px", fontWeight: "600", color: "#6b7280", marginBottom: "12px" }}>
-                    ITEMS
-                  </h3>
-                  {selectedOrder.cartItems.map((item, idx) => (
-                    <div
-                      key={idx}
-                      style={{
-                        display: "flex",
-                        justifyContent: "space-between",
-                        padding: "12px 0",
-                        borderBottom: idx !== selectedOrder.cartItems.length - 1 ? "1px solid #f3f4f6" : "none",
-                      }}
-                    >
-                      <div>
-                        <p style={{ margin: 0, fontSize: "15px", fontWeight: "600", color: "#111827" }}>
-                          {item.cakeName}
-                        </p>
-                        <p style={{ margin: "4px 0 0", fontSize: "13px", color: "#6b7280" }}>
-                          {item.weight} × {item.quantity}
-                        </p>
-                      </div>
-                      <p style={{ margin: 0, fontSize: "16px", fontWeight: "700", color: "#059669" }}>
-                        ₹{item.price * item.quantity}
-                      </p>
-                    </div>
-                  ))}
-                </div>
-
-                {/* Payment */}
-                <div
-                  style={{
-                    background: "#f9fafb",
-                    padding: "16px",
-                    borderRadius: "8px",
-                    border: "1px solid #e5e7eb",
-                  }}
-                >
-                  <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "8px" }}>
-                    <span style={{ fontSize: "14px", color: "#6b7280" }}>Subtotal</span>
-                    <span style={{ fontSize: "14px", fontWeight: "500" }}>
-                      ₹{selectedOrder.totalAmount - (selectedOrder.deliveryCharge || 0)}
-                    </span>
-                  </div>
-                  <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "12px" }}>
-                    <span style={{ fontSize: "14px", color: "#6b7280" }}>Delivery</span>
-                    <span style={{ fontSize: "14px", fontWeight: "500" }}>₹{selectedOrder.deliveryCharge || 0}</span>
-                  </div>
-                  <div
-                    style={{
-                      display: "flex",
-                      justifyContent: "space-between",
-                      paddingTop: "12px",
-                      borderTop: "2px solid #d1d5db",
-                    }}
-                  >
-                    <span style={{ fontSize: "17px", fontWeight: "700", color: "#111827" }}>Total</span>
-                    <span style={{ fontSize: "18px", fontWeight: "700", color: "#059669" }}>
-                      ₹{selectedOrder.totalAmount}
-                    </span>
-                  </div>
-
-                </div>
-              </div>
+              <p
+                style={{
+                  margin: 0,
+                  fontSize: "14px",
+                  fontWeight: "600",
+                }}
+              >
+                ₹{addon.total}
+              </p>
             </div>
+          ))}
+      </div>
+    );
+  })}
+</div>
+
+
+        {/* Payment Summary */}
+        <div
+          style={{
+            background: "#f9fafb",
+            padding: "16px",
+            borderRadius: "8px",
+            border: "1px solid #e5e7eb",
+          }}
+        >
+          <div style={{ display: "flex", justifyContent: "space-between" }}>
+            <span>Subtotal</span>
+            <span>
+              ₹{selectedOrder.totalAmount - selectedOrder.deliveryCharge}
+            </span>
           </div>
-        )}
+
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              marginTop: "8px",
+            }}
+          >
+            <span>Delivery</span>
+            <span>₹{selectedOrder.deliveryCharge}</span>
+          </div>
+
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              marginTop: "12px",
+              borderTop: "2px solid #d1d5db",
+              paddingTop: "12px",
+              fontWeight: "700",
+            }}
+          >
+            <span>Total</span>
+            <span style={{ color: "#059669" }}>
+              ₹{selectedOrder.totalAmount}
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+)}
+
       </div>
 
       <style>{`
