@@ -19,7 +19,7 @@ import {
 // import "../Cart All Pages/Cartuialert.css";
 import Swal from "sweetalert2";
 import { Toaster } from "react-hot-toast";
-import { showHotToast } from "../../admin/utils/showToast.jsX";
+import { showHotToast } from "../../admin/utils/showToast.jsx";
 
 const CakePrice = () => {
   const [products, setProducts] = useState([]);
