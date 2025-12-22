@@ -49,8 +49,7 @@ const ProductList = () => {
   const isMobile = window.innerWidth <= 700;
 
   const showToast = async (icon, title) => {
-    let timerInterval;
-
+     
     const Toast = Swal.mixin({
       toast: true,
       position: "top-right",

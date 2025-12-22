@@ -56,6 +56,32 @@ const [selectedVariants, setSelectedVariants] = useState([]);
   });
 };
 
+// 🔢 Convert weight string to multiplier
+const getWeightMultiplier = (weight) => {
+  if (!weight) return 1;
+
+  const kg = parseFloat(weight); // "1 Kg" → 1
+  return kg / 0.5; // base is 0.5 Kg
+};
+
+
+const basePrice = products?.price || 685; // 0.5 Kg price
+
+const weightMultiplier = getWeightMultiplier(selectedWeight);
+
+const cakePriceByWeight = basePrice * weightMultiplier;
+
+const currentPrice = cakePriceByWeight;
+
+// ➕ Selected variants total price
+const variantsTotal = selectedVariants.reduce(
+  (sum, v) => sum + v.price,
+  0
+);
+
+
+
+
 
   const variants = [
     {
@@ -131,13 +157,7 @@ const [selectedVariants, setSelectedVariants] = useState([]);
           butterscotchCake,
           pineappleCake,
         ];
-
-  const currentPrice =
-    products?.price ||
-    variants.find((v) => v.name === selectedVariant)?.price ||
-    685;
-
-    console.log("currentPrice ",selectedVariants)
+ 
 
   // Helper to get current image
   const getCurrentImage = () => {
@@ -289,7 +309,7 @@ const [selectedVariants, setSelectedVariants] = useState([]);
             <div className="buttons-container">
               <button className="btn-cart w-100 w-md-50">GO TO CART</button>
               <button className="btn-buy w-100 w-md-50" onClick={goToChapter}>
-                BUY NOW | ₹ {currentPrice}
+                BUY NOW | ₹ {currentPrice+variantsTotal}
               </button>
             </div>
           </div>

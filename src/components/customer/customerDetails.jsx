@@ -13,7 +13,7 @@ import dayjs from 'dayjs';
 import CouponSection from "../../admin/pages/Coupons/CouponSection";
 import ScratchCard from "../ScratchCard/ScratchCard";
 
-const format = 'HH:mm';
+ const format = "hh:mm A"; // ✅ 12-hour format with AM/PM
 
 const CustomerDetails = () => {
   const [formData, setFormData] = useState({
@@ -22,7 +22,7 @@ const CustomerDetails = () => {
     email: "",
     whatsapp: "",
     deliveryDate: new Date().toISOString().split("T")[0],
-    deliveryTime: dayjs().format(format),
+    deliveryTime:  "",
     wishesOnCake: "",
     flatNo: "",
     street: "",
@@ -53,9 +53,12 @@ const CustomerDetails = () => {
   }, [token, navigate]);
 
   const incomingOrderDetails = location.state?.orderDetails;
+  
+  console.log("Incoming Order Details:", incomingOrderDetails);
   const orderDetails = {
     _id: incomingOrderDetails?._id,
     cakeName: incomingOrderDetails?.cakeName || "Red Velvet Bliss",
+    cakePrice: incomingOrderDetails?.cakePrice || 1150,
     variant: incomingOrderDetails?.variant || "Classic",
     weight: incomingOrderDetails?.weight || "1 kg",
     addons: incomingOrderDetails?.addons || "1",
@@ -108,6 +111,7 @@ const CustomerDetails = () => {
     if (!formData.street.trim()) newErrors.street = "Street Address is required";
     if (!formData.city.trim()) newErrors.city = "City is required";
     if (!formData.pincode.trim()) newErrors.pincode = "Pincode is required";
+    if (!formData.wishesOnCake.trim()) newErrors.wishesOnCake = "Wishes is required";
     else if (!/^\d{6}$/.test(formData.pincode)) newErrors.pincode = "Enter a valid 6-digit pincode";
 
     setErrors(newErrors);
@@ -136,6 +140,7 @@ const CustomerDetails = () => {
           productId: orderDetails._id,
           cakeName: orderDetails.cakeName,
           variant: orderDetails.variant,
+          cakePrice: orderDetails.cakePrice,
           weight: orderDetails.weight,
           price: orderDetails.grandTotal,
           nameOnCake: orderDetails.nameOnCake,
@@ -263,6 +268,8 @@ const CustomerDetails = () => {
       setLoading(false);
     }
   };
+
+ 
 
   return (
     <div className={styles.container}>
@@ -427,16 +434,30 @@ const CustomerDetails = () => {
                       Delivery Time <span style={{ color: "#ff6161" }}>*</span>
                     </label>
                     <div className={styles.inputWrapper} style={{ border: 'none', padding: 0 }}>
-                      <TimePicker
-                        defaultValue={dayjs(formData.deliveryTime, format)}
-                        format={format}
-                        onChange={(time, timeString) => {
-                          setFormData(prev => ({ ...prev, deliveryTime: timeString }));
-                        }}
-                        className={styles.input}
-                        style={{ width: '100%', height: '45px', borderRadius: '10px' }}
-                        allowClear={false}
-                      />
+                      
+
+<TimePicker
+  value={
+    formData.deliveryTime
+      ? dayjs(formData.deliveryTime, format)
+      : null
+  }
+  format={format}
+  use12Hours   // ✅ IMPORTANT
+  onChange={(time, timeString) => {
+    setFormData((prev) => ({
+      ...prev,
+      deliveryTime: timeString, // eg: "02:30 PM"
+    }));
+  }}
+  className={styles.input}
+  style={{
+    width: "100%",
+    height: "45px",
+    borderRadius: "10px",
+  }}
+  allowClear={false}
+/>
                     </div>
                     {errors.deliveryTime && <p className={styles.errorMsg}>{errors.deliveryTime}</p>}
                   </div>
@@ -457,6 +478,7 @@ const CustomerDetails = () => {
                     maxLength={50}
                   />
                 </div>
+                {errors.wishesOnCake && <p className={styles.errorMsg}>{errors.wishesOnCake}</p>}
                 <p className={styles.helperText}>
                   {formData.wishesOnCake.length}/50 characters
                 </p>
