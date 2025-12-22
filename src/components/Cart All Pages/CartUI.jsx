@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import styles from "./Cart.module.css";
-import "./Cartuialert.css";
+// import "./Cartuialert.css";
 import { HiDocumentCurrencyRupee } from "react-icons/hi2";
 import "bootstrap/dist/css/bootstrap.min.css";
 import LoginModal from "./LoginModal";

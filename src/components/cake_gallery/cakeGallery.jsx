@@ -18,7 +18,7 @@ import {
   fetchWishlist,
 } from "../../redux/slice/wishlistSlice";
 import toast, { Toaster } from "react-hot-toast";
-import "../Cart All Pages/Cartuialert.css";
+// import "../Cart All Pages/Cartuialert.css";
 import Swal from "sweetalert2";
 import { useNavigate } from "react-router-dom";
 
