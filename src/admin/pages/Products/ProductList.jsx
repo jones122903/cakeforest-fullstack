@@ -5,6 +5,7 @@ import "./ProductList.css";
 import axios from "axios";
 import { Popconfirm, Button } from "antd";
 import Swal from "sweetalert2";
+import { showHotToast } from "../../utils/showToast.jsx";
 
 const ProductList = () => {
   const navigate = useNavigate();
@@ -48,43 +49,6 @@ const ProductList = () => {
 
   const isMobile = window.innerWidth <= 700;
 
-  const showToast = async (icon, title) => {
-     
-    const Toast = Swal.mixin({
-      toast: true,
-      position: "top-right",
-      showConfirmButton: false,
-      timer: 2500,
-      timerProgressBar: true,
-
-      // Progress bar color change based on success / error
-      didOpen: (toast) => {
-        // change progress bar color
-        const progressBar = toast.querySelector(".swal2-timer-progress-bar");
-        progressBar.style.background = icon === "success" ? "green" : "red";
-
-        // Pause on hover
-        toast.addEventListener("mouseenter", () => {
-          Swal.stopTimer();
-        });
-
-        // Resume on mouse leave
-        toast.addEventListener("mouseleave", () => {
-          Swal.resumeTimer();
-        });
-      },
-
-      // Custom popup color classes
-      customClass: {
-        popup: icon === "success" ? "colored-toast" : "colored-toast-error",
-      },
-
-      iconColor: icon === "success" ? "green" : "red",
-    });
-
-    await Toast.fire({ icon, title });
-  };
-
   useEffect(() => {
     getALLCakes();
   }, []);
@@ -107,7 +71,7 @@ const ProductList = () => {
           Authorization: `Bearer ${token}`,
         },
       });
-      showToast(
+      showHotToast(
         "success",
         response.data.message || "product deleted successfully"
       );

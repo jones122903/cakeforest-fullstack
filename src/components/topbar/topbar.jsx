@@ -28,6 +28,7 @@ import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import OrderDrawer from "./OrderDrawer";
 import axios from "axios";
+import { showHotToast } from "../../admin/utils/showToast.jsx";
 
 const Topbar = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -151,47 +152,11 @@ const handleSearchChange = (e) => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
   };
 
-  const showToast = async (icon, title) => {
-    const Toast = Swal.mixin({
-      toast: true,
-      position: "top-right",
-      showConfirmButton: false,
-      timer: 1000,
-      timerProgressBar: true,
-
-      didOpen: (toast) => {
-        const progressBar = toast.querySelector(".swal2-timer-progress-bar");
-        progressBar.style.background = icon === "success" ? "green" : "red";
-
-        const container = Swal.getContainer();
-        if (container) {
-          container.style.zIndex = "10000";
-        }
-
-        toast.addEventListener("mouseenter", () => {
-          Swal.stopTimer();
-        });
-
-        toast.addEventListener("mouseleave", () => {
-          Swal.resumeTimer();
-        });
-      },
-
-      customClass: {
-        popup: icon === "success" ? "colored-toast" : "colored-toast-error",
-        container: "toast-high-zindex",
-      },
-
-      iconColor: icon === "success" ? "green" : "red",
-    });
-
-    await Toast.fire({ icon, title });
-  };
-
+  
   const handleLogout = () => {
     dispatch(clearToken());
     setPendingCount(0);
-    showToast("success", "You've successfully logged out");
+    showHotToast("success", "You've successfully logged out");
     navigate("/");
     setIsMobileMenuOpen(false);
   };
@@ -206,7 +171,7 @@ const handleSearchChange = (e) => {
       setIsOrderDrawerOpen(true);
       setIsMobileMenuOpen(false);
     } else {
-      showToast("error", "Please login to view orders");
+      showHotToast("error", "Please login to view orders");
       navigate("/login");
       setIsMobileMenuOpen(false);
     }

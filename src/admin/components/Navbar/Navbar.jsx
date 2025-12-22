@@ -14,11 +14,13 @@ const Navbar = ({ sideWidth }) => {
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [unreadCount, setUnreadCount] = useState(0);
+    const api_url_sound = import.meta.env.VITE_API_URL_SOUND;
+
 
   const audioRef = useRef(null);
 
 useEffect(() => {
-  audioRef.current = new Audio("http://localhost:5000/public/sounds/notification.mp3");
+  audioRef.current = new Audio(`${api_url_sound}/public/sounds/notification.mp3`);
   audioRef.current.loop = false; // only unlock
 
   audioRef.current.muted = true; 
