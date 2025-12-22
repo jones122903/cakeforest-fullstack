@@ -24,6 +24,8 @@ import {
 import { CheckCircle, XCircle } from "lucide-react";
 import Swal from "sweetalert2";
 import { Popconfirm, Button } from "antd";
+import { showHotToast } from "../../utils/showToast.jsx";
+
 
 const AddProduct = () => {
   const navigate = useNavigate();
@@ -84,7 +86,7 @@ const AddProduct = () => {
 
         setImagePreview(p.images); // optional
       } catch (error) {
-        showToast("error", "Failed to load product details");
+        showHotToast("error", "Failed to load product details");
       }
     };
 
@@ -257,7 +259,7 @@ const AddProduct = () => {
     e.preventDefault();
 
     const errorMessage = validateForm();
-    if (errorMessage) return showToast("error", errorMessage);
+    if (errorMessage) return  showHotToast("error", errorMessage);;
 
     try {
       let imageUrls = [];
@@ -314,18 +316,18 @@ const AddProduct = () => {
         res = await axios.put(`${api_url}/products/${id}`, productData, {
           headers: { Authorization: `Bearer ${token}` },
         });
-        showToast("success", "Product updated successfully");
+        showHotToast("success", "Product updated successfully");
       } else {
         // 🔥 ADD PRODUCT
         res = await axios.post(`${api_url}/products`, productData, {
           headers: { Authorization: `Bearer ${token}` },
         });
-        showToast("success", "Product added successfully");
+        showHotToast("success", "Product added successfully");
       }
 
       navigate("/admin/products");
     } catch (error) {
-      showToast(
+      showHotToast(
         "error",
         error.response?.data?.message || "Something went wrong"
       );

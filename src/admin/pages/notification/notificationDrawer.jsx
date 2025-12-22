@@ -16,9 +16,11 @@ const NotificationDrawer = ({ open, setOpen }) => {
   const pendingOrders = orders.filter((o) => o.status === "pending");
   const acceptedOrders = orders.filter((o) => o.status === "accepted");
 
+  const api_url_sound = import.meta.env.VITE_API_URL_SOUND;
+
   // 🔊 Init audio ONE TIME
   useEffect(() => {
-    audioRef.current = new Audio(`http://localhost:5000/public/sounds/notification.mp3`);
+    audioRef.current = new Audio(`${api_url_sound}/public/sounds/notification.mp3`);
     audioRef.current.loop = true;
   }, [api_url]);
 

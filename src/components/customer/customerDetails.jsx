@@ -10,8 +10,10 @@ import { useEffect } from "react";
 import Swal from "sweetalert2";
 import { TimePicker } from 'antd';
 import dayjs from 'dayjs';
+import { Popconfirm, Button } from "antd";
 import CouponSection from "../../admin/pages/Coupons/CouponSection";
 import ScratchCard from "../ScratchCard/ScratchCard";
+import { showHotToast } from "../../admin/utils/showToast";
 
  const format = "hh:mm A"; // ✅ 12-hour format with AM/PM
 
@@ -175,13 +177,15 @@ const CustomerDetails = () => {
       if (orderResponse.data.success) {
         const orderId = orderResponse.data.order?._id || orderResponse.data._id;
 
-        // First show Order Success Alert
-        await Swal.fire({
-          icon: "success",
-          title: "Order Placed Successfully!",
-          text: "Thank you for your order.",
-          confirmButtonColor: "#0e4d65"
-        });
+        // // First show Order Success Alert
+        // await Swal.fire({
+        //   icon: "success",
+        //   title: "Order Placed Successfully!",
+        //   text: "Thank you for your order.",
+        //   confirmButtonColor: "#0e4d65"
+        // });
+
+        showHotToast("success", "Order Placed Successfully! Thank you for your order.");
 
         try {
           const scratchResponse = await axios.post(`${import.meta.env.VITE_API_URL}/scratchcards/generate`, {
@@ -215,13 +219,14 @@ const CustomerDetails = () => {
       });
       if (response.data.success) {
         setIsClaimed(true);
-        Swal.fire({
-          icon: "success",
-          title: "Coupon Claimed!",
-          text: "Your reward is now available for your next order.",
-          timer: 2000,
-          showConfirmButton: false
-        });
+        // Swal.fire({
+        //   icon: "success",
+        //   title: "Coupon Claimed!",
+        //   text: "Your reward is now available for your next order.",
+        //   timer: 2000,
+        //   showConfirmButton: false
+        // });
+        showHotToast("success", "Coupon Claimed! Your reward is now available for your next order.");
         setTimeout(finishOrder, 2000);
       }
     } catch (error) {
@@ -633,9 +638,48 @@ const CustomerDetails = () => {
       </div>
 
       <footer className={styles.footer}>
-        <button type="button" onClick={handleSubmit} className={styles.submitBtn} disabled={loading}>
+        {/* <button type="button" onClick={handleSubmit} className={styles.submitBtn} disabled={loading}>
+          {loading ? "Placing Order..." : "Place Order"}
+        </button> */}
+
+        <Popconfirm
+                        description={ "Are you sure order this cake?"}
+                        onConfirm={handleSubmit}
+                        // onCancel={() => showToast("error", "Save cancelled")}
+                        okText="Yes"
+                        cancelText="No"
+                        icon={null}
+                        placement="top"
+                        okButtonProps={{
+                          style: {
+                            backgroundColor: "#2C5F7C", // Dark Blue (your form icons color)
+                            color: "white",
+                            borderRadius: "6px",
+                            padding: "4px 15px",
+        
+                            border: "none",
+                          },
+                        }}
+                        descriptionProps={{
+                          style: {
+                            fontSize: "16px",
+                          },
+                        }}
+                        cancelButtonProps={{
+                          style: {
+                            backgroundColor: "#e0e0e0",
+                            color: "#444",
+                            borderRadius: "6px",
+                            padding: "4px 15px",
+        
+                            border: "none",
+                          },
+                        }}
+                      >
+                      <button type="button"  className={styles.submitBtn} disabled={loading}>
           {loading ? "Placing Order..." : "Place Order"}
         </button>
+                      </Popconfirm>
       </footer>
     </div>
   );

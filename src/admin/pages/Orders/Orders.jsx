@@ -17,6 +17,7 @@ import {
   ShoppingBag,
 } from "lucide-react";
 import toast, { Toaster } from "react-hot-toast";
+import { showHotToast } from "../../utils/showToast";
 
 const Orders = () => {
   const [orders, setOrders] = useState([]);
@@ -88,7 +89,8 @@ const Orders = () => {
       }
     } catch (error) {
       console.error("Error fetching orders:", error);
-      toast.error("Failed to fetch orders");
+      showHotToast("error", "Failed to fetch orders");
+ 
     } finally {
       setLoading(false);
     }
@@ -102,12 +104,13 @@ const Orders = () => {
       );
 
       if (response.data.success) {
-        toast.success(`Status updated to ${newStatus}`);
+        showHotToast("success", `Status updated to ${newStatus}`);
         fetchOrders();
       }
     } catch (error) {
       console.error("Error updating status:", error);
-      toast.error("Failed to update status");
+      showHotToast("error", "Failed to update status");
+     
     }
   };
 
@@ -119,12 +122,14 @@ const Orders = () => {
 
       if (response.data.success) {
         setOrders(orders.filter((order) => order.mongoId !== mongoId));
-        toast.success("Order deleted successfully");
+        showHotToast("success", "Order deleted successfully");
+        
         window.dispatchEvent(new Event("refreshNotifications"));
       }
     } catch (error) {
       console.error("Error deleting order:", error);
-      toast.error("Failed to delete order");
+      showHotToast("error", "Failed to delete order");
+      
     }
   };
 

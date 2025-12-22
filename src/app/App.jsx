@@ -93,7 +93,7 @@ function App() {
 
             {/* Admin Routes */}
             <Route path="/admin" element={<AdminLayout />}>
-              <Route path="dashboard" element={<Dashboard />} />
+              {/* <Route path="dashboard" element={<Dashboard />} /> */}
               <Route path="products" element={<ProductList />} />
               <Route path="products/add" element={<AddProduct />} />
               <Route path="products/edit/:id" element={<AddProduct />} />
