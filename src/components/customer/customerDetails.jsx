@@ -60,16 +60,16 @@ const CustomerDetails = () => {
   const orderDetails = {
     _id: incomingOrderDetails?._id,
     cakeName: incomingOrderDetails?.cakeName || "Red Velvet Bliss",
-    cakePrice: incomingOrderDetails?.cakePrice || 1150,
+    cakePrice: incomingOrderDetails?.cakePrice || 0,
     variant: incomingOrderDetails?.variant || "Classic",
     weight: incomingOrderDetails?.weight || "1 kg",
-    addons: incomingOrderDetails?.addons || "1",
-    price: incomingOrderDetails?.grandTotal || 1200,
+    addons: incomingOrderDetails?.addons || [],
+    price: incomingOrderDetails?.grandTotal || incomingOrderDetails?.productTotal || 0,
     deliveryCharge: 50,
     quantity: incomingOrderDetails?.quantity || 1,
   };
 
-  const subtotal = (orderDetails?.price || 0) * (orderDetails?.quantity || 1);
+  const subtotal = orderDetails.price; // Already includes quantity from previous page
   const discount = appliedCoupon ? appliedCoupon.discountAmount : 0;
   const totalAmount = subtotal + orderDetails.deliveryCharge - discount;
 
@@ -112,9 +112,14 @@ const CustomerDetails = () => {
     if (!formData.flatNo.trim()) newErrors.flatNo = "Flat / Door No is required";
     if (!formData.street.trim()) newErrors.street = "Street Address is required";
     if (!formData.city.trim()) newErrors.city = "City is required";
-    if (!formData.pincode.trim()) newErrors.pincode = "Pincode is required";
-    if (!formData.wishesOnCake.trim()) newErrors.wishesOnCake = "Wishes is required";
-    else if (!/^\d{6}$/.test(formData.pincode)) newErrors.pincode = "Enter a valid 6-digit pincode";
+    if (!formData.pincode.trim()) {
+      newErrors.pincode = "Pincode is required";
+    } else if (!/^\d{6}$/.test(formData.pincode)) {
+      newErrors.pincode = "Enter a valid 6-digit pincode";
+    }
+    if (!formData.wishesOnCake.trim()) {
+      newErrors.wishesOnCake = "Wishes is required";
+    }
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -134,8 +139,14 @@ const CustomerDetails = () => {
   const handleOrderPlacement = async (isPaid) => {
     try {
       const userId = user?._id || user?.id;
-      await axios.post(`${import.meta.env.VITE_API_URL}/details`, { userId, ...formData }, { headers: { Authorization: `Bearer ${token}` } });
+      
+      // 1. Update/Save user profile details
+      await axios.post(`${import.meta.env.VITE_API_URL}/details`, 
+        { userId, ...formData }, 
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
 
+      // 2. Prepare Order Payload
       const orderPayload = {
         userId,
         cartItems: [{
@@ -144,8 +155,8 @@ const CustomerDetails = () => {
           variant: orderDetails.variant,
           cakePrice: orderDetails.cakePrice,
           weight: orderDetails.weight,
-          price: orderDetails.grandTotal,
-          nameOnCake: orderDetails.nameOnCake,
+          price: orderDetails.price, // Using the calculated price from orderDetails
+          nameOnCake: formData.wishesOnCake, // Mapping to user's wishes
           quantity: orderDetails.quantity,
           addons: orderDetails.addons,
         }],
@@ -168,100 +179,56 @@ const CustomerDetails = () => {
         wishesOnCake: formData.wishesOnCake,
         paymentMethod: formData.paymentMethod,
         totalAmount: totalAmount,
+        finalAmount: totalAmount,
         deliveryCharge: orderDetails.deliveryCharge,
+        appliedCouponId: appliedCoupon ? appliedCoupon.coupon?._id || appliedCoupon._id : null,
+        discountAmount: discount,
         isPaid: isPaid
       };
 
-      const orderResponse = await axios.post(`${import.meta.env.VITE_API_URL}/orders`, orderPayload, { headers: { Authorization: `Bearer ${token}` } });
+      // 3. Place Order
+      const orderResponse = await axios.post(`${import.meta.env.VITE_API_URL}/orders`, 
+        orderPayload, 
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
 
       if (orderResponse.data.success) {
         const orderId = orderResponse.data.order?._id || orderResponse.data._id;
 
-        // // First show Order Success Alert
-        // await Swal.fire({
-        //   icon: "success",
-        //   title: "Order Placed Successfully!",
-        //   text: "Thank you for your order.",
-        //   confirmButtonColor: "#0e4d65"
-        // });
+        showHotToast("success", "Order Placed Successfully! 🎉");
 
-        showHotToast("success", "Order Placed Successfully! Thank you for your order.");
-
+        // 4. Generate Scratch Card
         try {
           const scratchResponse = await axios.post(`${import.meta.env.VITE_API_URL}/scratchcards/generate`, {
             userId,
-            cartItems: [{
-                productId: orderDetails._id,
-                cakeName: orderDetails.cakeName,
-                variant: orderDetails.variant,
-                weight: orderDetails.weight,
-                price: orderDetails.price,
-                nameOnCake: orderDetails.nameOnCake,
-                quantity: orderDetails.quantity,
-            }],
-            deliveryDetails: {
-              fullName: formData.fullName,
-              phone: formData.phone,
-              email: formData.email,
-              whatsapp: formData.whatsapp,
-              address: {
-                flatNo: formData.flatNo,
-                street: formData.street,
-                landmark: formData.landmark,
-                city: formData.city,
-                pincode: formData.pincode,
-              },
-              instructions: formData.instructions,
-            },
-            deliveryDate: orderDetails.deliveryDate,
-            deliveryTime: orderDetails.deliveryTime,
-            paymentMethod: formData.paymentMethod,
-            totalAmount: totalAmount,
-            finalAmount: totalAmount, // Backend requires this field
-            deliveryCharge: orderDetails.deliveryCharge,
-            appliedCouponId: appliedCoupon ? appliedCoupon.coupon?._id || appliedCoupon._id : null,
-            discountAmount: discount,
-            isPaid: isPaid
-        };
+            orderId,
+            totalAmount
+          }, { headers: { Authorization: `Bearer ${token}` } });
 
-        const orderResponse = await axios.post(`${import.meta.env.VITE_API_URL}/orders`, orderPayload, { headers: { Authorization: `Bearer ${token}` } });
-
-        if (orderResponse.data.success) {
-             const orderId = orderResponse.data.order?._id || orderResponse.data._id;
-             
-             // First show Order Success Alert
-             await Swal.fire({
-                icon: "success",
-                title: "Order Placed Successfully!",
-                text: "Thank you for your order.",
-                confirmButtonColor: "#0e4d65"
-             });
-
-             try {
-                const scratchResponse = await axios.post(`${import.meta.env.VITE_API_URL}/scratchcards/generate`, {
-                    userId,
-                    orderId,
-                    totalAmount
-                }, { headers: { Authorization: `Bearer ${token}` } });
-
-                if (scratchResponse.data.success) {
-                    const card = scratchResponse.data.scratchCard;
-                    setScratchCard(card);
-                    setIsRevealed(card.status !== 'CREATED');
-                    setIsClaimed(card.status === 'CLAIMED');
-                    setShowScratchModal(true);
-                } else {
-                    finishOrder();
-                }
-             } catch (err) {
-                console.error("Scratch card generation failed:", err.response?.data || err.message);
-                finishOrder();
-             }
+          if (scratchResponse.data.success) {
+            const card = scratchResponse.data.scratchCard;
+            setScratchCard(card);
+            setIsRevealed(card.status !== 'CREATED');
+            setIsClaimed(card.status === 'CLAIMED');
+            setShowScratchModal(true);
+          } else {
+            // No card generated, but order is success, so redirect
+            finishOrder();
+          }
+        } catch (err) {
+          console.error("Scratch card generation failed:", err.response?.data || err.message);
+          // Redirect even if scratch card fails, it shouldn't block the order completion
+          finishOrder();
         }
       }
     } catch (error) {
-      console.error(error);
-      Swal.fire({ icon: "error", title: "Order Failed", text: error.response?.data?.message || "Something went wrong.", confirmButtonColor: "#0e4d65" });
+      console.error("Order placement failed:", error);
+      Swal.fire({ 
+        icon: "error", 
+        title: "Order Failed", 
+        text: error.response?.data?.message || "Something went wrong while placing your order.", 
+        confirmButtonColor: "#0e4d65" 
+      });
     }
   };
 
