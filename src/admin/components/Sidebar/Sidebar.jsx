@@ -7,6 +7,7 @@ import {
   Users,
   Receipt,
   Tag,
+  Gift,
   BarChart3,
   Settings,
   LogOut,
@@ -29,6 +30,7 @@ const Sidebar = ({ setSideWidth, sideWidth }) => {
     { path: "/admin/customers", icon: Users, label: "Customers" },
     { path: "/admin/expenses", icon: Receipt, label: "Expenses" },
     { path: "/admin/coupons", icon: Tag, label: "Coupons" },
+    { path: "/admin/prize-pools", icon: Gift, label: "Prize Pools" },
     { path: "/admin/reports", icon: BarChart3, label: "Reports" },
     { path: "/admin/settings", icon: Settings, label: "Settings" },
   ];

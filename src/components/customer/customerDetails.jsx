@@ -140,7 +140,10 @@ const CustomerDetails = () => {
             deliveryTime: orderDetails.deliveryTime,
             paymentMethod: formData.paymentMethod,
             totalAmount: totalAmount,
+            finalAmount: totalAmount, // Backend requires this field
             deliveryCharge: orderDetails.deliveryCharge,
+            appliedCouponId: appliedCoupon ? appliedCoupon.coupon?._id || appliedCoupon._id : null,
+            discountAmount: discount,
             isPaid: isPaid
         };
 
@@ -165,7 +168,10 @@ const CustomerDetails = () => {
                 }, { headers: { Authorization: `Bearer ${token}` } });
 
                 if (scratchResponse.data.success) {
-                    setScratchCard(scratchResponse.data.scratchCard);
+                    const card = scratchResponse.data.scratchCard;
+                    setScratchCard(card);
+                    setIsRevealed(card.status !== 'CREATED');
+                    setIsClaimed(card.status === 'CLAIMED');
                     setShowScratchModal(true);
                 } else {
                     finishOrder();
@@ -257,26 +263,34 @@ const CustomerDetails = () => {
                 <div style={{ position: "relative", zIndex: 10 }}>
                 <ScratchCard 
                     reward={scratchCard?.rewardText} 
+                    isScratched={scratchCard?.status !== 'CREATED'}
                     onReveal={() => {
                         setIsRevealed(true);
-                        // Optional: Call API to mark as revealed
-                        axios.patch(`${import.meta.env.VITE_API_URL}/scratchcards/${scratchCard?._id}/reveal`, {}, {
-                            headers: { Authorization: `Bearer ${token}` }
-                        }).catch(console.error);
+                        // Save reveal status only after 50% scratch is complete
+                        if (scratchCard?.status === 'CREATED') {
+                            axios.patch(`${import.meta.env.VITE_API_URL}/scratchcards/${scratchCard?._id}/reveal`, {}, {
+                                headers: { Authorization: `Bearer ${token}` }
+                            }).then(res => {
+                                if (res.data.success) setScratchCard(res.data.card);
+                            }).catch(console.error);
+                        }
                     }} 
                 />
                 </div>
 
-                {isRevealed && !isClaimed && (
+                {isRevealed && !isClaimed && !scratchCard?.rewardText?.toLowerCase().includes("luck") && (
                     <button onClick={handleClaim} style={{marginTop: 25, padding: "12px 30px", background: "#0e4d65", color: "white", border: "none", borderRadius: "10px", cursor: "pointer", fontSize: "16px", fontWeight: "600", width: "100%", boxShadow: "0 4px 15px rgba(14, 77, 101, 0.3)"}}>
                         Claim Coupon
                     </button>
                 )}
 
                 {isClaimed && (
-                    <div style={{marginTop: 20, color: "#27ae60", fontWeight: "700"}}>
+                   <button  style={{marginTop: 25, padding: "12px 30px", background: "#27ae60", color: "white", border: "none", borderRadius: "10px", cursor: "pointer", fontSize: "16px", fontWeight: "600", width: "100%", boxShadow: "0 4px 15px rgba(14, 77, 101, 0.3)"}}>
                         ✓ Claimed Successfully!
-                    </div>
+                    </button>
+                    // <div style={{marginTop: 20, color: "#27ae60", fontWeight: "700"}}>
+                    //     ✓ Claimed Successfully!
+                    // </div>
                 )}
                 
                 {!isRevealed && (
