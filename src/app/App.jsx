@@ -35,6 +35,7 @@ import CouponsPage from "../pages/CouponsPage.jsx";
 import ReviewsPage from "../components/Review_page/ReviewsPage.jsx";
 import RewardsPage from "../pages/RewardsPage.jsx";
 import ContactPage from "../pages/ContactPage.jsx";
+import AboutPage from "../pages/AboutPage.jsx";
 
 
 
@@ -77,44 +78,45 @@ function App() {
             <PWAInstallPrompt />
 
             <Routes>
-            {/* Public Routes */}
-            <Route path="/" element={<Home />} />
-            <Route path="/buypage/:id" element={<Buypage />} />
-            <Route path="/order" element={<OrderSummary />} />
-            <Route path="/details" element={<CustomerDetails />} />
-            <Route path="/gallery" element={<CakeGallery />} />
-            <Route path="/footer" element={<Footer />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/wishlist" element={<Wishlist />} />
-            <Route path="/forget" element={<NewForget />} />
-            <Route path="/otp" element={<Otp />} />
-            <Route path="/comfirm" element={<NewReset />} />
-            <Route path="/couponspage" element={<CouponsPage />} />
-            <Route path="/reviews" element={<ReviewsPage />} />
+              {/* Public Routes */}
+              <Route path="/" element={<Home />} />
+              <Route path="/buypage/:id" element={<Buypage />} />
+              <Route path="/order" element={<OrderSummary />} />
+              <Route path="/details" element={<CustomerDetails />} />
+              <Route path="/gallery" element={<CakeGallery />} />
+              <Route path="/footer" element={<Footer />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/wishlist" element={<Wishlist />} />
+              <Route path="/forget" element={<NewForget />} />
+              <Route path="/otp" element={<Otp />} />
+              <Route path="/comfirm" element={<NewReset />} />
+              <Route path="/couponspage" element={<CouponsPage />} />
+              <Route path="/reviews" element={<ReviewsPage />} />
 
-            <Route path="/rewards" element={<RewardsPage />} />
-            <Route path="/contact" element={<ContactPage />} />
+              <Route path="/rewards" element={<RewardsPage />} />
+              <Route path="/contact" element={<ContactPage />} />
+              <Route path="/about" element={<AboutPage />} />
 
-            {/* Admin Routes */}
-            <Route path="/admin" element={<AdminLayout />}>
-              {/* <Route path="dashboard" element={<Dashboard />} /> */}
-              <Route path="products" element={<ProductList />} />
-              <Route path="products/add" element={<AddProduct />} />
-              <Route path="products/edit/:id" element={<AddProduct />} />
-              <Route path="orders" element={<Orders />} />
-              <Route path="customers" element={<Customers />} />
-              <Route path="expenses" element={<Expenses />} />
-              <Route path="coupons" element={<Coupons />} />
-              <Route path="prize-pools" element={<PrizePoolList />} />
-              <Route path="prize-pools/create" element={<CreatePrizePool />} />
-              <Route path="prize-pools/:id/stats" element={<PrizePoolStats />} />
-              <Route path="reports" element={<Reports />} />
-              <Route path="settings" element={<Settings />} />
-            </Route>
-          </Routes>
-        </Router>
-      </AppProvider>
-    </AuthProvider>
+              {/* Admin Routes */}
+              <Route path="/admin" element={<AdminLayout />}>
+                {/* <Route path="dashboard" element={<Dashboard />} /> */}
+                <Route path="products" element={<ProductList />} />
+                <Route path="products/add" element={<AddProduct />} />
+                <Route path="products/edit/:id" element={<AddProduct />} />
+                <Route path="orders" element={<Orders />} />
+                <Route path="customers" element={<Customers />} />
+                <Route path="expenses" element={<Expenses />} />
+                <Route path="coupons" element={<Coupons />} />
+                <Route path="prize-pools" element={<PrizePoolList />} />
+                <Route path="prize-pools/create" element={<CreatePrizePool />} />
+                <Route path="prize-pools/:id/stats" element={<PrizePoolStats />} />
+                <Route path="reports" element={<Reports />} />
+                <Route path="settings" element={<Settings />} />
+              </Route>
+            </Routes>
+          </Router>
+        </AppProvider>
+      </AuthProvider>
     </>
   );
 }
