@@ -10,7 +10,7 @@ import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { setToken } from "../../redux/slice/authSlice";
 import { useGoogleLogin } from "@react-oauth/google";
-
+import { showHotToast } from "../../admin/utils/showToast.jsx";
 import "./login.css";
 
 const Login = () => {
@@ -59,50 +59,21 @@ const Login = () => {
               email: response.data.user.email
             }
           }));
-          showToast("success", "Google Login Successful");
+          showHotToast("success", "Google Login Successful");
           setTimeout(() => {
             navigate("/");
           }, 1600);
         }
       } catch (error) {
         console.error(error);
-        showToast("error", "Google Login Failed");
+        showHotToast("error", "Google Login Failed");
       }
     },
-    onError: () => showToast("error", "Google Login Failed"),
+    onError: () => showHotToast("error", "Google Login Failed"),
   });
 
   // Show Toast Notification (same as AddProduct.jsx)
-  const showToast = async (icon, title) => {
-    const Toast = Swal.mixin({
-      toast: true,
-      position: "top-right",
-      showConfirmButton: false,
-      timer: 1500,
-      timerProgressBar: true,
 
-      didOpen: (toast) => {
-        const progressBar = toast.querySelector(".swal2-timer-progress-bar");
-        progressBar.style.background = icon === "success" ? "green" : "red";
-
-        toast.addEventListener("mouseenter", () => {
-          Swal.stopTimer();
-        });
-
-        toast.addEventListener("mouseleave", () => {
-          Swal.resumeTimer();
-        });
-      },
-
-      customClass: {
-        popup: icon === "success" ? "colored-toast" : "colored-toast-error",
-      },
-
-      iconColor: icon === "success" ? "green" : "red",
-    });
-
-    await Toast.fire({ icon, title });
-  };
 
   // Handle Sign Up form changes
   const handleSignUpChange = (e) => {
@@ -128,29 +99,29 @@ const Login = () => {
 
     // Validation
     if (!signUpData.name.trim()) {
-      showToast("error", "Name is required");
+      showHotToast("error", "Name is required");
       return;
     }
 
     if (!signUpData.email.trim()) {
-      showToast("error", "Email address is required");
+      showHotToast("error", "Email address is required");
       return;
     }
 
     // Email format validation
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(signUpData.email)) {
-      showToast("error", "Enter a valid email address");
+      showHotToast("error", "Enter a valid email address");
       return;
     }
 
     if (!signUpData.password) {
-      showToast("error", "Password is required");
+      showHotToast("error", "Password is required");
       return;
     }
 
     if (signUpData.password.length < 6) {
-      showToast("error", "Password must be at least 6 characters long");
+      showHotToast("error", "Password must be at least 6 characters long");
       return;
     }
 
@@ -160,14 +131,14 @@ const Login = () => {
       const response = await axios.post(`${import.meta.env.VITE_API_URL}/register`, signUpData);
 
       if (response.data.success) {
-        showToast("success", response.data.message || "Account created successfully. Continue by signing in");
+        showHotToast("success", response.data.message || "Account created successfully. Continue by signing in");
         // Clear form
         setSignUpData({ name: "", email: "", password: "", loginType: "EMAIL", picture: "" });
         // Switch to sign in after toast
         setTimeout(() => setActive(false), 3000);
       }
     } catch (error) {
-      const errorMessage = error.response?.data?.message || "Unable to create account. Try again."; showToast("error", errorMessage);
+      const errorMessage = error.response?.data?.message || "Unable to create account. Try again."; showHotToast("error", errorMessage);
     } finally {
       setSignUpLoading(false);
     }
@@ -179,19 +150,19 @@ const Login = () => {
 
     // Validation
     if (!signInData.email.trim()) {
-      showToast("error", "Email address is required");
+      showHotToast("error", "Email address is required");
       return;
     }
 
     // Email format validation
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(signInData.email)) {
-      showToast("error", " Enter a valid email address");
+      showHotToast("error", " Enter a valid email address");
       return;
     }
 
     if (!signInData.password) {
-      showToast("error", "Password is required");
+      showHotToast("error", "Password is required");
       return;
     }
 
@@ -211,14 +182,14 @@ const Login = () => {
         setSignInData({ email: "", password: "" });
 
         // Show success toast first, then navigate after toast completes
-        showToast("success", response.data.message || "Welcome back! Redirecting...");
+        showHotToast("success", response.data.message || "Welcome back! Redirecting...");
         setTimeout(() => {
           navigate("/");
         }, 1600);
       }
     } catch (error) {
       const errorMessage = error.response?.data?.message || "Unable to sign in. Check your credentials and try again.";
-      showToast("error", errorMessage);
+      showHotToast("error", errorMessage);
     } finally {
       setSignInLoading(false);
     }
@@ -266,7 +237,7 @@ const Login = () => {
             <TextField
               label="Email"
               name="email"
-              type="email"
+              type="text"
               variant="outlined"
               fullWidth
               margin="normal"
@@ -343,7 +314,7 @@ const Login = () => {
             <TextField
               label="Email"
               name="email"
-              type="email"
+              type="text"
               variant="outlined"
               fullWidth
               margin="normal"
