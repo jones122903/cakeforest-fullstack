@@ -323,12 +323,17 @@ const finalTotal = cakesTotal + addonsTotal;
 
           {addons.map((v, i) => (
             <div key={i} className={styles.addonItem}>
+              <div className={styles.addonControls}>
+
               <img src={v.image} alt={v.name} />
 
               <div className={styles.addonInfo}>
                 <span className={styles.addonName}>{v.name}</span>
                 <span className={styles.addonPrice}>₹ {v.price}</span>
               </div>
+              </div>
+
+              <div className={styles.addonControls}>
 
               <div className={styles.quantityControl}>
                     <button
@@ -345,19 +350,6 @@ const finalTotal = cakesTotal + addonsTotal;
                       +
                     </button>
                   </div>
-
-              {/* <div className={styles.qtyControl}>
-                <button onClick={() => decreaseQty(i)}>
-                  <Minus size={16} />
-                </button>
-
-                <span>{v.qty}</span>
-
-                <button onClick={() => increaseQty(i)}>
-                  <Plus size={16} />
-                </button>
-              </div> */}
-
               <button
                     className={styles.deleteButton}
                      onClick={()=>removeAddon(i)}
@@ -374,6 +366,9 @@ const finalTotal = cakesTotal + addonsTotal;
                       <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
                     </svg>
                   </button>
+              </div>
+
+
             </div>
           ))}
         </div>

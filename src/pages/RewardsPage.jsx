@@ -9,7 +9,10 @@ import toast from "react-hot-toast";
 
 const RewardsPage = () => {
   const [cards, setCards] = useState([]);
+  const [filteredCards, setFilteredCards] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [filter, setFilter] = useState('all'); // 'all', 'active', 'expired'
+  const [sortBy, setSortBy] = useState('newest'); // 'newest', 'oldest'
   const { user, token } = useSelector((state) => state.auth);
   const API_URL = `${import.meta.env.VITE_API_URL}`;
 
@@ -19,10 +22,34 @@ const RewardsPage = () => {
     }
   }, [user]);
 
+  useEffect(() => {
+    applyFiltersAndSort();
+  }, [cards, filter, sortBy]);
+
+  const applyFiltersAndSort = () => {
+    let filtered = [...cards];
+
+    // Apply filter
+    if (filter === 'active') {
+      filtered = filtered.filter(card => new Date(card.expiryDate) > new Date() && card.status !== 'EXPIRED');
+    } else if (filter === 'expired') {
+      filtered = filtered.filter(card => new Date(card.expiryDate) <= new Date() || card.status === 'EXPIRED');
+    }
+
+    // Apply sort
+    if (sortBy === 'newest') {
+      filtered.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+    } else if (sortBy === 'oldest') {
+      filtered.sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
+    }
+
+    setFilteredCards(filtered);
+  };
+
   const fetchUserRewards = async () => {
     try {
       const userId = user?._id || user?.id;
-      const response = await axios.get(`${API_URL}/scratchcards/user/${userId}`, {
+      const response = await axios.get(`${API_URL}/scratchcards/user/${userId}?t=${new Date().getTime()}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       if (response.data.success) {
@@ -38,12 +65,19 @@ const RewardsPage = () => {
 
   const handleReveal = async (cardId) => {
     try {
-      await axios.patch(`${API_URL}/scratchcards/${cardId}/reveal`, {}, {
+      const response = await axios.patch(`${API_URL}/scratchcards/${cardId}/reveal`, {}, {
         headers: { Authorization: `Bearer ${token}` }
       });
-      // Optionally update local state if needed, but the card usually handles its own visual reveal
+      
+      if (response.data.success && response.data.card) {
+        // Update the cards state with the revealed card data (including rewardText)
+        setCards(prevCards => prevCards.map(card => 
+          card._id === cardId ? { ...card, ...response.data.card } : card
+        ));
+      }
     } catch (error) {
       console.error("Error marking as revealed:", error);
+      toast.error("Failed to reveal reward. Please try again.");
     }
   };
 
@@ -75,7 +109,7 @@ const RewardsPage = () => {
       <Topbar />
       <div style={{ maxWidth: "1200px", margin: "0 auto", padding: "40px 20px" }}>
         
-        <header style={{ textAlign: "center", marginBottom: "50px" }}>
+        <header style={{ textAlign: "center", marginBottom: "30px" }}>
           <motion.div
             initial={{ scale: 0 }}
             animate={{ scale: 1 }}
@@ -87,8 +121,89 @@ const RewardsPage = () => {
           <p style={{ color: "#666", marginTop: "10px" }}>Scratch, Reveal & Claim your exclusive gifts!</p>
         </header>
 
+        {/* Filters and Sort */}
+        {!loading && cards.length > 0 && (
+          <div style={{ 
+            display: "flex", 
+            justifyContent: "space-between", 
+            alignItems: "center",
+            marginBottom: "30px",
+            gap: "15px",
+            flexWrap: "wrap"
+          }}>
+            <div style={{ display: "flex", gap: "10px" }}>
+              <button
+                onClick={() => setFilter('all')}
+                style={{
+                  padding: "10px 20px",
+                  border: filter === 'all' ? "2px solid #0e4d65" : "2px solid #ddd",
+                  background: filter === 'all' ? "#0e4d65" : "white",
+                  color: filter === 'all' ? "white" : "#666",
+                  borderRadius: "8px",
+                  fontWeight: "600",
+                  cursor: "pointer",
+                  transition: "all 0.2s"
+                }}
+              >
+                All ({cards.length})
+              </button>
+              <button
+                onClick={() => setFilter('active')}
+                style={{
+                  padding: "10px 20px",
+                  border: filter === 'active' ? "2px solid #48bb78" : "2px solid #ddd",
+                  background: filter === 'active' ? "#48bb78" : "white",
+                  color: filter === 'active' ? "white" : "#666",
+                  borderRadius: "8px",
+                  fontWeight: "600",
+                  cursor: "pointer",
+                  transition: "all 0.2s"
+                }}
+              >
+                Active
+              </button>
+              <button
+                onClick={() => setFilter('expired')}
+                style={{
+                  padding: "10px 20px",
+                  border: filter === 'expired' ? "2px solid #e53e3e" : "2px solid #ddd",
+                  background: filter === 'expired' ? "#e53e3e" : "white",
+                  color: filter === 'expired' ? "white" : "#666",
+                  borderRadius: "8px",
+                  fontWeight: "600",
+                  cursor: "pointer",
+                  transition: "all 0.2s"
+                }}
+              >
+                Expired
+              </button>
+            </div>
+            <select
+              value={sortBy}
+              onChange={(e) => setSortBy(e.target.value)}
+              style={{
+                padding: "10px 15px",
+                border: "2px solid #ddd",
+                borderRadius: "8px",
+                fontWeight: "600",
+                cursor: "pointer",
+                background: "white"
+              }}
+            >
+              <option value="newest">Newest First</option>
+              <option value="oldest">Oldest First</option>
+            </select>
+          </div>
+        )}
+
         {loading ? (
           <div style={{ textAlign: "center", padding: "50px" }}>Loading your rewards...</div>
+        ) : filteredCards.length === 0 && filter !== 'all' ? (
+          <div style={{ textAlign: "center", padding: "50px", background: "white", borderRadius: "20px", boxShadow: "0 10px 30px rgba(0,0,0,0.05)" }}>
+            <AlertCircle size={48} color="#ccc" style={{ marginBottom: "15px" }} />
+            <h3 style={{ color: "#888" }}>No {filter} rewards found</h3>
+            <p style={{ color: "#999" }}>Try selecting a different filter</p>
+          </div>
         ) : cards.length === 0 ? (
           <div style={{ textAlign: "center", padding: "50px", background: "white", borderRadius: "20px", boxShadow: "0 10px 30px rgba(0,0,0,0.05)" }}>
             <AlertCircle size={48} color="#ccc" style={{ marginBottom: "15px" }} />
@@ -102,7 +217,7 @@ const RewardsPage = () => {
             gap: "30px" 
           }}>
             <AnimatePresence>
-              {cards.map((card) => (
+              {filteredCards.map((card) => (
                 <RewardCard 
                   key={card._id} 
                   card={card} 
@@ -118,8 +233,13 @@ const RewardsPage = () => {
   );
 };
 
-const RewardCard = ({ card, onReveal, onClaim }) => {
-  const [revealed, setRevealed] = useState(card.isScratched);
+const RewardCard = ({ card, onReveal, onScratchStart, onClaim }) => {
+  const isScratched = card.status === 'REVEALED' || card.status === 'CLAIMED';
+  const [revealed, setRevealed] = useState(isScratched);
+
+  useEffect(() => {
+    setRevealed(isScratched);
+  }, [isScratched]);
   
   return (
     <motion.div
@@ -138,7 +258,7 @@ const RewardCard = ({ card, onReveal, onClaim }) => {
         overflow: "hidden"
       }}
     >
-      {card.isClaimed && (
+      {card.status === 'CLAIMED' && (
         <div style={{ 
           position: "absolute", 
           top: 15, 
@@ -161,7 +281,8 @@ const RewardCard = ({ card, onReveal, onClaim }) => {
       <div style={{ marginBottom: "20px" }}>
         <ScratchCard 
           reward={card.rewardText} 
-          isScratched={card.isScratched}
+          isScratched={isScratched}
+          onScratchStart={onScratchStart}
           onReveal={() => {
             setRevealed(true);
             onReveal();
@@ -170,7 +291,7 @@ const RewardCard = ({ card, onReveal, onClaim }) => {
       </div>
 
       <div style={{ padding: "0 10px" }}>
-        {revealed && !card.isClaimed && (
+        {revealed && card.status !== 'CLAIMED' && !card.rewardText?.toLowerCase().includes("luck") && !card.rewardText?.toLowerCase().includes("next time") && (
           <motion.button
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
@@ -202,10 +323,27 @@ const RewardCard = ({ card, onReveal, onClaim }) => {
           </div>
         )}
 
-        {card.isClaimed && (
-          <div style={{ color: "#27ae60", fontWeight: "700", fontSize: "16px" }}>
-            Coupon ready for next order!
-          </div>
+        {card.status === 'CLAIMED' && (
+          <button 
+            disabled 
+            style={{
+              width: "100%",
+              padding: "14px",
+              background: "#0e4d65",
+              color: "white",
+              border: "none",
+              borderRadius: "15px",
+              fontWeight: "700",
+              fontSize: "16px",
+              boxShadow: "0 8px 20px rgba(39, 174, 96, 0.2)",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              cursor: "default"
+            }}
+          >
+            ✓ Claimed Successfully!
+          </button>
         )}
 
         <div style={{ 
@@ -221,6 +359,11 @@ const RewardCard = ({ card, onReveal, onClaim }) => {
         }}>
           <Clock size={12} /> Valid until: {new Date(card.expiryDate).toLocaleDateString()}
         </div>
+        {card.couponId?.minOrderValue > 0 && (
+          <div style={{ marginTop: "8px", fontSize: "11px", color: "#e53e3e", fontWeight: "600" }}>
+            Min Order required: ₹{card.couponId.minOrderValue}
+          </div>
+        )}
       </div>
     </motion.div>
   );

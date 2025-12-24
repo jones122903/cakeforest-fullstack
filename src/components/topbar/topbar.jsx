@@ -360,7 +360,7 @@ const handleSearchChange = (e) => {
                     <div
                       className={styles.dropdownItem}
                       onClick={() =>
-                        window.open("https://wa.me/919876543210", "_blank")
+                        window.open("https://wa.me/8870985683", "_blank")
                       }
                     >
                       <MessageCircle size={18} /> <span>Whatsapp</span>
@@ -450,7 +450,7 @@ const handleSearchChange = (e) => {
           {/* COUPONS */}
           <div
             className={styles.drawerMenuItem}
-            onClick={() => navigate("/coupons")}
+            onClick={() => navigate("/couponspage")}
           >
             <Tag size={22} color="#2C5F7C" />
             <span className={styles.drawerMenuText}>Coupons</span>
@@ -468,10 +468,10 @@ const handleSearchChange = (e) => {
           {/* OFFERS */}
           <div
             className={styles.drawerMenuItem}
-            onClick={() => navigate("/offers")}
+            onClick={() => navigate("/rewards")}
           >
             <BadgePercent size={22} color="#2C5F7C" />
-            <span className={styles.drawerMenuText}>Offers</span>
+            <span className={styles.drawerMenuText}>Rewards</span>
           </div>
 
           {/* REVIEWS */}
