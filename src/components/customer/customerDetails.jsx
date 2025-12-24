@@ -15,7 +15,7 @@ import CouponSection from "../../admin/pages/Coupons/CouponSection";
 import ScratchCard from "../ScratchCard/ScratchCard";
 import { showHotToast } from "../../admin/utils/showToast";
 
- const format = "hh:mm A"; // ✅ 12-hour format with AM/PM
+const format = "hh:mm A"; // ✅ 12-hour format with AM/PM
 
 const CustomerDetails = () => {
   const [formData, setFormData] = useState({
@@ -24,7 +24,7 @@ const CustomerDetails = () => {
     email: "",
     whatsapp: "",
     deliveryDate: new Date().toISOString().split("T")[0],
-    deliveryTime:  "",
+    deliveryTime: "",
     wishesOnCake: "",
     flatNo: "",
     street: "",
@@ -55,7 +55,7 @@ const CustomerDetails = () => {
   }, [token, navigate]);
 
   const incomingOrderDetails = location.state?.orderDetails;
-  
+
   console.log("Incoming Order Details:", incomingOrderDetails);
   const orderDetails = {
     _id: incomingOrderDetails?._id,
@@ -75,7 +75,7 @@ const CustomerDetails = () => {
 
   useEffect(() => {
     const fetchUserDetails = async () => {
-      const userId = user?._id || user?.id;
+      const userId = user?._id || user?.user?._id || user?.id;
       if (!userId) return;
       try {
         const response = await axios.get(`${import.meta.env.VITE_API_URL}/details/${userId}`, { headers: { Authorization: `Bearer ${token}` } });
@@ -113,8 +113,9 @@ const CustomerDetails = () => {
     if (!formData.street.trim()) newErrors.street = "Street Address is required";
     if (!formData.city.trim()) newErrors.city = "City is required";
     if (!formData.pincode.trim()) newErrors.pincode = "Pincode is required";
-    if (!formData.wishesOnCake.trim()) newErrors.wishesOnCake = "Wishes is required";
     else if (!/^\d{6}$/.test(formData.pincode)) newErrors.pincode = "Enter a valid 6-digit pincode";
+
+    if (!formData.wishesOnCake.trim()) newErrors.wishesOnCake = "Wishes is required";
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -132,9 +133,15 @@ const CustomerDetails = () => {
   };
 
   const handleOrderPlacement = async (isPaid) => {
+    setLoading(true);
     try {
-      const userId = user?._id || user?.id;
-      await axios.post(`${import.meta.env.VITE_API_URL}/details`, { userId, ...formData }, { headers: { Authorization: `Bearer ${token}` } });
+      const userId = user?._id || user?.user?._id || user?.id;
+
+      // Save customer details
+      await axios.post(`${import.meta.env.VITE_API_URL}/details`,
+        { userId, ...formData },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
 
       const orderPayload = {
         userId,
@@ -144,7 +151,7 @@ const CustomerDetails = () => {
           variant: orderDetails.variant,
           cakePrice: orderDetails.cakePrice,
           weight: orderDetails.weight,
-          price: orderDetails.grandTotal,
+          price: orderDetails.price,
           nameOnCake: orderDetails.nameOnCake,
           quantity: orderDetails.quantity,
           addons: orderDetails.addons,
@@ -172,96 +179,46 @@ const CustomerDetails = () => {
         isPaid: isPaid
       };
 
-      const orderResponse = await axios.post(`${import.meta.env.VITE_API_URL}/orders`, orderPayload, { headers: { Authorization: `Bearer ${token}` } });
+      const orderResponse = await axios.post(`${import.meta.env.VITE_API_URL}/orders`, orderPayload, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
 
       if (orderResponse.data.success) {
         const orderId = orderResponse.data.order?._id || orderResponse.data._id;
-
-        // // First show Order Success Alert
-        // await Swal.fire({
-        //   icon: "success",
-        //   title: "Order Placed Successfully!",
-        //   text: "Thank you for your order.",
-        //   confirmButtonColor: "#0e4d65"
-        // });
-
         showHotToast("success", "Order Placed Successfully! Thank you for your order.");
 
         try {
+          // Generate scratch card
           const scratchResponse = await axios.post(`${import.meta.env.VITE_API_URL}/scratchcards/generate`, {
             userId,
-            cartItems: [{
-                productId: orderDetails._id,
-                cakeName: orderDetails.cakeName,
-                variant: orderDetails.variant,
-                weight: orderDetails.weight,
-                price: orderDetails.price,
-                nameOnCake: orderDetails.nameOnCake,
-                quantity: orderDetails.quantity,
-            }],
-            deliveryDetails: {
-              fullName: formData.fullName,
-              phone: formData.phone,
-              email: formData.email,
-              whatsapp: formData.whatsapp,
-              address: {
-                flatNo: formData.flatNo,
-                street: formData.street,
-                landmark: formData.landmark,
-                city: formData.city,
-                pincode: formData.pincode,
-              },
-              instructions: formData.instructions,
-            },
-            deliveryDate: orderDetails.deliveryDate,
-            deliveryTime: orderDetails.deliveryTime,
-            paymentMethod: formData.paymentMethod,
-            totalAmount: totalAmount,
-            finalAmount: totalAmount, // Backend requires this field
-            deliveryCharge: orderDetails.deliveryCharge,
-            appliedCouponId: appliedCoupon ? appliedCoupon.coupon?._id || appliedCoupon._id : null,
-            discountAmount: discount,
-            isPaid: isPaid
-        };
+            orderId,
+            totalAmount
+          }, { headers: { Authorization: `Bearer ${token}` } });
 
-        const orderResponse = await axios.post(`${import.meta.env.VITE_API_URL}/orders`, orderPayload, { headers: { Authorization: `Bearer ${token}` } });
-
-        if (orderResponse.data.success) {
-             const orderId = orderResponse.data.order?._id || orderResponse.data._id;
-             
-             // First show Order Success Alert
-             await Swal.fire({
-                icon: "success",
-                title: "Order Placed Successfully!",
-                text: "Thank you for your order.",
-                confirmButtonColor: "#0e4d65"
-             });
-
-             try {
-                const scratchResponse = await axios.post(`${import.meta.env.VITE_API_URL}/scratchcards/generate`, {
-                    userId,
-                    orderId,
-                    totalAmount
-                }, { headers: { Authorization: `Bearer ${token}` } });
-
-                if (scratchResponse.data.success) {
-                    const card = scratchResponse.data.scratchCard;
-                    setScratchCard(card);
-                    setIsRevealed(card.status !== 'CREATED');
-                    setIsClaimed(card.status === 'CLAIMED');
-                    setShowScratchModal(true);
-                } else {
-                    finishOrder();
-                }
-             } catch (err) {
-                console.error("Scratch card generation failed:", err.response?.data || err.message);
-                finishOrder();
-             }
+          if (scratchResponse.data.success) {
+            const card = scratchResponse.data.scratchCard;
+            setScratchCard(card);
+            setIsRevealed(card.status !== 'CREATED');
+            setIsClaimed(card.status === 'CLAIMED');
+            setShowScratchModal(true);
+          } else {
+            finishOrder();
+          }
+        } catch (err) {
+          console.error("Scratch card generation failed:", err);
+          finishOrder();
         }
       }
     } catch (error) {
       console.error(error);
-      Swal.fire({ icon: "error", title: "Order Failed", text: error.response?.data?.message || "Something went wrong.", confirmButtonColor: "#0e4d65" });
+      Swal.fire({
+        icon: "error",
+        title: "Order Failed",
+        text: error.response?.data?.message || "Something went wrong.",
+        confirmButtonColor: "#0e4d65"
+      });
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -285,7 +242,7 @@ const CustomerDetails = () => {
       }
     } catch (error) {
       console.error(error);
-      toast.error("Failed to claim coupon");
+      showHotToast("error", "Failed to claim coupon");
     }
   };
 
@@ -328,60 +285,60 @@ const CustomerDetails = () => {
     }
   };
 
- 
+
 
   return (
     <div className={styles.container}>
       {/* Scratch Card Modal Overlay */}
       {showScratchModal && (
         <div style={{ position: "fixed", top: 0, left: 0, right: 0, bottom: 0, background: "rgba(0,0,0,0.85)", zIndex: 9999, display: "flex", alignItems: "center", justifyContent: "center", backdropFilter: "blur(5px)" }}>
-            <div style={{ background: "white", padding: "30px", borderRadius: "20px", textAlign: "center", maxWidth: "400px", width: "90%", position:"relative", animation: "popIn 0.3s ease", boxShadow: "0 20px 50px rgba(0,0,0,0.3)" }}>
-                <button onClick={finishOrder} style={{position:"absolute", top:15, right:15, background:"#f5f5f5", border:"none", borderRadius:"50%", padding: 5, cursor:"pointer", display:"flex"}}><X size={20} color="#555" /></button>
-                
-                <h2 style={{color: "#0e4d65", marginBottom: 5, fontSize: "24px", fontWeight: "800"}}>YOU WON! 🎉</h2>
-                <p style={{marginBottom: 20, color: "#666", fontSize: "14px"}}>You've unlocked a mystery reward!</p>
-                
-                <div style={{ position: "relative", zIndex: 10 }}>
-                <ScratchCard 
-                    reward={scratchCard?.rewardText} 
-                    isScratched={scratchCard?.status !== 'CREATED'}
-                    onReveal={() => {
-                        setIsRevealed(true);
-                        // Save reveal status only after 50% scratch is complete
-                        if (scratchCard?.status === 'CREATED') {
-                            axios.patch(`${import.meta.env.VITE_API_URL}/scratchcards/${scratchCard?._id}/reveal`, {}, {
-                                headers: { Authorization: `Bearer ${token}` }
-                            }).then(res => {
-                                if (res.data.success) setScratchCard(res.data.card);
-                            }).catch(console.error);
-                        }
-                    }} 
-                />
-                </div>
+          <div style={{ background: "white", padding: "30px", borderRadius: "20px", textAlign: "center", maxWidth: "400px", width: "90%", position: "relative", animation: "popIn 0.3s ease", boxShadow: "0 20px 50px rgba(0,0,0,0.3)" }}>
+            <button onClick={finishOrder} style={{ position: "absolute", top: 15, right: 15, background: "#f5f5f5", border: "none", borderRadius: "50%", padding: 5, cursor: "pointer", display: "flex" }}><X size={20} color="#555" /></button>
 
-                {isRevealed && !isClaimed && !scratchCard?.rewardText?.toLowerCase().includes("luck") && (
-                    <button onClick={handleClaim} style={{marginTop: 25, padding: "12px 30px", background: "#0e4d65", color: "white", border: "none", borderRadius: "10px", cursor: "pointer", fontSize: "16px", fontWeight: "600", width: "100%", boxShadow: "0 4px 15px rgba(14, 77, 101, 0.3)"}}>
-                        Claim Coupon
-                    </button>
-                )}
+            <h2 style={{ color: "#0e4d65", marginBottom: 5, fontSize: "24px", fontWeight: "800" }}>YOU WON! 🎉</h2>
+            <p style={{ marginBottom: 20, color: "#666", fontSize: "14px" }}>You've unlocked a mystery reward!</p>
 
-                {isClaimed && (
-                   <button  style={{marginTop: 25, padding: "12px 30px", background: "#27ae60", color: "white", border: "none", borderRadius: "10px", cursor: "pointer", fontSize: "16px", fontWeight: "600", width: "100%", boxShadow: "0 4px 15px rgba(14, 77, 101, 0.3)"}}>
-                        ✓ Claimed Successfully!
-                    </button>
-                    // <div style={{marginTop: 20, color: "#27ae60", fontWeight: "700"}}>
-                    //     ✓ Claimed Successfully!
-                    // </div>
-                )}
-                
-                {!isRevealed && (
-                    <p style={{marginTop: 15, color: "#999", fontSize: "13px"}}>Scratch the card to reveal your reward!</p>
-                )}
-
-                <button onClick={finishOrder} style={{marginTop: 15, background: "none", border: "none", color: "#666", cursor: "pointer", fontSize: "14px", textDecoration: "underline"}}>
-                    Skip for now
-                </button>
+            <div style={{ position: "relative", zIndex: 10 }}>
+              <ScratchCard
+                reward={scratchCard?.rewardText}
+                isScratched={scratchCard?.status !== 'CREATED'}
+                onReveal={() => {
+                  setIsRevealed(true);
+                  // Save reveal status only after 50% scratch is complete
+                  if (scratchCard?.status === 'CREATED') {
+                    axios.patch(`${import.meta.env.VITE_API_URL}/scratchcards/${scratchCard?._id}/reveal`, {}, {
+                      headers: { Authorization: `Bearer ${token}` }
+                    }).then(res => {
+                      if (res.data.success) setScratchCard(res.data.card);
+                    }).catch(console.error);
+                  }
+                }}
+              />
             </div>
+
+            {isRevealed && !isClaimed && !scratchCard?.rewardText?.toLowerCase().includes("luck") && (
+              <button onClick={handleClaim} style={{ marginTop: 25, padding: "12px 30px", background: "#0e4d65", color: "white", border: "none", borderRadius: "10px", cursor: "pointer", fontSize: "16px", fontWeight: "600", width: "100%", boxShadow: "0 4px 15px rgba(14, 77, 101, 0.3)" }}>
+                Claim Coupon
+              </button>
+            )}
+
+            {isClaimed && (
+              <button style={{ marginTop: 25, padding: "12px 30px", background: "#27ae60", color: "white", border: "none", borderRadius: "10px", cursor: "pointer", fontSize: "16px", fontWeight: "600", width: "100%", boxShadow: "0 4px 15px rgba(14, 77, 101, 0.3)" }}>
+                ✓ Claimed Successfully!
+              </button>
+              // <div style={{marginTop: 20, color: "#27ae60", fontWeight: "700"}}>
+              //     ✓ Claimed Successfully!
+              // </div>
+            )}
+
+            {!isRevealed && (
+              <p style={{ marginTop: 15, color: "#999", fontSize: "13px" }}>Scratch the card to reveal your reward!</p>
+            )}
+
+            <button onClick={finishOrder} style={{ marginTop: 15, background: "none", border: "none", color: "#666", cursor: "pointer", fontSize: "14px", textDecoration: "underline" }}>
+              Skip for now
+            </button>
+          </div>
         </div>
       )}
 
@@ -501,30 +458,30 @@ const CustomerDetails = () => {
                       Delivery Time <span style={{ color: "#ff6161" }}>*</span>
                     </label>
                     <div className={styles.inputWrapper} style={{ border: 'none', padding: 0 }}>
-                      
 
-<TimePicker
-  value={
-    formData.deliveryTime
-      ? dayjs(formData.deliveryTime, format)
-      : null
-  }
-  format={format}
-  use12Hours   // ✅ IMPORTANT
-  onChange={(time, timeString) => {
-    setFormData((prev) => ({
-      ...prev,
-      deliveryTime: timeString, // eg: "02:30 PM"
-    }));
-  }}
-  className={styles.input}
-  style={{
-    width: "100%",
-    height: "45px",
-    borderRadius: "10px",
-  }}
-  allowClear={false}
-/>
+
+                      <TimePicker
+                        value={
+                          formData.deliveryTime
+                            ? dayjs(formData.deliveryTime, format)
+                            : null
+                        }
+                        format={format}
+                        use12Hours   // ✅ IMPORTANT
+                        onChange={(time, timeString) => {
+                          setFormData((prev) => ({
+                            ...prev,
+                            deliveryTime: timeString, // eg: "02:30 PM"
+                          }));
+                        }}
+                        className={styles.input}
+                        style={{
+                          width: "100%",
+                          height: "45px",
+                          borderRadius: "10px",
+                        }}
+                        allowClear={false}
+                      />
                     </div>
                     {errors.deliveryTime && <p className={styles.errorMsg}>{errors.deliveryTime}</p>}
                   </div>
@@ -705,43 +662,43 @@ const CustomerDetails = () => {
         </button> */}
 
         <Popconfirm
-                        description={ "Are you sure order this cake?"}
-                        onConfirm={handleSubmit}
-                        // onCancel={() => showToast("error", "Save cancelled")}
-                        okText="Yes"
-                        cancelText="No"
-                        icon={null}
-                        placement="top"
-                        okButtonProps={{
-                          style: {
-                            backgroundColor: "#2C5F7C", // Dark Blue (your form icons color)
-                            color: "white",
-                            borderRadius: "6px",
-                            padding: "4px 15px",
-        
-                            border: "none",
-                          },
-                        }}
-                        descriptionProps={{
-                          style: {
-                            fontSize: "16px",
-                          },
-                        }}
-                        cancelButtonProps={{
-                          style: {
-                            backgroundColor: "#e0e0e0",
-                            color: "#444",
-                            borderRadius: "6px",
-                            padding: "4px 15px",
-        
-                            border: "none",
-                          },
-                        }}
-                      >
-                      <button type="button"  className={styles.submitBtn} disabled={loading}>
-          {loading ? "Placing Order..." : "Place Order"}
-        </button>
-                      </Popconfirm>
+          description={"Are you sure order this cake?"}
+          onConfirm={handleSubmit}
+          // onCancel={() => showToast("error", "Save cancelled")}
+          okText="Yes"
+          cancelText="No"
+          icon={null}
+          placement="top"
+          okButtonProps={{
+            style: {
+              backgroundColor: "#2C5F7C", // Dark Blue (your form icons color)
+              color: "white",
+              borderRadius: "6px",
+              padding: "4px 15px",
+
+              border: "none",
+            },
+          }}
+          descriptionProps={{
+            style: {
+              fontSize: "16px",
+            },
+          }}
+          cancelButtonProps={{
+            style: {
+              backgroundColor: "#e0e0e0",
+              color: "#444",
+              borderRadius: "6px",
+              padding: "4px 15px",
+
+              border: "none",
+            },
+          }}
+        >
+          <button type="button" className={styles.submitBtn} disabled={loading}>
+            {loading ? "Placing Order..." : "Place Order"}
+          </button>
+        </Popconfirm>
       </footer>
     </div>
   );
