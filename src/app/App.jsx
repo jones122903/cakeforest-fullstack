@@ -13,6 +13,9 @@ import Expenses from "../admin/pages/Expenses/Expenses.jsx";
 import Coupons from "../admin/pages/Coupons/Coupons.jsx";
 import Reports from "../admin/pages/Reports/Reports.jsx";
 import Settings from "../admin/pages/Settings/Settings.jsx";
+import PrizePoolList from "../admin/pages/PrizePool/PrizePoolList.jsx";
+import PrizePoolStats from "../admin/pages/PrizePool/PrizePoolStats.jsx";
+import CreatePrizePool from "../admin/pages/PrizePool/CreatePrizePool.jsx";
 import "./App.css";
 import CartUI from "../components/Cart All Pages/CartUI.jsx";
 import OrderSummary from "../components/Cart All Pages/CartUI.jsx";
@@ -65,15 +68,14 @@ import RewardsPage from "../pages/RewardsPage.jsx";
 
 function App() {
   return (
-    <AuthProvider>
-      <AppProvider>
-        <Router>
-          <Toaster containerStyle={{ zIndex: 99999999 }} />
-           
-         
-          <PWAInstallPrompt />
+    <>
+      <Toaster containerStyle={{ zIndex: 99999999 }} position="top-center" />
+      <AuthProvider>
+        <AppProvider>
+          <Router>
+            <PWAInstallPrompt />
 
-          <Routes>
+            <Routes>
             {/* Public Routes */}
             <Route path="/" element={<Home />} />
             <Route path="/buypage/:id" element={<Buypage />} />
@@ -101,6 +103,9 @@ function App() {
               <Route path="customers" element={<Customers />} />
               <Route path="expenses" element={<Expenses />} />
               <Route path="coupons" element={<Coupons />} />
+              <Route path="prize-pools" element={<PrizePoolList />} />
+              <Route path="prize-pools/create" element={<CreatePrizePool />} />
+              <Route path="prize-pools/:id/stats" element={<PrizePoolStats />} />
               <Route path="reports" element={<Reports />} />
               <Route path="settings" element={<Settings />} />
             </Route>
@@ -108,6 +113,7 @@ function App() {
         </Router>
       </AppProvider>
     </AuthProvider>
+    </>
   );
 }
 
