@@ -19,7 +19,7 @@ import {
 } from "../../redux/slice/wishlistSlice";
 // import "../Cart All Pages/Cartuialert.css";
 import Swal from "sweetalert2";
-import { useNavigate } from "react-router-dom";
+import { useNavigate,useLocation } from "react-router-dom";
 import { Toaster } from "react-hot-toast";
 import { showHotToast } from "../../admin/utils/showToast.jsx";
 
@@ -30,19 +30,41 @@ const CakeGallery = () => {
   const [loading, setLoading] = useState(true);
   const swiperRefs = useRef({});
   const navigate = useNavigate();
+  const location = useLocation();
+
+  console.log("Location State:", location.state);
+
 
   // Redux
   const dispatch = useDispatch();
   const { user } = useSelector((state) => state.auth);
   const wishlistItems = useSelector((state) => state.wishlist.items);
+  const filters = ["All","Birthday","Anniversary","Kids","Love","Wedding"];
 
-  console.log("Full user object:", user);
-  console.log("Wishlist items:", wishlistItems);
+   
 
   // Try multiple possible paths to get userId
   const userId = user?._id || user?.user?._id || user?.id;
 
-  console.log("Extracted userId:", userId);
+  // const activeFilter = filters.includes(selectedFilter) ? selectedFilter : "All";
+
+
+ 
+
+   useEffect(() => {
+    if (location.state?.selectedFilter) {
+      setSelectedFilter(location.state.selectedFilter);
+    }
+  }, [location.state]);
+
+//   useEffect(() => {
+//   if (!filters.includes(selectedFilter)) {
+//     setSelectedFilter("All");
+//   }
+// }, [selectedFilter]);
+
+
+  
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -164,26 +186,18 @@ const CakeGallery = () => {
         <div className={styles.cakeContainer}>
           {/* Filter Section */}
           <div className={styles.filterSection}>
-            <div className={styles.filterChips}>
-              {[
-                "All",
-                "Birthday",
-                "Anniversary",
-                "Kids",
-                "Love",
-                "Wedding",
-              ].map((filter) => (
-                <button
-                  key={filter}
-                  className={`${styles.filterChip} ${
-                    selectedFilter === filter ? styles.activeFilter : ""
-                  }`}
-                  onClick={() => setSelectedFilter(filter)}
-                >
-                  {filter}
-                </button>
-              ))}
-            </div>
+             <div className={styles.filterChips}>
+          {filters.map((filter) => (
+          <button
+            key={filter}
+            // className={`${styles.filterChip} ${ activeFilter === filter ? styles.activeFilter : ""}`}
+            className={`${styles.filterChip} ${ selectedFilter === filter ? styles.activeFilter : ""}`}
+            onClick={() => setSelectedFilter(filter)}
+          >
+            {filter}
+          </button>
+        ))}
+      </div>
             <div className={styles.sortDropdown}>
               <FormControl sx={{ minWidth: 130 }} size="small">
                 <Select

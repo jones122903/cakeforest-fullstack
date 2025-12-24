@@ -15,17 +15,21 @@ const CakeCategory = () => {
 
   const navigate = useNavigate()
 
-  const gotoCakeALl =()=>{
-     navigate("/gallery")
+  const gotoCakeAll =(categoryName)=>{
+     navigate("/gallery", {
+    state: {
+      selectedFilter: categoryName,
+    },
+  });
   }
 
   // 🔹 Your Cake List with Local Images
   const cakeCategories = [
-    { id: 1, name: "Cake Combos", image: cake1 },
-    { id: 2, name: "Kids Cakes", image: cake2 },
-    { id: 3, name: "Pinata Cakes", image: cake3 },
-    { id: 4, name: "Pull Me UP Cakes", image: cake4 },
-    { id: 5, name: "Bento Cakes", image: cake5 },
+    { id: 1, name: "Combo", image: cake1 },
+    { id: 2, name: "Kids", image: cake2 },
+    { id: 3, name: "Pinata", image: cake3 },
+    { id: 4, name: "Pull Me UP", image: cake4 },
+    { id: 5, name: "Bento", image: cake5 },
     { id: 6, name: "Desserts", image: cake6 },
   ];
 
@@ -44,7 +48,7 @@ const CakeCategory = () => {
                 className={styles.cakeCard}
                 onMouseEnter={() => setHoveredIndex(index)}
                 onMouseLeave={() => setHoveredIndex(null)}
-                onClick={gotoCakeALl}
+                onClick={()=>gotoCakeAll(cake.name)}
               >
                 <div className={styles.imageWrapper}>
                   <img 
@@ -57,7 +61,7 @@ const CakeCategory = () => {
                  
                 </div>
 
-                <h5 className="fs-6 fw-medium">{cake.name}</h5>
+                <h5 className="fs-6 fw-medium">{cake.name} Cakes</h5>
               </div>
             </div>
           ))}
