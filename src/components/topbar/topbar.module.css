@@ -430,6 +430,22 @@
     margin: 12px 15px;
     padding: 12px;
   }
+  .badge {
+  position: static !important ;
+  top: -5px;
+  right: -8px;
+  background-color: #E74C3C;
+  color: #fff;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: bold;
+  box-shadow: 0 2px 4px rgba(231, 76, 60, 0.3);
+}
 }
 
 /* Very small mobile */

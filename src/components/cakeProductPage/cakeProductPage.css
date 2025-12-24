@@ -156,9 +156,9 @@
   text-align: center;
 }
 
-.variant-card:hover {
+/* .variant-card:hover {
   border-color: #ff4444;
-}
+} */
 
 .variant-card.active {
   border-color: #ff4444;
