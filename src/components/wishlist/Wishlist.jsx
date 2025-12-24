@@ -17,20 +17,19 @@ const Wishlist = () => {
   const navigate = useNavigate();
   const { user } = useSelector((state) => state.auth);
   const wishlistItems = useSelector((state) => state.wishlist.items);
+  // Robustly extract userId
+  const userId = user?._id || user?.user?._id || user?.id;
 
   useEffect(() => {
-    if (user?._id) {
-      dispatch(fetchWishlist(user._id));
-    } else {
-      // If not logged in & trying to access, maybe redirect or show empty
-      // But user probably came from menu which is visible
+    if (userId) {
+      dispatch(fetchWishlist(userId));
     }
-  }, [dispatch, user]);
+  }, [dispatch, userId]);
 
   const handleRemove = (e, productId) => {
     e.stopPropagation();
-    if (user?._id) {
-      dispatch(removeFromWishlistAsync({ userId: user._id, productId }));
+    if (userId) {
+      dispatch(removeFromWishlistAsync({ userId: userId, productId }));
     }
   };
 

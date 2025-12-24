@@ -32,6 +32,9 @@ const CakePrice = () => {
   const { user } = useSelector((state) => state.auth);
   const wishlistItems = useSelector((state) => state.wishlist.items);
 
+  // Extract userId robustly like in cakeGallery.jsx
+  const userId = user?._id || user?.user?._id || user?.id;
+
   // Initial Fetch
   useEffect(() => {
     const fetchProducts = async () => {
@@ -55,10 +58,10 @@ const CakePrice = () => {
 
     fetchProducts();
     // Fetch wishlist if user is logged in
-    if (user?._id) {
-      dispatch(fetchWishlist(user._id));
+    if (userId) {
+      dispatch(fetchWishlist(userId));
     }
-  }, [dispatch, user?._id]);
+  }, [dispatch, userId]);
 
   const gotoCakebuy = (id) => {
     navigate(`/buypage/${id}`);
@@ -72,7 +75,7 @@ const CakePrice = () => {
   const handleHeartClick = (e, cakeId) => {
     e.stopPropagation();
 
-    if (!user) {
+    if (!userId) {
       Swal.fire({
         title: "Login Required!",
         text: "You need to be logged in to save favourites",
@@ -98,13 +101,13 @@ const CakePrice = () => {
     if (isInWishlist) {
       // Remove
       dispatch(
-        removeFromWishlistAsync({ userId: user._id, productId: cakeId })
+        removeFromWishlistAsync({ userId: userId, productId: cakeId })
       );
 
       showHotToast("error", "Removed from Favourites");
     } else {
       // Add
-      dispatch(addToWishlistAsync({ userId: user._id, productId: cakeId }));
+      dispatch(addToWishlistAsync({ userId: userId, productId: cakeId }));
 
       showHotToast("success", "Added to Favourites");
     }
