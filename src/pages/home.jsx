@@ -27,7 +27,7 @@ function Home() {
       <div className="homeContainer">
         {/* Admin Panel Access Button */}
         <motion.button
-          onClick={() => navigate('/admin/dashboard')}
+          onClick={() => navigate('/admin/products')}
           initial={{ opacity: 0, scale: 0 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ delay: 0.5 }}

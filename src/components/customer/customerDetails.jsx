@@ -1,19 +1,38 @@
 import React, { useState } from "react";
 import styles from "./customerDetails.module.css";
 import {
-  User, Phone, Mail, MessageCircle, MapPin, Navigation, Building, Flag, CreditCard, CheckCircle, ShoppingBag, X
+  User, Phone, Mail, MessageCircle, MapPin, Navigation, Building, Flag, CreditCard, CheckCircle, ShoppingBag, X, Calendar, Clock, Cake
 } from "lucide-react";
 import { useSelector } from "react-redux";
 import { useNavigate, useLocation } from "react-router-dom";
 import axios from "axios";
 import { useEffect } from "react";
 import Swal from "sweetalert2";
+import { TimePicker } from 'antd';
+import dayjs from 'dayjs';
+import { Popconfirm, Button } from "antd";
 import CouponSection from "../../admin/pages/Coupons/CouponSection";
 import ScratchCard from "../ScratchCard/ScratchCard";
+import { showHotToast } from "../../admin/utils/showToast";
+
+ const format = "hh:mm A"; // ✅ 12-hour format with AM/PM
 
 const CustomerDetails = () => {
   const [formData, setFormData] = useState({
-    fullName: "", phone: "", email: "", whatsapp: "", flatNo: "", street: "", landmark: "", city: "", pincode: "", instructions: "", paymentMethod: "online",
+    fullName: "",
+    phone: "",
+    email: "",
+    whatsapp: "",
+    deliveryDate: new Date().toISOString().split("T")[0],
+    deliveryTime:  "",
+    wishesOnCake: "",
+    flatNo: "",
+    street: "",
+    landmark: "",
+    city: "",
+    pincode: "",
+    instructions: "",
+    paymentMethod: "online",
   });
 
   const [errors, setErrors] = useState({});
@@ -36,15 +55,16 @@ const CustomerDetails = () => {
   }, [token, navigate]);
 
   const incomingOrderDetails = location.state?.orderDetails;
+  
+  console.log("Incoming Order Details:", incomingOrderDetails);
   const orderDetails = {
     _id: incomingOrderDetails?._id,
     cakeName: incomingOrderDetails?.cakeName || "Red Velvet Bliss",
-    variant: incomingOrderDetails?.variant || "Heart Shape",
+    cakePrice: incomingOrderDetails?.cakePrice || 1150,
+    variant: incomingOrderDetails?.variant || "Classic",
     weight: incomingOrderDetails?.weight || "1 kg",
-    price: incomingOrderDetails?.price || 1200,
-    nameOnCake: incomingOrderDetails?.nameOnCake || "Happy Birthday",
-    deliveryDate: new Date().toISOString().split("T")[0],
-    deliveryTime: "Standard Delivery",
+    addons: incomingOrderDetails?.addons || "1",
+    price: incomingOrderDetails?.grandTotal || 1200,
     deliveryCharge: 50,
     quantity: incomingOrderDetails?.quantity || 1,
   };
@@ -65,6 +85,9 @@ const CustomerDetails = () => {
             phone: response.data.details.phone || "",
             email: response.data.details.email || user.email || "",
             whatsapp: response.data.details.whatsapp || "",
+            deliveryDate: response.data.details.deliveryDate || new Date().toISOString().split("T")[0],
+            deliveryTime: response.data.details.deliveryTime || dayjs().format(format),
+            wishesOnCake: response.data.details.wishesOnCake || "",
             flatNo: response.data.details.flatNo || "",
             street: response.data.details.street || "",
             landmark: response.data.details.landmark || "",
@@ -84,11 +107,13 @@ const CustomerDetails = () => {
     if (!formData.fullName.trim()) newErrors.fullName = "Full Name is required";
     if (!formData.phone.trim()) newErrors.phone = "Phone Number is required";
     else if (!/^\d{10}$/.test(formData.phone)) newErrors.phone = "Enter a valid 10-digit number";
-    
+    if (!formData.deliveryDate.trim()) newErrors.deliveryDate = "Delivery Date is required";
+    if (!formData.deliveryTime.trim()) newErrors.deliveryTime = "Delivery Time is required";
     if (!formData.flatNo.trim()) newErrors.flatNo = "Flat / Door No is required";
     if (!formData.street.trim()) newErrors.street = "Street Address is required";
     if (!formData.city.trim()) newErrors.city = "City is required";
     if (!formData.pincode.trim()) newErrors.pincode = "Pincode is required";
+    if (!formData.wishesOnCake.trim()) newErrors.wishesOnCake = "Wishes is required";
     else if (!/^\d{6}$/.test(formData.pincode)) newErrors.pincode = "Enter a valid 6-digit pincode";
 
     setErrors(newErrors);
@@ -107,11 +132,63 @@ const CustomerDetails = () => {
   };
 
   const handleOrderPlacement = async (isPaid) => {
-      try {
-        const userId = user?._id || user?.id;
-        await axios.post(`${import.meta.env.VITE_API_URL}/details`, { userId, ...formData }, { headers: { Authorization: `Bearer ${token}` } });
+    try {
+      const userId = user?._id || user?.id;
+      await axios.post(`${import.meta.env.VITE_API_URL}/details`, { userId, ...formData }, { headers: { Authorization: `Bearer ${token}` } });
 
-        const orderPayload = {
+      const orderPayload = {
+        userId,
+        cartItems: [{
+          productId: orderDetails._id,
+          cakeName: orderDetails.cakeName,
+          variant: orderDetails.variant,
+          cakePrice: orderDetails.cakePrice,
+          weight: orderDetails.weight,
+          price: orderDetails.grandTotal,
+          nameOnCake: orderDetails.nameOnCake,
+          quantity: orderDetails.quantity,
+          addons: orderDetails.addons,
+        }],
+        deliveryDetails: {
+          fullName: formData.fullName,
+          phone: formData.phone,
+          email: formData.email,
+          whatsapp: formData.whatsapp,
+          address: {
+            flatNo: formData.flatNo,
+            street: formData.street,
+            landmark: formData.landmark,
+            city: formData.city,
+            pincode: formData.pincode,
+          },
+          instructions: formData.instructions,
+        },
+        deliveryDate: formData.deliveryDate,
+        deliveryTime: formData.deliveryTime,
+        wishesOnCake: formData.wishesOnCake,
+        paymentMethod: formData.paymentMethod,
+        totalAmount: totalAmount,
+        deliveryCharge: orderDetails.deliveryCharge,
+        isPaid: isPaid
+      };
+
+      const orderResponse = await axios.post(`${import.meta.env.VITE_API_URL}/orders`, orderPayload, { headers: { Authorization: `Bearer ${token}` } });
+
+      if (orderResponse.data.success) {
+        const orderId = orderResponse.data.order?._id || orderResponse.data._id;
+
+        // // First show Order Success Alert
+        // await Swal.fire({
+        //   icon: "success",
+        //   title: "Order Placed Successfully!",
+        //   text: "Thank you for your order.",
+        //   confirmButtonColor: "#0e4d65"
+        // });
+
+        showHotToast("success", "Order Placed Successfully! Thank you for your order.");
+
+        try {
+          const scratchResponse = await axios.post(`${import.meta.env.VITE_API_URL}/scratchcards/generate`, {
             userId,
             cartItems: [{
                 productId: orderDetails._id,
@@ -181,51 +258,53 @@ const CustomerDetails = () => {
                 finishOrder();
              }
         }
-      } catch (error) {
-          console.error(error);
-          Swal.fire({ icon: "error", title: "Order Failed", text: error.response?.data?.message || "Something went wrong.", confirmButtonColor: "#0e4d65" });
       }
+    } catch (error) {
+      console.error(error);
+      Swal.fire({ icon: "error", title: "Order Failed", text: error.response?.data?.message || "Something went wrong.", confirmButtonColor: "#0e4d65" });
+    }
   };
 
   const handleClaim = async () => {
     if (!scratchCard?._id) return;
     try {
-        const response = await axios.patch(`${import.meta.env.VITE_API_URL}/scratchcards/${scratchCard._id}/claim`, {}, {
-            headers: { Authorization: `Bearer ${token}` }
-        });
-        if (response.data.success) {
-            setIsClaimed(true);
-            Swal.fire({ 
-                icon: "success", 
-                title: "Coupon Claimed!", 
-                text: "Your reward is now available for your next order.",
-                timer: 2000,
-                showConfirmButton: false
-            });
-            setTimeout(finishOrder, 2000);
-        }
+      const response = await axios.patch(`${import.meta.env.VITE_API_URL}/scratchcards/${scratchCard._id}/claim`, {}, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      if (response.data.success) {
+        setIsClaimed(true);
+        // Swal.fire({
+        //   icon: "success",
+        //   title: "Coupon Claimed!",
+        //   text: "Your reward is now available for your next order.",
+        //   timer: 2000,
+        //   showConfirmButton: false
+        // });
+        showHotToast("success", "Coupon Claimed! Your reward is now available for your next order.");
+        setTimeout(finishOrder, 2000);
+      }
     } catch (error) {
-        console.error(error);
-        toast.error("Failed to claim coupon");
+      console.error(error);
+      toast.error("Failed to claim coupon");
     }
   };
 
   const payment = (num) => {
     if (num === " ") { alert("no value"); return; }
-    
+
     const options = {
-        key: "rzp_test_YOUR_KEY", // Replace with env variable in real app
-        amount: num,
-        currency: "INR",
-        name: "CakeForest Shop",
-        description: "Order Payment",
-        handler: async function (response) {
-             // Verify payment API call would go here
-             // For now assuming success
-             handleOrderPlacement(true);
-        },
-        prefill: { name: formData.fullName, email: formData.email, contact: formData.phone },
-        theme: { color: "#0e4d65" },
+      key: "rzp_test_YOUR_KEY", // Replace with env variable in real app
+      amount: num,
+      currency: "INR",
+      name: "CakeForest Shop",
+      description: "Order Payment",
+      handler: async function (response) {
+        // Verify payment API call would go here
+        // For now assuming success
+        handleOrderPlacement(true);
+      },
+      prefill: { name: formData.fullName, email: formData.email, contact: formData.phone },
+      theme: { color: "#0e4d65" },
     };
     const rzp1 = new window.Razorpay(options);
     rzp1.open();
@@ -237,17 +316,19 @@ const CustomerDetails = () => {
     setLoading(true);
 
     try {
-        if (formData.paymentMethod === "online") {
-            payment(totalAmount * 100);
-        } else {
-            handleOrderPlacement(false);
-        }
-    } catch(err) {
-        console.error(err);
+      if (formData.paymentMethod === "online") {
+        payment(totalAmount * 100);
+      } else {
+        handleOrderPlacement(false);
+      }
+    } catch (err) {
+      console.error(err);
     } finally {
-        setLoading(false);
+      setLoading(false);
     }
   };
+
+ 
 
   return (
     <div className={styles.container}>
@@ -342,13 +423,26 @@ const CustomerDetails = () => {
                 <span>Customer Information</span>
               </div>
 
-              <div className={styles.inputGroup}>
-                <label className={styles.label}>Full Name <span style={{ color: "#ff6161" }}>*</span></label>
-                <div className={styles.inputWrapper}>
-                  <User size={16} className={styles.icon} />
-                  <input type="text" name="fullName" value={formData.fullName} onChange={handleChange} className={styles.input} placeholder="Enter your full name" />
+              <div className={styles.row}>
+                <div className={styles.col}>
+                  <div className={styles.inputGroup}>
+                    <label className={styles.label}>Full Name <span style={{ color: "#ff6161" }}>*</span></label>
+                    <div className={styles.inputWrapper}>
+                      <User size={16} className={styles.icon} />
+                      <input type="text" name="fullName" value={formData.fullName} onChange={handleChange} className={styles.input} placeholder="Enter your full name" />
+                    </div>
+                    {errors.fullName && <p className={styles.errorMsg}>{errors.fullName}</p>}
+                  </div>
                 </div>
-                {errors.fullName && <p className={styles.errorMsg}>{errors.fullName}</p>}
+                <div className={styles.col}>
+                  <div className={styles.inputGroup}>
+                    <label className={styles.label}>Email Address</label>
+                    <div className={styles.inputWrapper}>
+                      <Mail size={16} className={styles.icon} />
+                      <input type="email" name="email" value={formData.email} onChange={handleChange} className={styles.input} placeholder="example@email.com" />
+                    </div>
+                  </div>
+                </div>
               </div>
 
               <div className={styles.row}>
@@ -372,16 +466,93 @@ const CustomerDetails = () => {
                   </div>
                 </div>
               </div>
+            </section>
+
+            {/* 2. Delivery Details Section */}
+            <section className={styles.section}>
+              <div className={styles.sectionTitle}>
+                <Cake size={18} color="#0e4d65" />
+                <span>Delivery Details</span>
+              </div>
+
+              <div className={styles.row}>
+                <div className={styles.col}>
+                  <div className={styles.inputGroup}>
+                    <label className={styles.label}>
+                      Delivery Date <span style={{ color: "#ff6161" }}>*</span>
+                    </label>
+                    <div className={styles.inputWrapper}>
+                      <Calendar size={16} className={styles.icon} />
+                      <input
+                        type="date"
+                        name="deliveryDate"
+                        value={formData.deliveryDate}
+                        onChange={handleChange}
+                        className={styles.input}
+                        min={new Date().toISOString().split("T")[0]}
+                      />
+                    </div>
+                    {errors.deliveryDate && <p className={styles.errorMsg}>{errors.deliveryDate}</p>}
+                  </div>
+                </div>
+                <div className={styles.col}>
+                  <div className={styles.inputGroup}>
+                    <label className={styles.label}>
+                      Delivery Time <span style={{ color: "#ff6161" }}>*</span>
+                    </label>
+                    <div className={styles.inputWrapper} style={{ border: 'none', padding: 0 }}>
+                      
+
+<TimePicker
+  value={
+    formData.deliveryTime
+      ? dayjs(formData.deliveryTime, format)
+      : null
+  }
+  format={format}
+  use12Hours   // ✅ IMPORTANT
+  onChange={(time, timeString) => {
+    setFormData((prev) => ({
+      ...prev,
+      deliveryTime: timeString, // eg: "02:30 PM"
+    }));
+  }}
+  className={styles.input}
+  style={{
+    width: "100%",
+    height: "45px",
+    borderRadius: "10px",
+  }}
+  allowClear={false}
+/>
+                    </div>
+                    {errors.deliveryTime && <p className={styles.errorMsg}>{errors.deliveryTime}</p>}
+                  </div>
+                </div>
+              </div>
 
               <div className={styles.inputGroup}>
-                <label className={styles.label}>Email Address</label>
+                <label className={styles.label}>Wishes on the Cake</label>
                 <div className={styles.inputWrapper}>
-                  <Mail size={16} className={styles.icon} />
-                  <input type="email" name="email" value={formData.email} onChange={handleChange} className={styles.input} placeholder="example@email.com" />
+                  <Cake size={16} className={styles.icon} />
+                  <input
+                    type="text"
+                    name="wishesOnCake"
+                    value={formData.wishesOnCake}
+                    onChange={handleChange}
+                    className={styles.input}
+                    placeholder="e.g., Happy Birthday Sarah!"
+                    maxLength={50}
+                  />
                 </div>
+                {errors.wishesOnCake && <p className={styles.errorMsg}>{errors.wishesOnCake}</p>}
+                <p className={styles.helperText}>
+                  {formData.wishesOnCake.length}/50 characters
+                </p>
               </div>
             </section>
 
+            {/* 3. Delivery Address Section */}
             <section className={styles.section}>
               <div className={styles.sectionTitle}>
                 <MapPin size={18} color="#0e4d65" />
@@ -454,11 +625,11 @@ const CustomerDetails = () => {
                 <span>Payment Method</span>
               </div>
 
-              <label className={`${styles.paymentOption} ${formData.paymentMethod === "online" ? styles.selected : ""}`}>
+              {/* <label className={`${styles.paymentOption} ${formData.paymentMethod === "online" ? styles.selected : ""}`}>
                 <input type="radio" name="paymentMethod" value="online" checked={formData.paymentMethod === "online"} onChange={handleChange} className={styles.radio} />
                 <span className={styles.paymentLabel}>Pay Online (UPI / Card / NetBanking)</span>
                 <CreditCard size={18} color="#67a6b1" />
-              </label>
+              </label> */}
 
               <label className={`${styles.paymentOption} ${formData.paymentMethod === "cod" ? styles.selected : ""}`}>
                 <input type="radio" name="paymentMethod" value="cod" checked={formData.paymentMethod === "cod"} onChange={handleChange} className={styles.radio} />
@@ -491,17 +662,17 @@ const CustomerDetails = () => {
                   <span className={styles.orderValue}>{orderDetails.weight}</span>
                 </div>
                 <div className={styles.orderItem}>
-                  <span className={styles.orderLabel}>Name on Cake</span>
-                  <span className={styles.orderValue}>{orderDetails.nameOnCake}</span>
+                  <span className={styles.orderLabel}>Add-ons</span>
+                  <span className={styles.orderValue}>{orderDetails.addons.length}</span>
                 </div>
-                <div className={styles.orderItem}>
+                {/* <div className={styles.orderItem}>
                   <span className={styles.orderLabel}>Delivery Date</span>
                   <span className={styles.orderValue}>{orderDetails.deliveryDate}</span>
                 </div>
                 <div className={styles.orderItem}>
                   <span className={styles.orderLabel}>Time Slot</span>
                   <span className={styles.orderValue}>{orderDetails.deliveryTime}</span>
-                </div>
+                </div> */}
 
                 <div className={styles.priceSummary}>
                   <div className={styles.orderItem}>
@@ -529,9 +700,48 @@ const CustomerDetails = () => {
       </div>
 
       <footer className={styles.footer}>
-        <button type="button" onClick={handleSubmit} className={styles.submitBtn} disabled={loading}>
+        {/* <button type="button" onClick={handleSubmit} className={styles.submitBtn} disabled={loading}>
+          {loading ? "Placing Order..." : "Place Order"}
+        </button> */}
+
+        <Popconfirm
+                        description={ "Are you sure order this cake?"}
+                        onConfirm={handleSubmit}
+                        // onCancel={() => showToast("error", "Save cancelled")}
+                        okText="Yes"
+                        cancelText="No"
+                        icon={null}
+                        placement="top"
+                        okButtonProps={{
+                          style: {
+                            backgroundColor: "#2C5F7C", // Dark Blue (your form icons color)
+                            color: "white",
+                            borderRadius: "6px",
+                            padding: "4px 15px",
+        
+                            border: "none",
+                          },
+                        }}
+                        descriptionProps={{
+                          style: {
+                            fontSize: "16px",
+                          },
+                        }}
+                        cancelButtonProps={{
+                          style: {
+                            backgroundColor: "#e0e0e0",
+                            color: "#444",
+                            borderRadius: "6px",
+                            padding: "4px 15px",
+        
+                            border: "none",
+                          },
+                        }}
+                      >
+                      <button type="button"  className={styles.submitBtn} disabled={loading}>
           {loading ? "Placing Order..." : "Place Order"}
         </button>
+                      </Popconfirm>
       </footer>
     </div>
   );

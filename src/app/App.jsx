@@ -23,9 +23,7 @@ import Buypage from "../pages/buypage.jsx";
 import Footer from "../components/footer/footer.jsx";
 import CakeGallery from "../components/cake_gallery/cakeGallery.jsx";
 import PWAInstallPrompt from "../components/PWAInstallPrompt/PWAInstallPrompt.jsx";
-
 import "bootstrap/dist/css/bootstrap.min.css";
-
 import { AuthProvider } from "../admin/context/AuthContext.jsx";
 import Login from "../components/login/login.jsx";
 import NewForget from "../components/login/forget/NewForget.jsx";
@@ -97,7 +95,7 @@ function App() {
 
             {/* Admin Routes */}
             <Route path="/admin" element={<AdminLayout />}>
-              <Route path="dashboard" element={<Dashboard />} />
+              {/* <Route path="dashboard" element={<Dashboard />} /> */}
               <Route path="products" element={<ProductList />} />
               <Route path="products/add" element={<AddProduct />} />
               <Route path="products/edit/:id" element={<AddProduct />} />

@@ -106,6 +106,7 @@ const CouponSection = ({ subtotal, onCouponApplied }) => {
             <input
               type="text"
               value={couponCode}
+              className='w-100'
               onChange={(e) => setCouponCode(e.target.value.toUpperCase())}
               placeholder="Enter Coupon Code"
               style={{ padding: '10px', textTransform: 'uppercase', flex: 1, border: '1px solid #ddd', borderRadius: '4px', minWidth: 0 }}

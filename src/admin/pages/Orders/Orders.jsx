@@ -17,6 +17,7 @@ import {
   ShoppingBag,
 } from "lucide-react";
 import toast, { Toaster } from "react-hot-toast";
+import { showHotToast } from "../../utils/showToast";
 
 const Orders = () => {
   const [orders, setOrders] = useState([]);
@@ -29,6 +30,19 @@ const Orders = () => {
     fetchOrders();
   }, []);
 
+  // 🔄 Listen for order refresh events from notification drawer
+  useEffect(() => {
+    const handleRefresh = () => {
+      fetchOrders();
+    };
+
+    window.addEventListener("refreshOrders", handleRefresh);
+
+    return () => {
+      window.removeEventListener("refreshOrders", handleRefresh);
+    };
+  }, []);
+
   const fetchOrders = async () => {
     try {
       setLoading(true);
@@ -36,29 +50,47 @@ const Orders = () => {
         `${import.meta.env.VITE_API_URL}/orders`
       );
       if (response.data.success) {
-        const mappedOrders = response.data.orders.map((order) => ({
-          id: order.orderId,
-          mongoId: order._id,
-          customer: order.deliveryDetails?.fullName || "Unknown",
-          cake: order.cartItems.map((item) => item.cakeName).join(", "),
-          amount: order.totalAmount,
-          status: order.status,
-          date: new Date(order.createdAt).toLocaleDateString(),
-          rawDate: new Date(order.createdAt),
-          fullDetails: {
-            ...order,
-            formattedOrderDate: new Date(order.createdAt).toLocaleString(),
-            formattedDeliveryDate: new Date(
-              order.deliveryDate
-            ).toLocaleDateString(),
-          },
-        }));
+        const mappedOrders = response.data.orders .filter(order => order.notificationstatus === true).map((order) => {
+          // Robust mapping for delivery fields
+          let rawDDate = order.deliveryDate || order.deliveryDetails?.deliveryDate || "N/A";
+          let formattedDDate = rawDDate;
+
+          if (rawDDate && rawDDate !== "N/A" && rawDDate.includes("-")) {
+            const parts = rawDDate.split("-");
+            if (parts.length === 3) formattedDDate = `${parts[2]}/${parts[1]}/${parts[0]}`;
+          }
+
+          const dTime = order.deliveryTime || order.deliveryDetails?.deliveryTime || "N/A";
+          const wishes = order.wishesOnCake || order.deliveryDetails?.cakeWishes || order.deliveryDetails?.wishesOnCake || "";
+
+          return {
+            id: order.orderId,
+            mongoId: order._id,
+            customer: order.deliveryDetails?.fullName || "Unknown",
+            cake: order.cartItems.map((item) => item.cakeName).join(", "),
+            amount: order.totalAmount,
+            status: order.status,
+            orderDate: new Date(order.createdAt).toLocaleDateString("en-GB"),
+            deliveryDate: formattedDDate,
+            deliveryTime: dTime,
+            rawDate: new Date(order.createdAt),
+            fullDetails: {
+              ...order,
+              deliveryDate: formattedDDate,
+              deliveryTime: dTime,
+              wishesOnCake: wishes,
+              formattedOrderDate: new Date(order.createdAt).toLocaleString("en-GB"),
+              formattedDeliveryDate: formattedDDate,
+            },
+          };
+        });
         mappedOrders.sort((a, b) => b.rawDate - a.rawDate);
         setOrders(mappedOrders);
       }
     } catch (error) {
       console.error("Error fetching orders:", error);
-      toast.error("Failed to fetch orders");
+      showHotToast("error", "Failed to fetch orders");
+ 
     } finally {
       setLoading(false);
     }
@@ -72,12 +104,13 @@ const Orders = () => {
       );
 
       if (response.data.success) {
-        toast.success(`Status updated to ${newStatus}`);
+        showHotToast("success", `Status updated to ${newStatus}`);
         fetchOrders();
       }
     } catch (error) {
       console.error("Error updating status:", error);
-      toast.error("Failed to update status");
+      showHotToast("error", "Failed to update status");
+     
     }
   };
 
@@ -89,12 +122,14 @@ const Orders = () => {
 
       if (response.data.success) {
         setOrders(orders.filter((order) => order.mongoId !== mongoId));
-        toast.success("Order deleted successfully");
+        showHotToast("success", "Order deleted successfully");
+        
         window.dispatchEvent(new Event("refreshNotifications"));
       }
     } catch (error) {
       console.error("Error deleting order:", error);
-      toast.error("Failed to delete order");
+      showHotToast("error", "Failed to delete order");
+      
     }
   };
 
@@ -110,7 +145,7 @@ const Orders = () => {
   const getStatusIcon = (status) => {
     if (status === "pending")
       return <CheckCircle size={18} />;
-    if (status === "ready") 
+    if (status === "ready")
       return <Truck size={18} />;
     if (status === "delivered")
       return <Package size={18} />;
@@ -139,6 +174,15 @@ const Orders = () => {
     setSelectedOrder(null);
   };
 
+  // 🧮 Addons total
+const getAddonsTotal = (addons = []) =>
+  addons.reduce((sum, a) => sum + a.total, 0);
+
+// 🧁 Cake total
+const getCakeTotal = (item) =>
+  item.cakePrice * item.quantity;
+
+
   const pendingOrders = orders.filter((order) =>
     ["pending", "ready"].includes(order.status.toLowerCase())
   );
@@ -156,7 +200,9 @@ const Orders = () => {
           <th>Cake</th>
           <th>Amount</th>
           <th>Status</th>
-          <th>Date</th>
+          <th>Order Date</th>
+          <th>Delivery Date</th>
+          <th>Delivery Time</th>
           <th>Actions</th>
         </tr>
       </thead>
@@ -246,7 +292,9 @@ const Orders = () => {
                     </span>
                   )}
                 </td>
-                <td>{order.date}</td>
+                <td>{order.orderDate}</td>
+                <td style={{ fontWeight: 600 }}>{order.deliveryDate}</td>
+                <td style={{ color: "#4b5563" }}>{order.deliveryTime}</td>
                 <td>
                   <div
                     style={{
@@ -323,7 +371,7 @@ const Orders = () => {
           })
         ) : (
           <tr>
-            <td colSpan="7" style={{ textAlign: "center", padding: "20px" }}>
+            <td colSpan="9" style={{ textAlign: "center", padding: "20px" }}>
               No {isDelivered ? "delivered" : "pending"} orders found
             </td>
           </tr>
@@ -359,9 +407,9 @@ const Orders = () => {
               padding: "12px 24px",
               // background: activeTab === "pending" ? "#667eea" : "transparent",
               color: activeTab === "pending" ? "#667eea" : "",
-              backgroundColor:"transparent",
+              backgroundColor: "transparent",
               border: "none",
-              borderColor:"transparent",
+              borderColor: "transparent",
               borderBottom:
                 activeTab === "pending"
                   ? "3px solid #667eea"
@@ -381,7 +429,7 @@ const Orders = () => {
             style={{
               padding: "12px 24px",
               background: "transparent",
-              color: activeTab === "delivered" ? "#667eea": "",
+              color: activeTab === "delivered" ? "#667eea" : "",
               border: "none",
               borderBottom:
                 activeTab === "delivered"
@@ -414,7 +462,8 @@ const Orders = () => {
         </div>
 
         {/* Enhanced Order Details Modal */}
-      {isModalOpen && selectedOrder && (
+        {/* Enhanced Order Details Modal */}
+{isModalOpen && selectedOrder && (
   <div
     onClick={closeModal}
     style={{
@@ -461,6 +510,7 @@ const Orders = () => {
             {selectedOrder.formattedOrderDate}
           </p>
         </div>
+
         <button
           onClick={closeModal}
           style={{
@@ -468,10 +518,9 @@ const Orders = () => {
             border: "none",
             cursor: "pointer",
             padding: "8px",
-            borderRadius: "6px",
           }}
         >
-          <X size={20} color="#6b7280" />
+          ✕
         </button>
       </div>
 
@@ -488,72 +537,118 @@ const Orders = () => {
             fontSize: "14px",
             fontWeight: "500",
             marginBottom: "24px",
-            background: `${getStatusColor(selectedOrder.status)}15`,
-            color: getStatusColor(selectedOrder.status),
+            background: "#e0f2fe",
+            color: "#0369a1",
           }}
         >
-          {getStatusIcon(selectedOrder.status.toLowerCase())}
           {selectedOrder.status}
         </div>
 
         {/* Customer */}
         <div style={{ marginBottom: "24px" }}>
-          <h3 style={{ fontSize: "13px", fontWeight: "600", color: "#6b7280", marginBottom: "8px" }}>
-            CUSTOMER
-          </h3>
-          <p style={{ margin: "4px 0", fontSize: "15px", fontWeight: "600", color: "#111827" }}>
+          <h3 style={{ fontSize: "13px", color: "#6b7280" }}>CUSTOMER</h3>
+          <p style={{ fontSize: "15px", fontWeight: "600" }}>
             {selectedOrder.deliveryDetails.fullName}
           </p>
-          <p style={{ margin: "4px 0", fontSize: "14px", color: "#6b7280" }}>
+          <p style={{ fontSize: "14px", color: "#6b7280" }}>
             {selectedOrder.deliveryDetails.phone}
           </p>
         </div>
 
         {/* Delivery */}
         <div style={{ marginBottom: "24px" }}>
-          <h3 style={{ fontSize: "13px", fontWeight: "600", color: "#6b7280", marginBottom: "8px" }}>
-            DELIVERY
-          </h3>
-          <p style={{ margin: 0, fontSize: "14px", lineHeight: "1.6", color: "#111827", fontWeight: "500" }}>
-            {selectedOrder.deliveryDetails.address.flatNo}, {selectedOrder.deliveryDetails.address.street},<br />
-            {selectedOrder.deliveryDetails.address.city} - {selectedOrder.deliveryDetails.address.pincode}
+          <h3 style={{ fontSize: "13px", color: "#6b7280" }}>DELIVERY</h3>
+          <p style={{ fontSize: "14px", lineHeight: "1.6" }}>
+            {selectedOrder.deliveryDetails.address.flatNo}, 
+            {selectedOrder.deliveryDetails.address.street}, 
+            {selectedOrder.deliveryDetails.address.city} - 
+            {selectedOrder.deliveryDetails.address.pincode}
           </p>
-          <p style={{ margin: "10px 0 0", fontSize: "14px", color: "#111827", fontWeight: "500" }}>
-            📅 {selectedOrder.formattedDeliveryDate} • 🕐 {selectedOrder.deliveryTime}
+
+          <p style={{ marginTop: "8px", fontSize: "14px" }}>
+            📅 {selectedOrder.deliveryDetails.deliveryDate} • 🕐{" "}
+            {selectedOrder.deliveryDetails.deliveryTime}
           </p>
         </div>
 
-        {/* Items */}
+        {/* ITEMS – SINGLE LINE */}
         <div style={{ marginBottom: "24px" }}>
-          <h3 style={{ fontSize: "13px", fontWeight: "600", color: "#6b7280", marginBottom: "12px" }}>
-            ITEMS
-          </h3>
-          {selectedOrder.cartItems.map((item, idx) => (
+  <h3 style={{ fontSize: "13px", color: "#6b7280", marginBottom: "12px" }}>
+    ITEMS
+  </h3>
+
+  {selectedOrder.cartItems.map((item, idx) => {
+    const cakeTotal = item.cakePrice * item.quantity;
+
+    return (
+      <div key={idx}>
+        {/* 🎂 Cake Row */}
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            padding: "12px 0",
+            borderBottom:
+              item.addons && item.addons.length > 0
+                ? "1px dashed #e5e7eb"
+                : "1px solid #f3f4f6",
+          }}
+        >
+          <p style={{ margin: 0, fontSize: "15px", fontWeight: "600" }}>
+            {item.cakeName} ({item.weight} × {item.quantity})
+          </p>
+
+          <p
+            style={{
+              margin: 0,
+              fontSize: "15px",
+              fontWeight: "700",
+              color: "#059669",
+            }}
+          >
+            ₹{cakeTotal}
+          </p>
+        </div>
+
+        {/* ➕ Addons Rows */}
+        {item.addons &&
+          item.addons.map((addon, aIdx) => (
             <div
-              key={idx}
+              key={aIdx}
               style={{
                 display: "flex",
                 justifyContent: "space-between",
-                padding: "12px 0",
-                borderBottom: idx !== selectedOrder.cartItems.length - 1 ? "1px solid #f3f4f6" : "none",
+                padding: "6px 0 6px 16px",
               }}
             >
-              <div>
-                <p style={{ margin: 0, fontSize: "15px", fontWeight: "600", color: "#111827" }}>
-                  {item.cakeName}
-                </p>
-                <p style={{ margin: "4px 0 0", fontSize: "13px", color: "#6b7280" }}>
-                  {item.weight} × {item.quantity}
-                </p>
-              </div>
-              <p style={{ margin: 0, fontSize: "16px", fontWeight: "700", color: "#059669" }}>
-                ₹{item.price * item.quantity}
+              <p
+                style={{
+                  margin: 0,
+                  fontSize: "14px",
+                  color: "#6b7280",
+                }}
+              >
+                + {addon.name} × {addon.qty}
+              </p>
+
+              <p
+                style={{
+                  margin: 0,
+                  fontSize: "14px",
+                  fontWeight: "600",
+                }}
+              >
+                ₹{addon.total}
               </p>
             </div>
           ))}
-        </div>
+      </div>
+    );
+  })}
+</div>
 
-        {/* Payment */}
+
+        {/* Payment Summary */}
         <div
           style={{
             background: "#f9fafb",
@@ -562,40 +657,117 @@ const Orders = () => {
             border: "1px solid #e5e7eb",
           }}
         >
-          <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "8px" }}>
-            <span style={{ fontSize: "14px", color: "#6b7280" }}>Subtotal</span>
-            <span style={{ fontSize: "14px", fontWeight: "500" }}>
-              ₹{selectedOrder.totalAmount - (selectedOrder.deliveryCharge || 0)}
+          <div style={{ display: "flex", justifyContent: "space-between" }}>
+            <span>Subtotal</span>
+            <span>
+              ₹{selectedOrder.totalAmount - selectedOrder.deliveryCharge}
             </span>
           </div>
-          <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "12px" }}>
-            <span style={{ fontSize: "14px", color: "#6b7280" }}>Delivery</span>
-            <span style={{ fontSize: "14px", fontWeight: "500" }}>₹{selectedOrder.deliveryCharge || 0}</span>
-          </div>
+
           <div
             style={{
               display: "flex",
               justifyContent: "space-between",
-              paddingTop: "12px",
-              borderTop: "2px solid #d1d5db",
+              marginTop: "8px",
             }}
           >
-            <span style={{ fontSize: "17px", fontWeight: "700", color: "#111827" }}>Total</span>
-            <span style={{ fontSize: "18px", fontWeight: "700", color: "#059669" }}>
+            <span>Delivery</span>
+            <span>₹{selectedOrder.deliveryCharge}</span>
+          </div>
+
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              marginTop: "12px",
+              borderTop: "2px solid #d1d5db",
+              paddingTop: "12px",
+              fontWeight: "700",
+            }}
+          >
+            <span>Total</span>
+            <span style={{ color: "#059669" }}>
               ₹{selectedOrder.totalAmount}
             </span>
-          </div>
-          <div style={{ marginTop: "12px", fontSize: "13px", color: "#6b7280", textAlign: "center", fontWeight: "500" }}>
-            💳 {selectedOrder.paymentMethod}
           </div>
         </div>
       </div>
     </div>
   </div>
 )}
+
       </div>
 
       <style>{`
+        .dashboard {
+          width: 100%;
+          max-width: 100%;
+          box-sizing: border-box;
+          padding: 1.5rem;
+          overflow-x: hidden;
+        }
+
+        .table-container {
+          width: 100%;
+          max-width: 100%;
+          overflow-x: auto;
+          overflow-y: hidden;
+          background: white;
+          border-radius: 12px;
+          box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+          margin-top: 1rem;
+          border: 1px solid #e2e8f0;
+          display: block;
+          position: relative;
+          /* Ensure scrollbar works for non-webkit */
+          scrollbar-width: thin;
+          scrollbar-color: #cbd5e1 #f3f4f6;
+        }
+
+        /* Custom Scrollbar for Table */
+        .table-container::-webkit-scrollbar {
+          height: 8px;
+        }
+
+        .table-container::-webkit-scrollbar-track {
+          background: #f3f4f6;
+          border-radius: 10px;
+        }
+
+        .table-container::-webkit-scrollbar-thumb {
+          background: #cbd5e1;
+          border-radius: 10px;
+        }
+
+        .products-table {
+          width: 100%;
+          min-width: 1100px;
+          border-collapse: collapse;
+          text-align: left;
+        }
+
+        .products-table thead {
+          background: #a6afb8;
+        }
+
+        .products-table th {
+          padding: 16px;
+          font-weight: 600;
+          color: #374151;
+          font-size: 0.8rem;
+          text-transform: uppercase;
+          border-bottom: 1px solid #e2e8f0;
+          white-space: nowrap;
+        }
+
+        .products-table td {
+          padding: 16px;
+          border-bottom: 1px solid #f1f5f9;
+          font-size: 0.9rem;
+          color: #1e293b;
+          vertical-align: middle;
+        }
+
         @keyframes modalSlideIn {
           from {
             opacity: 0;

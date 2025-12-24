@@ -203,7 +203,7 @@ const Coupons = () => {
                     <tbody>
                         {coupons.map((coupon) => (
                             <tr key={coupon._id}>
-                                <td style={{ fontWeight: 700, fontFamily: 'monospace', color: '#667eea', fontSize: '1rem' }}>
+                                <td style={{ fontWeight: 700, color: '#667eea', fontSize: '1rem' }}>
                                     {coupon.code}
                                 </td>
                                 <td style={{ fontWeight: 600 }}>

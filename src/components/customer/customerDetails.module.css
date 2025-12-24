@@ -60,8 +60,7 @@
     object-fit: contain;
     /* CSS Filter to match logo color #2C5F7C */
     /* filter: invert(34%) sepia(10%) saturate(2027%) hue-rotate(161deg) brightness(96%) contrast(91%); */
-    filter: invert(34%) sepia(10%) saturate(2027%)
-        hue-rotate(161deg) brightness(96%) contrast(91%);
+    filter: invert(34%) sepia(10%) saturate(2027%) hue-rotate(161deg) brightness(96%) contrast(91%);
 
 }
 
@@ -193,6 +192,20 @@
     min-width: 0;
 }
 
+/* Two Column Grid for Customer Info and Address */
+.twoColumnGrid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.25rem;
+    margin-bottom: 1.25rem;
+}
+
+@media (max-width: 992px) {
+    .twoColumnGrid {
+        grid-template-columns: 1fr;
+    }
+}
+
 /* Order Details Card */
 .orderCard {
     background-color: #fffaf2;
@@ -280,6 +293,29 @@
     color: #333;
 }
 
+/* Helper Text for Character Count */
+.helperText {
+    font-size: 0.75rem;
+    color: #888;
+    margin-top: 0.4rem;
+    margin-left: 0.25rem;
+    font-style: italic;
+}
+
+/* Make select dropdown match input styling */
+.input[type="date"],
+.input select {
+    cursor: pointer;
+}
+
+.input select {
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%2367a6b1' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 14px center;
+    padding-right: 42px;
+}
+
 /* Sticky Footer */
 .footer {
     position: fixed;
@@ -313,25 +349,25 @@
 }
 
 .submitBtn::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 30px;
-  height: 100%;
-  background: rgba(255, 255, 255, 0.12);
-  transform: skewX(-15deg);
-  animation: moveShade 1.2s linear infinite;
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 30px;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.12);
+    transform: skewX(-15deg);
+    animation: moveShade 1.2s linear infinite;
 }
 
 @keyframes moveShade {
-  0% {
-    left: -100px;
-  }
+    0% {
+        left: -100px;
+    }
 
-  100% {
-    left: 100%;
-  }
+    100% {
+        left: 100%;
+    }
 }
 
 .submitBtn:hover {

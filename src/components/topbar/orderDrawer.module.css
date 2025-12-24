@@ -76,7 +76,8 @@
 
 /* Chrome / Edge / Brave */
 .drawerContent::-webkit-scrollbar {
-  width: 4px; /* 👈 thin but visible */
+  width: 4px;
+  /* 👈 thin but visible */
 }
 
 .drawerContent::-webkit-scrollbar-track {
@@ -111,6 +112,7 @@
     font-size: 13px;
   }
 }
+
 /* css-dev-only-do-not-override-dbp7pc css-var-root ant-empty{
     position: relative !important ;
     top: 50% !important ;
@@ -123,16 +125,22 @@
 
 .emptyWrapper {
   height: 100%;
-  min-height: calc(100vh - 56px); /* header height minus */
+  min-height: calc(100vh - 56px);
+  /* header height minus */
   display: flex;
-  align-items: center; /* vertical center */
-  justify-content: center; /* horizontal center */
-  transform: translateY(-50px); /* 👈 mela move */
+  align-items: center;
+  /* vertical center */
+  justify-content: center;
+  /* horizontal center */
+  transform: translateY(-50px);
+  /* 👈 mela move */
 }
+
 /* =========================
    DISABLE SCROLL WHEN EMPTY
 ========================= */
 
 .noScroll {
-  overflow: hidden !important; /* ❌ no Y-scroll */
+  overflow: hidden !important;
+  /* ❌ no Y-scroll */
 }
