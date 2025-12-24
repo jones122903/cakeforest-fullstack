@@ -31,8 +31,6 @@ const Sidebar = ({ setSideWidth, sideWidth }) => {
     // { path: "/admin/expenses", icon: Receipt, label: "Expenses" },
     { path: "/admin/coupons", icon: Tag, label: "Coupons" },
     { path: "/admin/prize-pools", icon: Gift, label: "Prize Pools" },
-    { path: "/admin/reports", icon: BarChart3, label: "Reports" },
-    { path: "/admin/settings", icon: Settings, label: "Settings" },
     // { path: "/admin/reports", icon: BarChart3, label: "Reports" },
     // { path: "/admin/settings", icon: Settings, label: "Settings" },
   ];
@@ -62,20 +60,20 @@ const Sidebar = ({ setSideWidth, sideWidth }) => {
         <div className="sidebar-header">
           {!sidebarCollapsed && <h2 className="sidebar-title">Cake Forest</h2>}
           {/* {window.innerWidth > 768 && ( */}
-            <button
-              className="sidebar-toggle"
-              onClick={() => {
-                toggleSidebar(); // <-- function call
-                setSideWidth((prev) => !prev);
-              }}
-            >
-              {sidebarCollapsed ? (
-                <ChevronRight size={20} />
-              ) : (
-                <ChevronLeft size={20} />
-              )}
-            </button>
-        {/* //   )} */}
+          <button
+            className="sidebar-toggle"
+            onClick={() => {
+              toggleSidebar(); // <-- function call
+              setSideWidth((prev) => !prev);
+            }}
+          >
+            {sidebarCollapsed ? (
+              <ChevronRight size={20} />
+            ) : (
+              <ChevronLeft size={20} />
+            )}
+          </button>
+          {/* //   )} */}
         </div>
 
         <nav className="sidebar-nav">

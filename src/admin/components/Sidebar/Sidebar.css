@@ -133,8 +133,6 @@
 }
 
 .logout-btn {
-    margin-top: auto;
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
     color: #ffcccb;
 }
 
@@ -177,7 +175,7 @@
 /* Tablet Responsive (769px - 1024px) */
 @media (min-width: 769px) and (max-width: 1024px) {
     .admin-sidebar {
-         
+
         width: 260px;
     }
 
@@ -213,5 +211,3 @@
         width: 70px;
     }
 }
-
- 

@@ -1,0 +1,377 @@
+.aboutPage {
+    background-color: #fcfcfc;
+    min-height: 100vh;
+}
+
+.aboutContent {
+    padding-bottom: 60px;
+}
+
+/* Hero Section */
+.heroSection {
+    height: 400px;
+    background: linear-gradient(rgba(44, 95, 124, 0.7), rgba(44, 95, 124, 0.7)),
+        url('https://images.unsplash.com/photo-1578985545062-69928b1d9587?auto=format&fit=crop&q=80&w=1920');
+    background-size: cover;
+    background-position: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    color: white;
+}
+
+.heroOverlay h1 {
+    font-size: 3.5rem;
+    font-weight: 800;
+    margin-bottom: 1rem;
+    letter-spacing: -1px;
+}
+
+.heroOverlay p {
+    font-size: 1.25rem;
+    opacity: 0.9;
+    font-weight: 400;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 24px;
+}
+
+/* Story Section */
+.storySection {
+    padding: 100px 0;
+    background: white;
+}
+
+.textBlock {
+    max-width: 800px;
+    margin: 0 auto;
+    text-align: center;
+}
+
+.textBlock h2 {
+    color: #2C5F7C;
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 2rem;
+}
+
+.textBlock p {
+    color: #555;
+    font-size: 1.15rem;
+    line-height: 1.8;
+    margin-bottom: 1.5rem;
+}
+
+/* Values Section */
+.valuesSection {
+    padding: 100px 0;
+    background: #f8fbff;
+}
+
+.sectionTitle {
+    text-align: center;
+    color: #2C5F7C;
+    font-size: 2.25rem;
+    font-weight: 700;
+    margin-bottom: 4rem;
+}
+
+.valuesGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 40px;
+}
+
+.valueCard {
+    background: white;
+    padding: 48px 32px;
+    border-radius: 24px;
+    text-align: center;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+}
+
+.valueCard:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 20px 40px rgba(44, 95, 124, 0.1);
+}
+
+.iconWrapper {
+    width: 80px;
+    height: 80px;
+    background: rgba(44, 95, 124, 0.05);
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 24px;
+    color: #2C5F7C;
+    transition: all 0.3s ease;
+}
+
+.valueCard:hover .iconWrapper {
+    background: #2C5F7C;
+    color: white;
+    transform: rotate(10deg);
+}
+
+.animate {
+    animation: fadeInUp 0.8s ease forwards;
+    opacity: 0;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.delay1 {
+    animation-delay: 0.2s;
+}
+
+.delay2 {
+    animation-delay: 0.4s;
+}
+
+.delay3 {
+    animation-delay: 0.6s;
+}
+
+/* Stats Section */
+.statsSection {
+    padding: 100px 0;
+    background: linear-gradient(135deg, #2C5F7C 0%, #1a3a4f 100%);
+    color: white;
+    position: relative;
+    overflow: hidden;
+}
+
+.statsSection::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M54.627 0l.83.83L40.153 16.13a7.112 7.112 0 0 0-1.282 1.442 10.534 10.534 0 0 0-1.63 4.415c-.003.012 0 .025 0 .037L37.24 22H36.002a7.11 7.11 0 0 0-1.442 1.282 10.534 10.534 0 0 0-4.415 1.63L30.145 25H30v12.76c.012.003.025 0 .037 0l.008 1.238c.003.012 0 .025 0 .037l.008 1.238a7.11 7.11 0 0 0 1.282 1.442 10.534 10.534 0 0 0 4.415 1.63L35.855 35h.147c.012-.003.025 0 .037 0l1.238-.008c.012-.003.025 0 .037 0l1.238-.008a7.11 7.11 0 0 0 1.442-1.282 10.534 10.534 0 0 0 1.63-4.415l-.008-1.238c.003-.012 0-.025 0-.037l-.008-1.238a7.11 7.11 0 0 0-1.282-1.442 10.534 10.534 0 0 0-4.415-1.63L35.145 25h-.147l-1.238.008c-.012.003-.025 0-.037 0l-1.238.008a7.11 7.11 0 0 0-1.442 1.282 10.534 10.534 0 0 0-1.63 4.415l.008 1.238c-.003.012 0 .025 0 .037l.008 1.238a7.11 7.11 0 0 0 1.282 1.442 10.534 10.534 0 0 0 4.415 1.63L34.855 35h.147l1.238-.008c.012-.003.025 0 .037 0l1.238-.008a7.11 7.11 0 0 0 1.442-1.282 10.534 10.534 0 0 0 1.63-4.415l-.008-1.238c.003-.012 0-.025 0-.037l-.008-1.238a7.11 7.11 0 0 0-1.282-1.442 10.534 10.534 0 0 0-4.415-1.63L35.145 25z' fill='%23ffffff' fill-opacity='0.05' fill-rule='evenodd'/%3E%3C/svg%3E");
+    opacity: 0.3;
+}
+
+.statsGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 40px;
+    text-align: center;
+}
+
+.statItem {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+}
+
+.statNumber {
+    font-size: 2.5rem;
+    font-weight: 800;
+}
+
+.statLabel {
+    font-size: 1rem;
+    opacity: 0.8;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+/* Mission Section */
+.missionSection {
+    padding: 100px 0;
+}
+
+.missionCard {
+    background: white;
+    padding: 60px;
+    border-radius: 32px;
+    text-align: center;
+    border: 1px solid rgba(44, 95, 124, 0.1);
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.missionCard h2 {
+    color: #2C5F7C;
+    font-size: 2.25rem;
+    margin-bottom: 24px;
+}
+
+.missionCard p {
+    font-size: 1.5rem;
+    color: #444;
+    font-style: italic;
+    line-height: 1.6;
+}
+
+/* Responsive Design System */
+
+/* Large Desktops (1200px and up) */
+@media (min-width: 1200px) {
+    .container {
+        max-width: 1140px;
+    }
+}
+
+/* Tablets and Small Desktops (992px to 1199px) */
+@media (max-width: 1199px) {
+    .heroSection {
+        height: 350px;
+    }
+
+    .heroOverlay h1 {
+        font-size: 3rem;
+    }
+
+    .valuesGrid {
+        gap: 30px;
+    }
+}
+
+/* Tablets (768px to 991px) */
+@media (max-width: 991px) {
+    .heroSection {
+        height: 300px;
+    }
+
+    .heroOverlay h1 {
+        font-size: 2.75rem;
+    }
+
+    .storySection,
+    .valuesSection,
+    .missionSection {
+        padding: 80px 0;
+    }
+
+    .textBlock h2 {
+        font-size: 2.25rem;
+    }
+
+    .sectionTitle {
+        font-size: 2rem;
+        margin-bottom: 3rem;
+    }
+
+    .valuesGrid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+/* Mobile Devices (Large Phones - 576px to 767px) */
+@media (max-width: 767px) {
+    .heroSection {
+        height: 250px;
+    }
+
+    .heroOverlay h1 {
+        font-size: 2.25rem;
+    }
+
+    .heroOverlay p {
+        font-size: 1.1rem;
+    }
+
+    .storySection,
+    .valuesSection,
+    .missionSection {
+        padding: 60px 0;
+    }
+
+    .textBlock h2 {
+        font-size: 1.85rem;
+    }
+
+    .textBlock p {
+        font-size: 1.05rem;
+    }
+
+    .valuesGrid {
+        grid-template-columns: 1fr;
+        max-width: 450px;
+        margin: 0 auto;
+    }
+
+    .valueCard {
+        padding: 35px 25px;
+    }
+
+    .statsGrid {
+        grid-template-columns: 1fr;
+        gap: 30px;
+    }
+
+    .missionCard {
+        padding: 40px 20px;
+        border-radius: 20px;
+    }
+
+    .missionCard p {
+        font-size: 1.25rem;
+    }
+}
+
+/* Small Mobile Devices (Phones - up to 575px) */
+@media (max-width: 575px) {
+    .heroSection {
+        height: 220px;
+    }
+
+    .heroOverlay h1 {
+        font-size: 1.75rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .heroOverlay p {
+        font-size: 0.95rem;
+    }
+
+    .container {
+        padding: 0 20px;
+    }
+
+    .storySection,
+    .valuesSection,
+    .missionSection {
+        padding: 50px 0;
+    }
+
+    .textBlock h2 {
+        font-size: 1.6rem;
+    }
+
+    .sectionTitle {
+        font-size: 1.75rem;
+        margin-bottom: 2.5rem;
+    }
+
+    .statNumber {
+        font-size: 2rem;
+    }
+
+    .missionCard h2 {
+        font-size: 1.75rem;
+    }
+
+    .missionCard p {
+        font-size: 1.1rem;
+    }
+}
