@@ -31,6 +31,7 @@ import Wishlist from "../components/wishlist/Wishlist.jsx";
 import CouponsPage from "../pages/CouponsPage.jsx";
 import ReviewsPage from "../components/Review_page/ReviewsPage.jsx";
 import RewardsPage from "../pages/RewardsPage.jsx";
+import ContactPage from "../pages/ContactPage.jsx";
 
 
 
@@ -69,8 +70,8 @@ function App() {
       <AppProvider>
         <Router>
           <Toaster containerStyle={{ zIndex: 99999999 }} />
-           
-         
+
+
           <PWAInstallPrompt />
 
           <Routes>
@@ -86,10 +87,11 @@ function App() {
             <Route path="/forget" element={<NewForget />} />
             <Route path="/otp" element={<Otp />} />
             <Route path="/comfirm" element={<NewReset />} />
-            <Route path="/couponspage" element={<CouponsPage/>} />
-            <Route path="/reviews" element={<ReviewsPage/>} />
+            <Route path="/couponspage" element={<CouponsPage />} />
+            <Route path="/reviews" element={<ReviewsPage />} />
 
             <Route path="/rewards" element={<RewardsPage />} />
+            <Route path="/contact" element={<ContactPage />} />
 
             {/* Admin Routes */}
             <Route path="/admin" element={<AdminLayout />}>
