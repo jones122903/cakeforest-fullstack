@@ -1,0 +1,275 @@
+.contactPage {
+    min-height: 100vh;
+    background: linear-gradient(135deg, #fdfcfb 0%, #e2d1c3 100%);
+    font-family: 'Poppins', sans-serif;
+    display: flex;
+    flex-direction: column;
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+}
+
+.contactContent {
+    flex: 1;
+    padding: 80px 20px 40px 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+    width: 100%;
+}
+
+.headerSection {
+    text-align: center;
+    margin-bottom: 60px;
+    animation: fadeInDown 0.8s ease-out;
+}
+
+.headerSection h1 {
+    font-size: 3rem;
+    font-weight: 800;
+    color: #2c5f7c;
+    margin-bottom: 15px;
+    letter-spacing: -1px;
+}
+
+.headerSection p {
+    font-size: 1.1rem;
+    color: #555;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.contactGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 30px;
+    margin-bottom: 50px;
+}
+
+.contactCard {
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 24px;
+    padding: 40px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    animation: fadeInUp 0.8s ease-out;
+}
+
+.contactCard:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+    background: rgba(255, 255, 255, 0.9);
+}
+
+.iconWrapper {
+    width: 70px;
+    height: 70px;
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 25px;
+    background: linear-gradient(135deg, #2c5f7c 0%, #387c9d 100%);
+    color: white;
+    box-shadow: 0 8px 15px rgba(44, 95, 124, 0.2);
+}
+
+.contactCard h3 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #2c5f7c;
+    margin-bottom: 15px;
+}
+
+.contactCard p {
+    color: #666;
+    font-size: 1rem;
+    line-height: 1.6;
+}
+
+.detailValue {
+    font-weight: 600;
+    color: #333;
+    margin-top: 10px;
+    font-size: 1.1rem;
+}
+
+.timingSection {
+    background: rgba(255, 255, 255, 0.5);
+    backdrop-filter: blur(5px);
+    border-radius: 30px;
+    padding: 50px;
+    margin-top: 40px;
+    border: 1px dashed rgba(44, 95, 124, 0.2);
+    animation: fadeInUp 1s ease-out;
+}
+
+.timingSection h2 {
+    text-align: center;
+    color: #2c5f7c;
+    font-weight: 800;
+    margin-bottom: 40px;
+    font-size: 2.2rem;
+}
+
+.timingGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 30px;
+}
+
+.timingItem {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    background: #fff;
+    padding: 25px;
+    border-radius: 20px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
+}
+
+.timingIcon {
+    color: #2c5f7c;
+    background: rgba(44, 95, 124, 0.1);
+    padding: 12px;
+    border-radius: 12px;
+}
+
+.timingInfo h4 {
+    font-size: 1.1rem;
+    font-weight: 700;
+    margin: 0;
+    color: #2c5f7c;
+}
+
+.timingInfo p {
+    margin: 5px 0 0;
+    color: #666;
+    font-size: 0.95rem;
+    font-weight: 500;
+}
+
+@keyframes fadeInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-30px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@media (max-width: 1024px) {
+    .headerSection h1 {
+        font-size: 2.5rem;
+    }
+
+    .contactContent {
+        padding: 60px 20px 30px 20px;
+    }
+
+    .contactGrid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    .headerSection h1 {
+        font-size: 2.2rem;
+    }
+
+    .headerSection p {
+        font-size: 1rem;
+        padding: 0 15px;
+    }
+
+    .contactContent {
+        padding: 40px 15px 20px 15px;
+    }
+
+    .contactGrid {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+
+    .contactCard {
+        padding: 30px 20px;
+    }
+
+    .timingSection {
+        padding: 30px 20px;
+        margin-top: 20px;
+    }
+
+    .timingSection h2 {
+        font-size: 1.8rem;
+        margin-bottom: 30px;
+    }
+
+    .timingGrid {
+        gap: 15px;
+    }
+
+    .timingItem {
+        padding: 20px;
+    }
+}
+
+@media (max-width: 480px) {
+    .headerSection h1 {
+        font-size: 1.8rem;
+    }
+
+    .iconWrapper {
+        width: 60px;
+        height: 60px;
+        margin-bottom: 20px;
+    }
+
+    .iconWrapper svg {
+        width: 28px;
+        height: 28px;
+    }
+
+    .contactCard h3 {
+        font-size: 1.3rem;
+    }
+
+    .detailValue {
+        font-size: 1rem;
+        word-break: break-all;
+    }
+
+    .timingItem {
+        flex-direction: row;
+        align-items: center;
+        text-align: left;
+    }
+
+    .timingInfo h4 {
+        font-size: 0.95rem;
+    }
+
+    .timingInfo p {
+        font-size: 0.85rem;
+    }
+}

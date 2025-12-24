@@ -2,6 +2,7 @@ import React from 'react'
 import style from "./footer.module.css"
 import QrcodeImage from '../../assets/footer/QRCode.png';
 import StoreImage from '../../assets/footer/storeimg.png';
+import { useNavigate } from 'react-router-dom';
 import { FaInstagram } from "react-icons/fa";
 import { FaFacebook } from "react-icons/fa";
 import { FaSquareXTwitter } from "react-icons/fa6";
@@ -10,6 +11,7 @@ import { FaPinterest } from "react-icons/fa";
 import { FaLinkedin } from "react-icons/fa";
 
 const Footer = () => {
+  const navigate = useNavigate();
   return (
     <div>
       <div className="">
@@ -19,12 +21,12 @@ const Footer = () => {
               {/* Column 1 */}
               <div className="col">
                 <ul className="list-unstyled">
-                  <li >About Us</li>
+                  <li style={{ cursor: 'pointer' }} onClick={() => navigate('/about')}>About Us</li>
                   <li className="mt-3">Sell With Us</li>
-                  <li className="mt-3">Coupons & Deals</li>
+                  <li className="mt-3" style={{ cursor: 'pointer' }} onClick={() => navigate('/couponspage')}>Coupons & Deals</li>
                   <li className="mt-3">Cancellation & Refund</li>
                   <li className="mt-3">Terms And Conditions</li>
-                  <li className="mt-3">Retail Stores</li>
+                  <li className="mt-3">Retail Store</li>
                   <li className="mt-3">Career</li>
                 </ul>
               </div>
@@ -34,7 +36,7 @@ const Footer = () => {
                 <ul className="list-unstyled">
                   <li>Media</li>
                   <li className="mt-3">Privacy Policy</li>
-                  <li className="mt-3">Reviews</li>
+                  <li className="mt-3" style={{ cursor: 'pointer' }} onClick={() => navigate('/reviews')}>Reviews</li>
                   <li className="mt-3">Blogs</li>
                   <li className="mt-3">Sitemap</li>
                   <li className="mt-3">Quotes</li>
@@ -47,8 +49,8 @@ const Footer = () => {
                   <li>Corporate Gifts</li>
                   <li className="mt-3">Franchise</li>
                   <li className="mt-3">FAQ</li>
-                  <li className="mt-3">Contact Us</li>
-                  <li className="mt-3">Whatsapp</li>
+                  <li className="mt-3" style={{ cursor: 'pointer' }} onClick={() => navigate('/contact')}>Contact Us</li>
+                  <li className="mt-3" style={{ cursor: 'pointer' }} onClick={() => window.open("https://wa.me/919876543210", "_blank")}>Whatsapp</li>
                   <li className="mt-3">Download App</li>
                 </ul>
               </div>
