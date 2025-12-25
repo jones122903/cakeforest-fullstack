@@ -22,20 +22,7 @@ const ScratchCard = ({ reward, onReveal, onScratchStart, isScratched = false }) 
     const width = canvas.width;
     const height = canvas.height;
 
-    // Create metallic silver gradient overlay
-    const gradient = ctx.createLinearGradient(0, 0, width, height);
-    gradient.addColorStop(0, '#0e4d65');
-    gradient.addColorStop(0.5, '#0e4d65');
-    gradient.addColorStop(1, '#0e4d65');
-    ctx.fillStyle = gradient;
-    ctx.fillRect(0, 0, width, height);
-    
-    // Add subtle shine effect
-    const shineGradient = ctx.createLinearGradient(0, 0, width, 0);
-    shineGradient.addColorStop(0, 'rgba(255, 255, 255, 0)');
-    shineGradient.addColorStop(0.5, 'rgba(255, 255, 255, 0.3)');
-    shineGradient.addColorStop(1, 'rgba(255, 255, 255, 0)');
-    ctx.fillStyle = shineGradient;
+    ctx.fillStyle = "#0e4d65";
     ctx.fillRect(0, 0, width, height);
     
     // Add text instructions with shadow
@@ -53,9 +40,14 @@ const ScratchCard = ({ reward, onReveal, onScratchStart, isScratched = false }) 
 
     const getBrushPos = (e) => {
       const rect = canvas.getBoundingClientRect();
+      const scaleX = canvas.width / rect.width;
+      const scaleY = canvas.height / rect.height;
       const clientX = e.touches ? e.touches[0].clientX : e.clientX;
       const clientY = e.touches ? e.touches[0].clientY : e.clientY;
-      return { x: clientX - rect.left, y: clientY - rect.top };
+      return { 
+        x: (clientX - rect.left) * scaleX, 
+        y: (clientY - rect.top) * scaleY 
+      };
     };
 
     const scratch = (x, y) => {
@@ -160,13 +152,14 @@ const ScratchCard = ({ reward, onReveal, onScratchStart, isScratched = false }) 
   return (
     <div style={{ 
       position: "relative", 
-      width: 280, 
-      height: 280, 
-      margin: "0 auto", 
+      width: "100%",
+      maxWidth: 280,
+      aspectRatio: "1/1",
+      height: "auto",      margin: "0 auto", 
       borderRadius: 16, 
       overflow: "visible", 
       userSelect: "none",
-      filter: isRevealed ? "drop-shadow(0 10px 30px rgba(255, 215, 0, 0.3))" : "none",
+      filter: isRevealed ? "drop-shadow(0 0px 0px rgba(25, 28, 0, 0.3))" : "none",
       transition: "filter 0.5s ease"
     }}>
         {/* Reward Layer (Underneath) */}
@@ -184,23 +177,23 @@ const ScratchCard = ({ reward, onReveal, onScratchStart, isScratched = false }) 
             borderRadius: 16,
             boxShadow: reward && reward.toLowerCase().includes("luck") 
               ? "0 4px 15px rgba(0,0,0,0.1)" 
-              : "0 8px 25px rgba(255, 215, 0, 0.4), inset 0 0 20px rgba(255, 215, 0, 0.1)",
+              : "0 6px 15px rgba(255, 215, 0, 0.15), inset 0 0 10px rgba(255, 215, 0, 0.1)",
             animation: isRevealed && !reward?.toLowerCase().includes("luck") ? "goldPulse 2s infinite" : "none"
         }}>
             <style>{`
               @keyframes goldPulse {
-                0%, 100% { box-shadow: 0 8px 25px rgba(255, 215, 0, 0.4), inset 0 0 20px rgba(255, 215, 0, 0.1); }
-                50% { box-shadow: 0 8px 35px rgba(255, 215, 0, 0.6), inset 0 0 30px rgba(255, 215, 0, 0.2); }
+                0%, 100% { box-shadow: 0 6px 15px rgba(255, 215, 0, 0.15), inset 0 0 10px rgba(255, 215, 0, 0.1); }
+                50% { box-shadow: 0 8px 20px rgba(191, 201, 16, 0.3), inset 0 0 15px rgba(255, 215, 0, 0.1); }
               }
             `}</style>
             <h4 style={{
               margin: 0, 
-              color: reward && reward.toLowerCase().includes("luck") ? "#999" : "#d4af37", 
+              color: reward && reward.toLowerCase().includes("luck") ? "#999" : "#5f666dff", 
               fontSize: "16px",
               fontWeight: "800",
               letterSpacing: "1px"
             }}>
-              {reward && reward.toLowerCase().includes("luck") ? "OH NO!" : "🎉 WINNER! 🎉"}
+              {reward && reward.toLowerCase().includes("luck") ? "OH NO!" : "CONGRATULATIONS!"}
             </h4>
             <h2 style={{
               color: reward && reward.toLowerCase().includes("luck") ? "#666" : "#0e4d65", 
@@ -213,8 +206,9 @@ const ScratchCard = ({ reward, onReveal, onScratchStart, isScratched = false }) 
             </h2>
             <p style={{
               fontSize: 12, 
-              color: reward && reward.toLowerCase().includes("luck") ? "#999" : "#48bb78",
+              color: reward && reward.toLowerCase().includes("luck") ? "#999" : "#6c757d",
               fontWeight: "600"
+              ,margin:"0px"
             }}>
               {reward && reward.toLowerCase().includes("luck") 
                 ? "Try again on your next order!" 
@@ -231,6 +225,8 @@ const ScratchCard = ({ reward, onReveal, onScratchStart, isScratched = false }) 
                     position: "absolute", 
                     top: 0, 
                     left: 0, 
+                    width: "100%",
+                    height: "100%",
                     zIndex: 2,
                     cursor: "pointer",
                     borderRadius: 16
