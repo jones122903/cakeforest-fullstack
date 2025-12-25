@@ -2,12 +2,15 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useSelector } from "react-redux";
 import { motion, AnimatePresence } from "framer-motion";
-import { Gift, Clock, CheckCircle, AlertCircle, Sparkles } from "lucide-react";
+import { Gift, Clock, CheckCircle, AlertCircle, Sparkles, User } from "lucide-react";
 import Topbar from "../components/topbar/topbar";
 import ScratchCard from "../components/ScratchCard/ScratchCard";
 import toast from "react-hot-toast";
 
+import { useNavigate } from "react-router-dom";
+
 const RewardsPage = () => {
+  const navigate = useNavigate();
   const [cards, setCards] = useState([]);
   const [filteredCards, setFilteredCards] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -97,9 +100,143 @@ const RewardsPage = () => {
 
   if (!user) {
     return (
-      <div style={{ textAlign: "center", padding: "100px 20px" }}>
+      <div style={{ background: "#fdf8f5", minHeight: "100vh" }}>
         <Topbar />
-        <h2>Please Login to see your rewards</h2>
+        <div style={{ 
+          display: "flex", 
+          flexDirection: "column", 
+          alignItems: "center", 
+          justifyContent: "center", 
+          padding: "60px 20px",
+          textAlign: "center"
+        }}>
+          <motion.div
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.5 }}
+            style={{
+              background: "white",
+              padding: "50px 30px",
+              borderRadius: "30px",
+              boxShadow: "0 20px 50px rgba(0,0,0,0.08)",
+              maxWidth: "500px",
+              width: "100%",
+              position: "relative",
+              overflow: "hidden"
+            }}
+          >
+            {/* Background Decoration */}
+            <div style={{
+              position: "absolute",
+              top: "-20px",
+              right: "-20px",
+              width: "100px",
+              height: "100px",
+              background: "#0e4d6510",
+              borderRadius: "50%",
+              zIndex: 0
+            }} />
+            
+            <div style={{ position: "relative", zIndex: 1 }}>
+              <motion.div
+                animate={{ 
+                  y: [0, -15, 0],
+                  rotate: [0, 5, -5, 0]
+                }}
+                transition={{ 
+                  duration: 4, 
+                  repeat: Infinity,
+                  ease: "easeInOut" 
+                }}
+                style={{ marginBottom: "30px" }}
+              >
+                <div style={{
+                  width: "100px",
+                  height: "100px",
+                  background: "#0e4d65",
+                  borderRadius: "25px",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  margin: "0 auto",
+                  boxShadow: "0 15px 30px rgba(14, 77, 101, 0.3)"
+                }}>
+                  <Gift size={50} color="white" />
+                </div>
+              </motion.div>
+
+              <h2 style={{ 
+                fontSize: "28px", 
+                fontWeight: "800", 
+                color: "#0e4d65",
+                marginBottom: "15px"
+              }}>
+                Unlock Your Exclusive Rewards
+              </h2>
+              
+              <p style={{ 
+                color: "#666", 
+                fontSize: "16px", 
+                lineHeight: "1.6",
+                marginBottom: "35px",
+                padding: "0 10px"
+              }}>
+                Login to view your earned scratch cards, reveal surprise gifts, and claim exciting discounts on your favorite cakes!
+              </p>
+
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={() => navigate("/login")}
+                style={{
+                  padding: "16px 40px",
+                  background: "#0e4d65",
+                  color: "white",
+                  border: "none",
+                  borderRadius: "18px",
+                  fontSize: "18px",
+                  fontWeight: "700",
+                  cursor: "pointer",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  gap: "10px",
+                  margin: "0 auto",
+                  boxShadow: "0 10px 25px rgba(14, 77, 101, 0.2)"
+                }}
+              >
+                <User size={20} />
+                Login Now
+              </motion.button>
+              
+              <div style={{ 
+                marginTop: "25px", 
+                display: "flex", 
+                justifyContent: "center", 
+                gap: "15px",
+                opacity: 0.6
+              }}>
+                <Sparkles size={16} color="#0e4d65" />
+                <Sparkles size={16} color="#0e4d65" />
+                <Sparkles size={16} color="#0e4d65" />
+              </div>
+            </div>
+          </motion.div>
+
+          <motion.p 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.5 }}
+            style={{ marginTop: "30px", color: "#888", fontSize: "14px" }}
+          >
+            New to Cake Forest? <span 
+              onClick={() => navigate("/login")} 
+              style={{ color: "#0e4d65", fontWeight: "700", cursor: "pointer", textDecoration: "underline" }}
+            >
+              Join us today
+            </span>
+          </motion.p>
+        </div>
       </div>
     );
   }
@@ -107,17 +244,29 @@ const RewardsPage = () => {
   return (
     <div style={{ background: "#fdf8f5", minHeight: "100vh" }}>
       <Topbar />
-      <div style={{ maxWidth: "1200px", margin: "0 auto", padding: "40px 20px" }}>
+      <div style={{ maxWidth: "1200px", margin: "0 auto", padding: "20px 20px" }}>
         
         <header style={{ textAlign: "center", marginBottom: "30px" }}>
           <motion.div
-            initial={{ scale: 0 }}
-            animate={{ scale: 1 }}
-            transition={{ type: "spring", stiffness: 260, damping: 20 }}
+                           animate={{ 
+                  y: [0, -5, 0],
+                  rotate: [0, 5, -5, 0]
+                }}
+                transition={{ 
+                  duration: 4, 
+                  repeat: Infinity,
+                  ease: "easeInOut" 
+                }}
           >
-            <Gift size={60} color="#0e4d65" style={{ marginBottom: "15px" }} />
+            <Gift size={60} color="#0e4d65" style={{ marginBottom: "5px" }} />
           </motion.div>
-          <h1 style={{ fontSize: "2.5rem", fontWeight: "800", color: "#0e4d65", margin: 0 }}>My Rewards</h1>
+         
+          <h1 style={{ 
+            fontSize: "clamp(1.8rem, 5vw, 2.5rem)", 
+            fontWeight: "800", 
+            color: "#0e4d65", 
+            margin: 0 
+          }}>My Rewards</h1>
           <p style={{ color: "#666", marginTop: "10px" }}>Scratch, Reveal & Claim your exclusive gifts!</p>
         </header>
 
@@ -131,7 +280,7 @@ const RewardsPage = () => {
             gap: "15px",
             flexWrap: "wrap"
           }}>
-            <div style={{ display: "flex", gap: "10px" }}>
+            <div style={{ display: "flex", gap: "10px", flexWrap: "wrap" }}>
               <button
                 onClick={() => setFilter('all')}
                 style={{
@@ -213,8 +362,8 @@ const RewardsPage = () => {
         ) : (
           <div style={{ 
             display: "grid", 
-            gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))", 
-            gap: "30px" 
+            gridTemplateColumns: "repeat(auto-fill, minmax(min(100%, 320px), 1fr))", 
+            gap: "20px" 
           }}>
             <AnimatePresence>
               {filteredCards.map((card) => (
@@ -250,7 +399,7 @@ const RewardCard = ({ card, onReveal, onScratchStart, onClaim }) => {
       style={{
         background: "white",
         borderRadius: "24px",
-        padding: "25px",
+        padding: "20px",
         boxShadow: "0 15px 35px rgba(0,0,0,0.08)",
         textAlign: "center",
         border: "1px solid #eee",
@@ -324,12 +473,12 @@ const RewardCard = ({ card, onReveal, onScratchStart, onClaim }) => {
         )}
 
         {card.status === 'CLAIMED' && (
-          <button 
+          <div 
             disabled 
             style={{
               width: "100%",
               padding: "14px",
-              background: "#0e4d65",
+              background: "#27ae60",
               color: "white",
               border: "none",
               borderRadius: "15px",
@@ -343,7 +492,7 @@ const RewardCard = ({ card, onReveal, onScratchStart, onClaim }) => {
             }}
           >
             ✓ Claimed Successfully!
-          </button>
+          </div>
         )}
 
         <div style={{ 

@@ -36,7 +36,7 @@ const AddProduct = () => {
     description: "",
     price: "",
     discount: "",
-    weight: "",
+    weight: [], // Changed to array for multiple selection
     availability: "available",
     stock: 0,
     images: [], // after upload → URL array
@@ -78,7 +78,7 @@ const AddProduct = () => {
           description: p.description,
           price: p.price,
           discount: p.discount,
-          weight: p.weight,
+          weight: Array.isArray(p.weight) ? p.weight : (p.weight ? [p.weight] : []),
           availability: p.availability,
           stock: p.stock,
           images: p.images.map((img) => ({ preview: img })), // preview only
@@ -164,7 +164,7 @@ const AddProduct = () => {
     if (!formData.cakeName.trim()) return "Cake Name is required";
     if (!formData.flavor) return " Select a Flavor";
     if (!formData.category) return "Select a Category";
-    if (!formData.weight) return "Select a Weight";
+    if (formData.weight.length === 0) return "Select at least one Weight";
     if (!formData.price) return "Price is required";
     if (formData.price <= 0) return "Price must be greater than 0";
     if (formData.images.length === 0) return "Please upload at least one image";
@@ -177,7 +177,7 @@ const AddProduct = () => {
       const form = new FormData();
       form.append("oldImage", oldImageName);
       form.append("cakeName", formData.cakeName);
-      form.append("weight", formData.weight); // 🔥 REQUIRED
+      form.append("weight", formData.weight[0] || "default"); // Use first weight for folder naming
       form.append("image", newFile);
 
       const res = await axios.put(`${api_url}/update-image`, form, {
@@ -242,7 +242,7 @@ const AddProduct = () => {
     const imgForm = new FormData();
 
     imgForm.append("cakeName", formData.cakeName);
-    imgForm.append("weight", formData.weight); // 🔥 ADD HERE
+    imgForm.append("weight", formData.weight[0] || "default"); // Use first weight for folder naming
 
     formData.images.forEach((imgObj) => {
       imgForm.append("images", imgObj.file);
@@ -276,7 +276,7 @@ const AddProduct = () => {
         if (newFiles.length > 0) {
           const imgForm = new FormData();
           imgForm.append("cakeName", formData.cakeName);
-          imgForm.append("weight", formData.weight); // 🔥 ADD HERE
+          imgForm.append("weight", formData.weight[0] || "default"); // Use first weight for folder naming
 
           newFiles.forEach((i) => imgForm.append("images", i.file));
 
@@ -483,21 +483,22 @@ const AddProduct = () => {
                     <div className={styles.floatingGroup}>
                       <TextField
                         select
-                        label="Weight"
+                        label="Weights (Select Multiple)"
                         name="weight"
                         value={formData.weight}
-                        onChange={handleInputChange}
+                        onChange={(e) => {
+                          const value = e.target.value;
+                          setFormData({
+                            ...formData,
+                            weight: typeof value === 'string' ? value.split(',') : value,
+                          });
+                        }}
                         fullWidth
                         variant="outlined"
-                        // SelectProps={{
-                        //   displayEmpty: true,
-                        //   renderValue: (selected) => {
-                        //     if (selected === "") {
-                        //       return <span style={{ color: "#888" }}>Select Weight</span>;
-                        //     }
-                        //     return selected + " Kg";
-                        //   },
-                        // }}
+                        SelectProps={{
+                          multiple: true,
+                          renderValue: (selected) => selected.join(', ') + " Kg"
+                        }}
                         InputProps={{
                           startAdornment: (
                             <InputAdornment position="start">
@@ -506,9 +507,6 @@ const AddProduct = () => {
                           ),
                         }}
                       >
-                        <MenuItem value="" selected>
-                          Select Weight
-                        </MenuItem>
                         <MenuItem value="0.5">0.5 Kg</MenuItem>
                         <MenuItem value="1">1 Kg</MenuItem>
                         <MenuItem value="1.5">1.5 Kg</MenuItem>

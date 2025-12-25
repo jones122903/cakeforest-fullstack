@@ -5,6 +5,10 @@ import { Heart, MapPin, Smile, Truck } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 // Import cake images
+import { HiOutlineInformationCircle } from "react-icons/hi";
+import { BiInfoCircle } from "react-icons/bi";
+
+
 import redVelvetMain from "../../assets/images/cakes/red_velvet_main.png";
 import chocolateCake from "../../assets/images/cakes/chocolate_cake.png";
 import strawberryCake from "../../assets/images/cakes/strawberry_cake.png";
@@ -21,24 +25,17 @@ const [selectedVariants, setSelectedVariants] = useState([]);
   const [nameOnCake, setNameOnCake] = useState("");
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
 
-  const standardWeights = ["0.5 Kg", "1 Kg", "1.5 Kg", "2 Kg", "3 Kg"];
+  const standardWeights = ["0.5 Kg", "1 Kg", "1.5 Kg", "2 Kg", "2.5 Kg", "3 Kg"];
 
-  const availableWeight = products?.weight
-    ? products.weight.includes("Kg")
-      ? products.weight
-      : `${products.weight} Kg`
-    : "0.5 Kg";
+  // Normalize weights from backend (handle both array and string cases)
+  const productAvailableWeights = Array.isArray(products?.weight) 
+    ? products.weight.map(w => w.toString().includes("Kg") ? w : `${w} Kg`)
+    : (products?.weight ? [products.weight.toString().includes("Kg") ? products.weight : `${products.weight} Kg`] : []);
 
-  // Set initial weight to the available one
+  // Set initial weight to the first available one
   useEffect(() => {
-    if (products?.weight) {
-      // Normalize: add " Kg" if missing
-      const w =
-        products.weight.toString().includes("Kg") ||
-        products.weight.toString().includes("kg")
-          ? products.weight
-          : `${products.weight} Kg`;
-      setSelectedWeight(w);
+    if (productAvailableWeights.length > 0) {
+      setSelectedWeight(productAvailableWeights[0]);
     }
   }, [products]);
 
@@ -113,23 +110,7 @@ const variantsTotal = selectedVariants.reduce(
     },
   ];
 
-  useEffect(() => {
-  if (products?.weight) {
-    const normalizedWeight = products.weight
-      .toString()
-      .toLowerCase()
-      .replace("kg", "")
-      .trim(); // "0.5"
 
-    const defaultWeight = standardWeights.find(w =>
-      w.toLowerCase().includes(normalizedWeight)
-    );
-
-    if (defaultWeight) {
-      setSelectedWeight(defaultWeight); // ✅ default selected
-    }
-  }
-}, [products]);
 
 
   const cakeImages = [
@@ -287,21 +268,26 @@ const variantsTotal = selectedVariants.reduce(
                     cursor: "pointer",
                   }}
                 >
-                  Serving Info ⓘ
+                  Serving Info <BiInfoCircle size={20}/>
                 </span>
               </div>
 
               <div className="weights-container">
-  {standardWeights.map((weight) => (
-    <button
-      key={weight}
-      className={`weight-btn ${selectedWeight === weight ? "active" : ""}`}
-      onClick={() => setSelectedWeight(weight)}
-    >
-      {weight}
-    </button>
-  ))}
-</div>
+                {standardWeights.map((weight) => {
+                  const isAvailable = productAvailableWeights.includes(weight);
+                  return (
+                    <button
+                      key={weight}
+                      disabled={!isAvailable}
+                      className={`weight-btn ${selectedWeight === weight ? "active" : ""} ${!isAvailable ? "unavailable" : ""}`}
+                      onClick={() => isAvailable && setSelectedWeight(weight)}
+                    >
+                      {weight}
+                      {!isAvailable && <span className="unavailable-text ">N/A</span>}
+                    </button>
+                  );
+                })}
+              </div>
 
             </div>
 
