@@ -1,6 +1,7 @@
-.newforget-div{
-  overflow:hidden !important;
+.newforget-div {
+  overflow: hidden !important;
 }
+
 .newforgetbox {
   max-width: 470px;
   width: 100%;
@@ -9,16 +10,19 @@
   background-color: #fff;
   box-shadow: rgba(14, 30, 37, 0.12) 0px 2px 4px 0px, rgba(14, 30, 37, 0.32) 0px 2px 16px 0px;
 }
+
 .disabled-btn {
-  background-color: #a72936; /* lighter red / faded color */
+  background-color: #a72936;
+  /* lighter red / faded color */
   color: #fff;
   cursor: not-allowed;
   opacity: 0.7;
   transition: 0.3s ease;
 }
-.newforgetcard{
 
-border-top-width: 7px;
+.newforgetcard {
+
+  border-top-width: 7px;
   border-bottom-width: 0px;
   border-right-width: 0px;
   border-left-width: 0px;
@@ -37,6 +41,7 @@ border-top-width: 7px;
   border: 1px solid #ddd;
   box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1);
 }
+
 .colored-toast-error {
   background-color: white !important;
   color: black !important;
@@ -45,11 +50,7 @@ border-top-width: 7px;
 }
 
 .colored-toast.swal2-icon-success {
-  background-color: rgb(10, 185, 10) ;
-}
-
-.colored-toast.swal2-icon-error {
-  /* background-color: #f27474 !important; */
+  background-color: rgb(10, 185, 10);
 }
 
 .colored-toast.swal2-icon-warning {
@@ -57,11 +58,11 @@ border-top-width: 7px;
 }
 
 .colored-toast.swal2-icon-info {
-  background-color: #3fc3ee !important;
+  background-color: #0e4d65 !important;
 }
 
 .colored-toast.swal2-icon-question {
-  background-color: #87adbd !important;
+  background-color: #0e4d65 !important;
 }
 
 .colored-toast .swal2-title {
@@ -73,7 +74,7 @@ border-top-width: 7px;
 }
 
 .colored-toast .swal2-html-container {
-  color:black;
+  color: black;
 }
 
 
@@ -84,13 +85,15 @@ border-top-width: 7px;
   height: 3px;
   background: var(--progress-color, rgb(5, 163, 5)) !important;
 }
+
 .swal2-timer-progress-bar.custom-progress-bar-error {
   height: 3px;
   background: var(--progress-color, rgb(243, 12, 12)) !important;
 }
+
 .swal2-timer-progress-bar.custom-progress-bar-updated {
   height: 3px;
-  background:#3fc3ee !important;
+  background: #0e4d65 !important;
 }
 
 
@@ -110,20 +113,20 @@ border-top-width: 7px;
 
 }
 
-.newforget-input:focus{
+.newforget-input:focus {
   border-color: #d7091a;
-  box-shadow: 0 0 0 0rem rgba(13,110,253,.25);
+  box-shadow: 0 0 0 0rem rgba(13, 110, 253, .25);
 }
 
-.newforgot-btn2:hover{
-   color: black !important;
+.newforgot-btn2:hover {
+  color: black !important;
 }
 
 
 
 
 
-.newforget-btn{
+.newforget-btn {
   border: none;
   border-radius: 8px;
   font-weight: 600;
@@ -139,13 +142,13 @@ border-top-width: 7px;
 
 @media (max-width:347px) {
 
-  .newforget-btn{
-  border: none;
-  border-radius: 5px;
-  font-weight: 600;
-  width: 100%;
-  padding-top: 7px;
-  padding-bottom: 6px;
-}
+  .newforget-btn {
+    border: none;
+    border-radius: 5px;
+    font-weight: 600;
+    width: 100%;
+    padding-top: 7px;
+    padding-bottom: 6px;
+  }
 
 }

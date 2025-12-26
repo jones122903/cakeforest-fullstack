@@ -5,6 +5,9 @@ import "../../admin/utils/showToast.css";
 export const showHotToast = (type = "success", message = "") => {
   const isSuccess = type === "success";
 
+  // Dismiss all existing toasts first to prevent duplicates
+  toast.dismiss();
+
   toast.custom(
     (t) => (
       <div

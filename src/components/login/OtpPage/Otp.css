@@ -7,7 +7,7 @@
   box-shadow: rgba(14, 30, 37, 0.12) 0px 2px 4px 0px, rgba(14, 30, 37, 0.32) 0px 2px 16px 0px;
 }
 
-.otpcard{
+.otpcard {
   border-top-width: 7px;
   border-bottom-width: 0px;
   border-right-width: 0px;
@@ -25,11 +25,12 @@
   border: 2px solid #a7a7a7;
   width: 48px;
   z-index: 1;
-   
+
   border-radius: 8px;
   /* padding-right: 5px; */
   outline: none;
-  text-align: center; /* centers text horizontally */
+  text-align: center;
+  /* centers text horizontally */
   font-size: 20px;
   transition: all 0.25s ease;
   margin-top: 20px;
@@ -37,22 +38,26 @@
 
 .otp-input:focus {
   height: 48px;
-  border: 2px solid #5336AC;
+  border: 2px solid #0e4d65 !important;
   width: 48px;
   z-index: 1;
   /* padding-right: 5px; */
   transform: translateY(-3px);
   border-radius: 8px;
   outline: none;
-  border-color: #5336AC; /* or #cf2030 if you want same red shade */
-  box-shadow: 0 0 4px rgba(77, 36, 239, 0.5); /* optional glow effect */
+  border-color: #0e4d65 !important;
+  /* or #cf2030 if you want same red shade */
+  box-shadow: 0 0 4px rgba(14, 77, 101, 0.5);
+  /* optional glow effect */
 }
-.resend{
+
+.resend {
   text-decoration: none;
   cursor: pointer;
 }
-.resend:hover{
-  text-decoration: underline ;
+
+.resend:hover {
+  text-decoration: underline;
   cursor: pointer;
 }
 
@@ -64,7 +69,7 @@
     padding-left: 10px;
     margin-right:10px ;
 } */
-    /* .otp-input:focus{
+/* .otp-input:focus{
     border: none;
     border-bottom:3px solid #CF2030 ;
     width: 30px;
@@ -77,8 +82,8 @@
   box-shadow: 0 0 0 0rem rgba(13,110,253,.25);
 } */
 
-.otp-btn2:hover{
-   color: black !important;
+.otp-btn2:hover {
+  color: black !important;
 }
 
 
@@ -89,6 +94,7 @@
   border: 1px solid #ddd;
   box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1);
 }
+
 .colored-toast-error {
   background-color: white !important;
   color: black !important;
@@ -96,18 +102,14 @@
   box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1);
 }
 
-.custom-toast-margin{
+.custom-toast-margin {
 
   margin-top: 80px !important;
 
 }
 
 .colored-toast.swal2-icon-success {
-  background-color: rgb(10, 185, 10) ;
-}
-
-.colored-toast.swal2-icon-error {
-  /* background-color: #f27474 !important; */
+  background-color: rgb(10, 185, 10);
 }
 
 .colored-toast.swal2-icon-warning {
@@ -115,11 +117,11 @@
 }
 
 .colored-toast.swal2-icon-info {
-  background-color: #3fc3ee !important;
+  background-color: #0e4d65 !important;
 }
 
 .colored-toast.swal2-icon-question {
-  background-color: #87adbd !important;
+  background-color: #0e4d65 !important;
 }
 
 .colored-toast .swal2-title {
@@ -131,7 +133,7 @@
 }
 
 .colored-toast .swal2-html-container {
-  color:black;
+  color: black;
 }
 
 
@@ -140,18 +142,20 @@
 /* Default progress bar style */
 .swal2-timer-progress-bar.custom-progress-bar {
   height: 3px;
-  background: var(--progress-color,  rgb(5, 163, 5)) !important;
+  background: var(--progress-color, rgb(5, 163, 5)) !important;
 }
+
 .swal2-timer-progress-bar.custom-progress-bar-error {
   height: 3px;
   background: var(--progress-color, rgb(243, 12, 12)) !important;
 }
-.custom-progress-bar-error{
-background-color: red !important;
+
+.custom-progress-bar-error {
+  background-color: red !important;
 }
 
 
-.otp-btn{
+.otp-btn {
   border: none;
   border-radius: 8px;
   font-weight: 600;
@@ -167,48 +171,52 @@ background-color: red !important;
 
 @media (max-width:347px) {
 
-  .otp-btn{
-  border: none;
-  border-radius: 5px;
-  font-weight: 600;
-  width: 100%;
-  padding-top: 7px;
-  padding-bottom: 6px;
-}
-.otp-input {
-  height: 40px;
-  background-color: white;
-  border: 2px solid #a7a7a7;
-  width: 40px;
-  z-index: 1;
-  padding-right: 10px;
-  border-radius: 8px;
-  outline: none;
-  text-align: center; /* centers text horizontally */
-  font-size: 20px;
-  transition: all 0.25s ease;
-  margin-top: 20px;
-}
+  .otp-btn {
+    border: none;
+    border-radius: 5px;
+    font-weight: 600;
+    width: 100%;
+    padding-top: 7px;
+    padding-bottom: 6px;
+  }
 
-.otp-input:focus {
-  height: 40px;
-  border: 2px solid #cf2030;
-  width: 40px;
-  z-index: 1;
-  padding-right: 10px;
-  transform: translateY(-3px);
-  border-radius: 8px;
-  outline: none;
-  border-color: #CF2030; /* or #cf2030 if you want same red shade */
-  box-shadow: 0 0 4px rgba(207, 32, 48, 0.5); /* optional glow effect */
-}
+  .otp-input {
+    height: 40px;
+    background-color: white;
+    border: 2px solid #a7a7a7;
+    width: 40px;
+    z-index: 1;
+    padding-right: 10px;
+    border-radius: 8px;
+    outline: none;
+    text-align: center;
+    /* centers text horizontally */
+    font-size: 20px;
+    transition: all 0.25s ease;
+    margin-top: 20px;
+  }
+
+  .otp-input:focus {
+    height: 40px;
+    border: 2px solid #cf2030;
+    width: 40px;
+    z-index: 1;
+    padding-right: 10px;
+    transform: translateY(-3px);
+    border-radius: 8px;
+    outline: none;
+    border-color: #CF2030;
+    /* or #cf2030 if you want same red shade */
+    box-shadow: 0 0 4px rgba(207, 32, 48, 0.5);
+    /* optional glow effect */
+  }
 
 }
 
 @media (max-width:600px) {
-  
-.custom-toast-margin{
-  margin-top: 60px !important;
-}
+
+  .custom-toast-margin {
+    margin-top: 60px !important;
+  }
 
 }

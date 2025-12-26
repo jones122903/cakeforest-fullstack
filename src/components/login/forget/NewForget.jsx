@@ -7,7 +7,7 @@ import Swal from "sweetalert2";
 import { MdOutlineKeyboardBackspace } from "react-icons/md";
 import axios from "axios";
 
-  const NewForget = () => {
+const NewForget = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const api_url = import.meta.env.VITE_API_URL
@@ -23,7 +23,7 @@ import axios from "axios";
     showOtp: false,
   });
 
-  console.log(api_url,"formdata");
+  console.log(api_url, "formdata");
 
   // Email Handler
   const handleEmailChange = (e) => {
@@ -38,44 +38,44 @@ import axios from "axios";
   };
 
   // Sweetalert Toast
-const showToast = async (icon, title) => {
-  let timerInterval;
+  const showToast = async (icon, title) => {
+    let timerInterval;
 
-  const Toast = Swal.mixin({
-    toast: true,
-    position: "top-right",
-    showConfirmButton: false,
-    timer: 2500,
-    timerProgressBar: true,
+    const Toast = Swal.mixin({
+      toast: true,
+      position: "top-right",
+      showConfirmButton: false,
+      timer: 2500,
+      timerProgressBar: true,
 
-    // Progress bar color change based on success / error
-    didOpen: (toast) => {
-      // change progress bar color
-      const progressBar = toast.querySelector(".swal2-timer-progress-bar");
-      progressBar.style.background =
-        icon === "success" ? "green" : "red";
+      // Progress bar color change based on success / error
+      didOpen: (toast) => {
+        // change progress bar color
+        const progressBar = toast.querySelector(".swal2-timer-progress-bar");
+        progressBar.style.background =
+          icon === "success" ? "green" : "red";
 
-      // Pause on hover
-      toast.addEventListener("mouseenter", () => {
-        Swal.stopTimer();
-      });
+        // Pause on hover
+        toast.addEventListener("mouseenter", () => {
+          Swal.stopTimer();
+        });
 
-      // Resume on mouse leave
-      toast.addEventListener("mouseleave", () => {
-        Swal.resumeTimer();
-      });
-    },
+        // Resume on mouse leave
+        toast.addEventListener("mouseleave", () => {
+          Swal.resumeTimer();
+        });
+      },
 
-    // Custom popup color classes
-    customClass: {
-      popup: icon === "success" ? "colored-toast" : "colored-toast-error",
-    },
+      // Custom popup color classes
+      customClass: {
+        popup: icon === "success" ? "colored-toast" : "colored-toast-error",
+      },
 
-    iconColor: icon === "success" ? "green" : "red",
-  });
+      iconColor: icon === "success" ? "green" : "red",
+    });
 
-  await Toast.fire({ icon, title });
-};
+    await Toast.fire({ icon, title });
+  };
 
   // Handle "Confirm" Without Integration
   const handleConfirmClick = async (e) => {
@@ -99,30 +99,30 @@ const showToast = async (icon, title) => {
     }
 
     // 🔥 FRONTEND-ONLY — simulate delay
-     try {
-    // 🔥 Backend API
-    const res = await axios.post(`${api_url}/forgot-password`, {
-      email: value,
-    });
-
-    await showToast("success", res.data.message || "OTP sent successfully");
-
-     
-    navigate("/otp", {
-      state: {
+    try {
+      // 🔥 Backend API
+      const res = await axios.post(`${api_url}/forgot-password`, {
         email: value,
-        otp_expires: res.data.otp_expires, // backend must return expiry
-      },
-    });
+      });
 
-  } catch (error) {
-    await showToast(
-      "error",
-      error.response?.data?.message || "Something went wrong"
-    );
-  }
+      await showToast("success", res.data.message || "OTP sent successfully");
 
-  setLoading(false);
+
+      navigate("/otp", {
+        state: {
+          email: value,
+          otp_expires: res.data.otp_expires, // backend must return expiry
+        },
+      });
+
+    } catch (error) {
+      await showToast(
+        "error",
+        error.response?.data?.message || "Something went wrong"
+      );
+    }
+
+    setLoading(false);
   };
 
   const goToLogin = () => {
@@ -140,7 +140,7 @@ const showToast = async (icon, title) => {
             {/* Header */}
             <div className="text-center my-4">
               <div
-                className="d-flex align-items-center justify-content-center voilet-color-bg rounded-circle mx-auto mb-3"
+                className="d-flex align-items-center justify-content-center peacock-color-bg rounded-circle mx-auto mb-3"
                 style={{ width: "60px", height: "60px" }}
               >
                 <RiShieldUserLine color="white" size={30} />
@@ -167,11 +167,11 @@ const showToast = async (icon, title) => {
                       display: "none",
                     },
                     "& .MuiOutlinedInput-root.Mui-focused fieldset": {
-                      borderColor: "#5336AC",
+                      borderColor: "#0e4d65",
                       borderWidth: "2px",
                     },
                     "& .MuiInputLabel-root.Mui-focused": {
-                      color: "#5336AC",
+                      color: "#0e4d65",
                     },
                   }}
                 />
@@ -180,7 +180,7 @@ const showToast = async (icon, title) => {
               {/* Button */}
               <button
                 type="button"
-                className="text-center newforget-btn text-white mt-4 voilet-color-bg d-flex align-items-center justify-content-center"
+                className="text-center newforget-btn text-white mt-4 peacock-color-bg d-flex align-items-center justify-content-center"
                 onClick={handleConfirmClick}
                 disabled={loading}
                 style={{

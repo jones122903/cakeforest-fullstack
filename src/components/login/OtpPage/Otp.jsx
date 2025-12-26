@@ -171,7 +171,7 @@ const handleResendClick = async () => {
             {/* Header */}
             <div className="text-center my-4">
               <div
-                className="d-flex align-items-center justify-content-center voilet-color-bg rounded-circle mx-auto mb-3"
+                className="d-flex align-items-center justify-content-center peacock-color-bg rounded-circle mx-auto mb-3"
                 style={{ width: "60px", height: "60px" }}
               >
                 <RiShieldUserLine color="white" size={30} />
@@ -206,7 +206,7 @@ const handleResendClick = async () => {
 
               <button
                 type="button"
-                className="text-center otp-btn voilet-color-bg text-white mt-4"
+                className="text-center otp-btn peacock-color-bg text-white mt-4"
                 onClick={handleConfirmClick}
               >
                 Verify code

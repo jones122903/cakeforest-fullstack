@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styles from './LoginModal.module.css';
 import { FcGoogle } from 'react-icons/fc';
-import { MdClose} from 'react-icons/md';
+import { MdClose } from 'react-icons/md';
 import { LuLockKeyhole } from "react-icons/lu";
 import { LuMail } from "react-icons/lu";
 import { useNavigate } from 'react-router-dom';
@@ -10,86 +10,102 @@ import axios from 'axios';
 import { useDispatch } from 'react-redux';
 import { useGoogleLogin } from "@react-oauth/google";
 import Swal from "sweetalert2";
+import { showHotToast } from "../../admin/utils/showToast";
 
 
 const LoginModal = ({ isOpen, onClose }) => {
-   const navigate = useNavigate();
-   const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
 
- const [name, setName] = useState('');
+  const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isSignUp, setIsSignUp] = useState(false);
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
 
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = 'hidden';
+      document.documentElement.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+      document.documentElement.style.overflow = '';
+    }
+
+    return () => {
+      document.body.style.overflow = '';
+      document.documentElement.style.overflow = '';
+    };
+  }, [isOpen]);
+
 
   const showToast = async (icon, title) => {
     let timerInterval;
-  
+
     const Toast = Swal.mixin({
       toast: true,
       position: "top-right",
       showConfirmButton: false,
       timer: 2500,
       timerProgressBar: true,
-  
+
       // Progress bar color change based on success / error
       didOpen: (toast) => {
         // change progress bar color
         const progressBar = toast.querySelector(".swal2-timer-progress-bar");
         progressBar.style.background =
           icon === "success" ? "green" : "red";
-  
+
         // Pause on hover
         toast.addEventListener("mouseenter", () => {
           Swal.stopTimer();
         });
-  
+
         // Resume on mouse leave
         toast.addEventListener("mouseleave", () => {
           Swal.resumeTimer();
         });
       },
-  
+
       // Custom popup color classes
       customClass: {
         popup: icon === "success" ? "colored-toast" : "colored-toast-error",
       },
-  
+
       iconColor: icon === "success" ? "green" : "red",
     });
-  
+
     await Toast.fire({ icon, title });
   };
-  
-const handleGoogleLogin = useGoogleLogin({
-  onSuccess: async (tokenResponse) => {
-    try {
-      const res = await axios.post(`${import.meta.env.VITE_API_URL}/auth/google`, {
-        access_token: tokenResponse.access_token
-      });
 
-      // Backend gives you user + JWT
-      dispatch(setToken({
-        token: res.data.token,
-        user: res.data.user
-      }));
+  const handleGoogleLogin = useGoogleLogin({
+    onSuccess: async (tokenResponse) => {
+      try {
+        const res = await axios.post(`${import.meta.env.VITE_API_URL}/auth/google`, {
+          access_token: tokenResponse.access_token
+        });
 
-      showToast("success", "Login successful!");
-      onClose();
-      navigate("/details");
-    } catch (error) {
-      console.error(error);
-      showToast("error", "Google Login Failed");
-    }
-  },
-  onError: () => {
-    showToast("error", "Google Login Error");
-  },
-});
+        // Backend gives you user + JWT
+        dispatch(setToken({
+          token: res.data.token,
+          user: res.data.user
+        }));
 
-  
+        showToast("success", "Login successful!");
+        onClose();
+        navigate("/details");
+      } catch (error) {
+        console.error(error);
+        showToast("error", "Google Login Failed");
+      }
+    },
+    onError: () => {
+      showToast("error", "Google Login Error");
+    },
+  });
+
+
 
   if (!isOpen) return null;
 
@@ -101,29 +117,29 @@ const handleGoogleLogin = useGoogleLogin({
   const validateForm = () => {
     const newErrors = {};
 
-     if (isSignUp && !name.trim()) {
+    if (isSignUp && !name.trim()) {
       newErrors.name = 'Name is required';
     }
-    
+
     if (!email) {
       newErrors.email = 'Email is required';
     } else if (!validateEmail(email)) {
       newErrors.email = 'Please enter a valid email';
     }
-    
+
     if (!password) {
       newErrors.password = 'Password is required';
     } else if (password.length < 6) {
       newErrors.password = 'Password must be at least 6 characters';
     }
-    
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     if (!validateForm()) {
       return;
     }
@@ -133,51 +149,62 @@ const handleGoogleLogin = useGoogleLogin({
     try {
       const API_URL = import.meta.env.VITE_API_URL;
       const endpoint = isSignUp ? '/register' : '/login';
-      
-      const payload = isSignUp 
+
+      const payload = isSignUp
         ? { name, email, password }
         : { email, password };
 
       const response = await axios.post(`${API_URL}${endpoint}`, payload);
-      console.log("ghjkl;lkjhghjkjhghjk",response)
+      console.log("ghjkl;lkjhghjkjhghjk", response)
 
       // Success response
       if (response.data.success) {
         // Store token and user in Redux
-       dispatch(setToken({
-        token: response.data.token,
-        user: {
-          id: response.data.user._id,
-          name: response.data.user.name,
-          email: response.data.user.email
-        }
-      }));
+        dispatch(setToken({
+          token: response.data.token,
+          user: {
+            id: response.data.user._id,
+            name: response.data.user.name,
+            email: response.data.user.email
+          }
+        }));
 
 
         // Show success message
-        showToast("success", isSignUp ? 'Account created successfully!' : 'Login successful!');
-        
-        // Reset form
-        setEmail('');
-        setPassword('');
-        setName('');
-        setErrors({});
-        
-        // Close modal
-        onClose();
+        if (isSignUp) {
+          // Dismiss any existing toasts first
+          showHotToast("success", 'Account created successfully! Please login to continue.');
 
-        // Navigate to details page
-        navigate("/details");
-        // goToChapter()
+          // Reset form
+          setEmail('');
+          setPassword('');
+          setName('');
+          setErrors({});
+
+          // Switch to login mode
+          setIsSignUp(false);
+        } else {
+          showToast("success", 'Login successful!');
+
+          // Reset form
+          setEmail('');
+          setPassword('');
+          setName('');
+          setErrors({});
+
+          // Close modal and navigate for login
+          onClose();
+          navigate("/details");
+        }
       }
     } catch (error) {
       setLoading(false);
-      
+
       // Handle errors
       if (error.response) {
         // Server responded with error
         const errorMsg = error.response.data.message || 'An error occurred';
-        
+
         if (error.response.status === 401) {
           setErrors({ password: 'Invalid email or password' });
         } else if (error.response.status === 409) {
@@ -192,13 +219,13 @@ const handleGoogleLogin = useGoogleLogin({
         // Other errors
         showToast("error", 'An error occurred. Please try again.');
       }
-      
+
       console.error('Login/Signup error:', error);
     } finally {
       setLoading(false);
     }
   };
-  
+
 
 
 
@@ -234,7 +261,7 @@ const handleGoogleLogin = useGoogleLogin({
             </p>
 
             <form onSubmit={handleSubmit} className={styles.form}>
-             {isSignUp && <div className={styles.inputGroup}>
+              {isSignUp && <div className={styles.inputGroup}>
                 <label htmlFor="name">Name</label>
                 <div className={styles.inputWrapper}>
                   <LuMail className={styles.inputIcon} />
@@ -303,11 +330,11 @@ const handleGoogleLogin = useGoogleLogin({
                 type="submit"
                 className={styles.continueButton}
                 disabled={loading}
-                
+
               >
                 {loading ? 'PLEASE WAIT...' : isSignUp ? 'SIGN UP' : 'CONTINUE'}
               </button>
-              
+
             </form>
 
             <div className={styles.divider}>
@@ -326,7 +353,7 @@ const handleGoogleLogin = useGoogleLogin({
             <div className={styles.footer}>
               <p className={`mb-0 ${styles.toggleText}`}>
                 {isSignUp ? 'Already have an account?' : "Don't have an account?"}{' '}
-                
+
                 <button
                   type="button"
                   onClick={() => {
