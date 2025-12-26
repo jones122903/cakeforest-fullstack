@@ -55,23 +55,69 @@ const CustomerDetails = () => {
   }, [token, navigate]);
 
   const incomingOrderDetails = location.state?.orderDetails;
-  
-  console.log("Incoming Order Details:", incomingOrderDetails);
-  const orderDetails = {
-    _id: incomingOrderDetails?._id,
-    cakeName: incomingOrderDetails?.cakeName || "Red Velvet Bliss",
-    cakePrice: incomingOrderDetails?.cakePrice || 0,
-    variant: incomingOrderDetails?.variant || "Classic",
-    weight: incomingOrderDetails?.weight || "1 kg",
-    addons: incomingOrderDetails?.addons || [],
-    price: incomingOrderDetails?.grandTotal || incomingOrderDetails?.productTotal || 0,
-    deliveryCharge: 50,
-    quantity: incomingOrderDetails?.quantity || 1,
-  };
+  const isCartOrder = Array.isArray(incomingOrderDetails?.items);
 
-  const subtotal = orderDetails.price; // Already includes quantity from previous page
-  const discount = appliedCoupon ? appliedCoupon.discountAmount : 0;
-  const totalAmount = subtotal + orderDetails.deliveryCharge - discount;
+  const orderDetails = isCartOrder
+  ? {
+      // 🛒 CART ORDER
+      items: incomingOrderDetails.items.map((item) => ({
+        cakeName: item.productName,
+        weight: item.weight,
+        quantity: item.quantity,
+        addons: item.addons || [],
+        price: item.itemTotal,
+      })),
+      deliveryCharge: incomingOrderDetails.deliveryFee || 50,
+      totalAmount: incomingOrderDetails.grandTotal,
+    }
+  : {
+      // 🧁 SINGLE BUY NOW
+      items: [
+        {
+          cakeName: incomingOrderDetails?.cakeName,
+          weight: incomingOrderDetails?.weight,
+          quantity: incomingOrderDetails?.quantity || 1,
+          addons: incomingOrderDetails?.addons || [],
+          price:
+            incomingOrderDetails?.grandTotal ||
+            incomingOrderDetails?.productTotal ||
+            0,
+        },
+      ],
+      deliveryCharge: 50,
+      totalAmount:
+        incomingOrderDetails?.grandTotal ||
+        incomingOrderDetails?.productTotal ||
+        0,
+    };
+
+    console.log(orderDetails,"orderdetail")
+  
+  
+  // const orderDetails = {
+  //   _id: incomingOrderDetails?._id,
+  //   cakeName: incomingOrderDetails?.cakeName || "Red Velvet Bliss",
+  //   cakePrice: incomingOrderDetails?.cakePrice || 0,
+  //   variant: incomingOrderDetails?.variant || "Classic",
+  //   weight: incomingOrderDetails?.weight || "1 kg",
+  //   addons: incomingOrderDetails?.addons || [],
+  //   price: incomingOrderDetails?.grandTotal || incomingOrderDetails?.productTotal || 0,
+  //   deliveryCharge: 50,
+  //   quantity: incomingOrderDetails?.quantity || 1,
+  // };
+
+ const subtotal = orderDetails.items.reduce(
+  (sum, item) => sum + Number(item.price || 0),
+  0
+);
+
+const discount = appliedCoupon
+  ? Number(appliedCoupon.discountAmount || 0)
+  : 0;
+
+const totalAmount =
+  subtotal + Number(orderDetails.deliveryCharge || 0) - discount;
+
 
   useEffect(() => {
     const fetchUserDetails = async () => {
@@ -139,6 +185,31 @@ const CustomerDetails = () => {
   const handleOrderPlacement = async (isPaid) => {
     try {
       const userId = user?._id || user?.id;
+
+      const cartItemsPayload = isCartOrder
+  ? orderDetails.items.map((item) => ({
+      productId: item.productId || null,
+      cakeName: item.cakeName,
+      weight: item.weight,
+      quantity: item.quantity,
+      cakePrice: item.cakePrice || item.price,
+      price: item.price,
+      addons: item.addons || [],
+      nameOnCake: formData.wishesOnCake,
+    }))
+  : [
+      {
+        productId: orderDetails._id,
+        cakeName: orderDetails.cakeName,
+        weight: orderDetails.weight,
+        quantity: orderDetails.quantity,
+        cakePrice: orderDetails.cakePrice,
+        price: orderDetails.price,
+        addons: orderDetails.addons || [],
+        nameOnCake: formData.wishesOnCake,
+      },
+    ];
+
       
       // 1. Update/Save user profile details
       await axios.post(`${import.meta.env.VITE_API_URL}/details`, 
@@ -149,17 +220,7 @@ const CustomerDetails = () => {
       // 2. Prepare Order Payload
       const orderPayload = {
         userId,
-        cartItems: [{
-          productId: orderDetails._id,
-          cakeName: orderDetails.cakeName,
-          variant: orderDetails.variant,
-          cakePrice: orderDetails.cakePrice,
-          weight: orderDetails.weight,
-          price: orderDetails.price, // Using the calculated price from orderDetails
-          nameOnCake: formData.wishesOnCake, // Mapping to user's wishes
-          quantity: orderDetails.quantity,
-          addons: orderDetails.addons,
-        }],
+        cartItems: cartItemsPayload,
         deliveryDetails: {
           fullName: formData.fullName,
           phone: formData.phone,
@@ -591,12 +652,7 @@ const CustomerDetails = () => {
                 <CreditCard size={18} color="#0e4d65" />
                 <span>Payment Method</span>
               </div>
-
-              {/* <label className={`${styles.paymentOption} ${formData.paymentMethod === "online" ? styles.selected : ""}`}>
-                <input type="radio" name="paymentMethod" value="online" checked={formData.paymentMethod === "online"} onChange={handleChange} className={styles.radio} />
-                <span className={styles.paymentLabel}>Pay Online (UPI / Card / NetBanking)</span>
-                <CreditCard size={18} color="#67a6b1" />
-              </label> */}
+ 
 
               <label className={`${styles.paymentOption} ${formData.paymentMethod === "cod" ? styles.selected : ""}`}>
                 <input type="radio" name="paymentMethod" value="cod" checked={formData.paymentMethod === "cod"} onChange={handleChange} className={styles.radio} />
@@ -615,61 +671,78 @@ const CustomerDetails = () => {
                 <span>Price Details</span>
               </div>
 
-              <div className={styles.orderCard}>
-                <div className={styles.orderItem}>
-                  <span className={styles.orderLabel}>Cake Name</span>
-                  <span className={styles.orderValue}>{orderDetails.cakeName}</span>
-                </div>
-                <div className={styles.orderItem}>
-                  <span className={styles.orderLabel}>Variant</span>
-                  <span className={styles.orderValue}>{orderDetails.variant}</span>
-                </div>
-                <div className={styles.orderItem}>
-                  <span className={styles.orderLabel}>Weight</span>
-                  <span className={styles.orderValue}>{orderDetails.weight}</span>
-                </div>
-                <div className={styles.orderItem}>
-                  <span className={styles.orderLabel}>Add-ons</span>
-                  <span className={styles.orderValue}>{orderDetails.addons.length}</span>
-                </div>
-                {/* <div className={styles.orderItem}>
-                  <span className={styles.orderLabel}>Delivery Date</span>
-                  <span className={styles.orderValue}>{orderDetails.deliveryDate}</span>
-                </div>
-                <div className={styles.orderItem}>
-                  <span className={styles.orderLabel}>Time Slot</span>
-                  <span className={styles.orderValue}>{orderDetails.deliveryTime}</span>
-                </div> */}
+              <div>
+       
 
-                <div className={styles.priceSummary}>
-                  <div className={styles.orderItem}>
-                    <span className={styles.orderLabel}>Price</span>
-                    <span className={styles.orderValue}>₹{orderDetails.price}</span>
-                  </div>
-                  <div className={styles.orderItem}>
-                    <span className={styles.orderLabel}>Delivery Charges</span>
-                    <span className={styles.orderValue}>₹{orderDetails.deliveryCharge}</span>
-                  </div>
-                </div>
+                <div className={styles.orderCard}>
+  {orderDetails.items.map((item, index) => (
+    <div key={index} style={{ marginBottom: "12px" }}>
+      
+      <div className={styles.orderItem}>
+        <span className={styles.orderLabel}>Cake Name</span>
+        <span className={styles.orderValue}>{item.cakeName}</span>
+      </div>
 
-                <CouponSection subtotal={subtotal} onCouponApplied={(data) => setAppliedCoupon(data)} />
+      <div className={styles.orderItem}>
+        <span className={styles.orderLabel}>Weight</span>
+        <span className={styles.orderValue}>{item.weight}</span>
+      </div>
 
-                <div className={styles.totalRow}>
-                  <div className={styles.totalAmount}>
-                    <span>Total Amount</span>
-                    <span>₹{totalAmount}</span>
-                  </div>
-                </div>
+      <div className={styles.orderItem}>
+        <span className={styles.orderLabel}>Quantity</span>
+        <span className={styles.orderValue}>{item.quantity}</span>
+      </div>
+
+      <div className={styles.orderItem}>
+        <span className={styles.orderLabel}>Add-ons</span>
+        <span className={styles.orderValue}>
+          {item.addons?.length || 0}
+        </span>
+      </div>
+
+ <hr />
+      <div className={styles.orderItem}>
+        <span className={styles.orderLabel}>Item Price</span>
+        <span className={styles.orderValue}>₹{item.price}</span>
+      </div>
+
+     
+    </div>
+  ))}
+
+  {/* DELIVERY */}
+  <div className={styles.orderItem}>
+    <span className={styles.orderLabel}>Delivery Charges</span>
+    <span className={styles.orderValue}>
+      ₹{orderDetails.deliveryCharge}
+    </span>
+  </div>
+
+  <CouponSection
+    subtotal={subtotal}
+    onCouponApplied={(data) => setAppliedCoupon(data)}
+  />
+
+  <div className={styles.totalRow}>
+    <div className={styles.totalAmount}>
+      <span>Total Amount</span>
+      <span>₹{totalAmount}</span>
+    </div>
+  </div>
+</div>
+
+
+                 
               </div>
             </section>
           </div>
         </div>
+
+
       </div>
 
       <footer className={styles.footer}>
-        {/* <button type="button" onClick={handleSubmit} className={styles.submitBtn} disabled={loading}>
-          {loading ? "Placing Order..." : "Place Order"}
-        </button> */}
+        
 
         <Popconfirm
                         description={ "Are you sure order this cake?"}

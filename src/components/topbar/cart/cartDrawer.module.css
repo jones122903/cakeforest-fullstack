@@ -1,0 +1,39 @@
+
+.quantityControl {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  background-color: #0e4d65;
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.quantityButton {
+  background-color: #0e4d65;
+  color: white;
+  border: none;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 18px;
+  transition: background-color 0.2s;
+}
+
+.quantityButton:hover {
+  background-color: #0a4460;
+}
+
+.quantityDisplay {
+  background-color: #0e4d65;
+  color: white;
+  min-width: 40px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 500;
+  font-size: 15px;
+}
