@@ -15,19 +15,21 @@
   border-style: solid; */
   box-shadow: rgba(14, 30, 37, 0.12) 0px 2px 4px 0px, rgba(14, 30, 37, 0.32) 0px 2px 16px 0px;
 }
-.infoIcon{
- /* text-align: end; */
- /* float: right; */
- font-size: 20px;
- color: black;
- background-color: #e7e7e7;
- border-radius: 50%;
- padding: 2px;
- cursor: pointer;
-}
-.cardBoxMember{
 
-border-top-width: 7px;
+.infoIcon {
+  /* text-align: end; */
+  /* float: right; */
+  font-size: 20px;
+  color: black;
+  background-color: #e7e7e7;
+  border-radius: 50%;
+  padding: 2px;
+  cursor: pointer;
+}
+
+.cardBoxMember {
+
+  border-top-width: 7px;
   border-bottom-width: 0px;
   border-right-width: 0px;
   border-left-width: 0px;
@@ -45,7 +47,7 @@ border-top-width: 7px;
   width: 150px;
   background-color: #fcebec;
   overflow: hidden;
-  
+
 }
 
 
@@ -57,21 +59,24 @@ colored-toast.swal2-icon-success {
 .previewImage {
   width: 100%;
   height: 100%;
-  object-fit: cover;  /* image will fill the box */
-  border-radius: 10px; 
+  object-fit: cover;
+  /* image will fill the box */
+  border-radius: 10px;
 }
 
 
 .previewImage {
   width: 100%;
   height: 100%;
-  object-fit: cover; /* fills circle without stretching */
+  object-fit: cover;
+  /* fills circle without stretching */
   border-radius: 50%;
   /* object-fit: no; */
 }
 
 .custom-placeholder::placeholder {
-  font-size: 16px !important; /* or any size you prefer */
+  font-size: 16px !important;
+  /* or any size you prefer */
 }
 
 
@@ -79,7 +84,7 @@ colored-toast.swal2-icon-success {
 .formInput {
   /* width: 80% !important; */
   height: 48px;
-  
+
   background-color: white;
   border: 2px solid #a7a7a7;
   width: 100%;
@@ -91,6 +96,7 @@ colored-toast.swal2-icon-success {
   /* box-shadow: rgb(0, 153, 255) 0px 0px 0px 0px inset, rgba(0, 0, 0, 0.04) 0px 2px 4px, rgba(12, 14, 23, 0.12) 0px 0px 0px 1px inset; */
 
 }
+
 .formInputTextarea {
   /* width: 80% !important; */
   height: auto;
@@ -106,13 +112,14 @@ colored-toast.swal2-icon-success {
 
 }
 
-.formInput:focus{
+.formInput:focus {
   border-color: #d7091a;
-  box-shadow: 0 0 0 0rem rgba(13,110,253,.25);
+  box-shadow: 0 0 0 0rem rgba(13, 110, 253, .25);
 }
-.formInputTextarea:focus{
+
+.formInputTextarea:focus {
   border-color: #d7091a;
-  box-shadow: 0 0 0 0rem rgba(13,110,253,.25);
+  box-shadow: 0 0 0 0rem rgba(13, 110, 253, .25);
 }
 
 .formInputDropdown {
@@ -140,13 +147,9 @@ colored-toast.swal2-icon-success {
   height: 32px;
 }
 
-.marginHfour{
-  /* margin-bottom: 1.8rem; */
-}
-
 .submitButton {
 
-  background-color: #5336AC;
+  background-color: #0e4d65 !important;
   border: none;
   color: white;
   border-radius: 8px;
@@ -158,6 +161,7 @@ colored-toast.swal2-icon-success {
 
 
 }
+
 .submitButton2 {
 
   background-color: #6c757d;
@@ -168,7 +172,7 @@ colored-toast.swal2-icon-success {
   width: 100px;
   padding: 8px 15px;
   height: 40px;
-  
+
 
 
 }

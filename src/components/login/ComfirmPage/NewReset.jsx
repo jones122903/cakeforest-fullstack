@@ -65,7 +65,7 @@ const NewReset = () => {
             {/* Header */}
             <div className="text-center mb-4">
               <div
-                className="d-flex align-items-center justify-content-center voilet-color-bg rounded-circle mx-auto mb-3"
+                className="d-flex align-items-center justify-content-center peacock-color-bg rounded-circle mx-auto mb-3"
                 style={{ width: "60px", height: "60px" }}
               >
                 <RiShieldUserLine color="white" size={30} />
@@ -102,9 +102,9 @@ const NewReset = () => {
                     ),
                   }}
                   sx={{
-                    "& .MuiInputLabel-root.Mui-focused": { color: "#5336AC" },
+                    "& .MuiInputLabel-root.Mui-focused": { color: "#0e4d65" },
                     "& .MuiOutlinedInput-root.Mui-focused fieldset": {
-                      borderColor: "#5336AC",
+                      borderColor: "#0e4d65",
                     },
                     "& .MuiFormLabel-asterisk": { display: "none" },
                   }}
@@ -140,9 +140,9 @@ const NewReset = () => {
                     ),
                   }}
                   sx={{
-                    "& .MuiInputLabel-root.Mui-focused": { color: "#5336AC" },
+                    "& .MuiInputLabel-root.Mui-focused": { color: "#0e4d65" },
                     "& .MuiOutlinedInput-root.Mui-focused fieldset": {
-                      borderColor: "#5336AC",
+                      borderColor: "#0e4d65",
                     },
                     "& .MuiFormLabel-asterisk": { display: "none" },
                   }}
@@ -159,9 +159,8 @@ const NewReset = () => {
                     <ul className="list-unstyled ms-3 mb-0 small">
                       {/* 1 */}
                       <li
-                        className={`d-flex align-items-center mb-1 ${
-                          rules.length ? "text-success" : "text-danger"
-                        }`}
+                        className={`d-flex align-items-center mb-1 ${rules.length ? "text-success" : "text-danger"
+                          }`}
                       >
                         {rules.length ? (
                           <FaCheckCircle size={10} className="me-2" />
@@ -173,9 +172,8 @@ const NewReset = () => {
 
                       {/* 2 */}
                       <li
-                        className={`d-flex align-items-center mb-1 ${
-                          rules.case ? "text-success" : "text-danger"
-                        }`}
+                        className={`d-flex align-items-center mb-1 ${rules.case ? "text-success" : "text-danger"
+                          }`}
                       >
                         {rules.case ? (
                           <FaCheckCircle size={10} className="me-2" />
@@ -187,9 +185,8 @@ const NewReset = () => {
 
                       {/* 3 */}
                       <li
-                        className={`d-flex align-items-center mb-1 ${
-                          rules.number ? "text-success" : "text-danger"
-                        }`}
+                        className={`d-flex align-items-center mb-1 ${rules.number ? "text-success" : "text-danger"
+                          }`}
                       >
                         {rules.number ? (
                           <FaCheckCircle size={10} className="me-2" />
@@ -201,9 +198,8 @@ const NewReset = () => {
 
                       {/* 4 */}
                       <li
-                        className={`d-flex align-items-center mb-1 ${
-                          rules.special ? "text-success" : "text-danger"
-                        }`}
+                        className={`d-flex align-items-center mb-1 ${rules.special ? "text-success" : "text-danger"
+                          }`}
                       >
                         {rules.special ? (
                           <FaCheckCircle size={10} className="me-2" />
@@ -215,9 +211,8 @@ const NewReset = () => {
 
                       {/* 5 */}
                       <li
-                        className={`d-flex align-items-center mb-1 ${
-                          passwordsMatch ? "text-success" : "text-danger"
-                        }`}
+                        className={`d-flex align-items-center mb-1 ${passwordsMatch ? "text-success" : "text-danger"
+                          }`}
                       >
                         {passwordsMatch ? (
                           <FaCheckCircle size={10} className="me-2" />

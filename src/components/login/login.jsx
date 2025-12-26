@@ -370,7 +370,7 @@ const Login = () => {
               }}
             />
 
-            <a href="#">Forgot Password?</a>
+            <a href="#" onClick={(e) => { e.preventDefault(); navigate("/forget"); }} style={{ cursor: 'pointer' }}>Forgot Password?</a>
 
             <button type="submit" disabled={signInLoading}>
               {signInLoading ? (
