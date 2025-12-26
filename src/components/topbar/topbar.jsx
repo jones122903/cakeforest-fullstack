@@ -27,6 +27,7 @@ import { clearToken } from "../../redux/slice/authSlice";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import OrderDrawer from "./OrderDrawer";
+import CartDrawer from "./cart/cartDrawer.jsx";
 import axios from "axios";
 import { showHotToast } from "../../admin/utils/showToast.jsx";
 
@@ -39,6 +40,10 @@ const Topbar = () => {
 const [filteredProducts, setFilteredProducts] = useState([]);
 const [searchText, setSearchText] = useState("");
 const [showDropdown, setShowDropdown] = useState(false);
+const [isCartDrawerOpen, setIsCartDrawerOpen] = useState(false);
+const [cartCount, setCartCount] = useState(0);
+
+
 
 
   const dispatch = useDispatch();
@@ -48,6 +53,46 @@ const [showDropdown, setShowDropdown] = useState(false);
 
   const wishlistItems = useSelector((state) => state.wishlist.items);
   const wishlistCount = wishlistItems?.length || 0;
+
+  const handleCartClick = () => {
+  if (token) {
+    setIsCartDrawerOpen(true);
+    setIsMobileMenuOpen(false);
+  } else {
+    showHotToast("error", "Please login to view cart");
+    navigate("/login");
+  }
+};
+
+const fetchCartCount = async () => {
+  if (!token) {
+    setCartCount(0);
+    return;
+  }
+
+  try {
+    const res = await axios.get(`${api_url}/cart`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (res.data.success) {
+      setCartCount(res.data.cart?.items?.length || 0);
+    }
+  } catch (error) {
+    console.error("Error fetching cart count:", error);
+  }
+};
+
+useEffect(() => {
+  if (!isCartDrawerOpen) {
+    fetchCartCount();
+  }
+}, [isCartDrawerOpen]);
+
+
+
 
   // Fetch pending orders count
   const fetchPendingCount = async () => {
@@ -187,6 +232,8 @@ const handleSearchChange = (e) => {
       }}
     >
       <OrderDrawer open={isOrderDrawerOpen} setOpen={setIsOrderDrawerOpen} />
+      <CartDrawer open={isCartDrawerOpen} setOpen={setIsCartDrawerOpen}/>
+
 
       {/* TOPBAR */}
       <div className={styles.topbar}>
@@ -292,11 +339,19 @@ const handleSearchChange = (e) => {
                 )}
               </div>
 
-              <div className={styles.iconItem}>
-                <ShoppingCart size={24} />
-                <span className={styles.iconText}>Cart</span>
-                <span className={styles.badge}>2</span>
-              </div>
+              <div
+  className={styles.iconItem}
+  onClick={handleCartClick}
+  style={{ cursor: "pointer" }}
+>
+  <ShoppingCart size={24} />
+  <span className={styles.iconText}>Cart</span>
+
+  {cartCount > 0 && (
+    <span className={styles.badge}>{cartCount}</span>
+  )}
+</div>
+
 
               {/* Conditional Login/Logout - Desktop */}
               {token ? (
@@ -429,6 +484,13 @@ const handleSearchChange = (e) => {
             </div>
           )}
 
+            {!token && (
+              <div className={styles.drawerMenuItem} onClick={handleLogin}>
+                <User size={22} color="#2C5F7C" />
+                <span className={styles.drawerMenuText}>Login</span>
+              </div>
+            )}
+            
           {/* ORDERS */}
           <div className={styles.drawerMenuItem} onClick={handleOrderClick}>
             <Package size={22} color="#2C5F7C" />
@@ -441,11 +503,24 @@ const handleSearchChange = (e) => {
           {/* CART */}
           <div
             className={styles.drawerMenuItem}
-            onClick={() => navigate("/cart")}
+             onClick={handleCartClick}
+  style={{ cursor: "pointer" }}
           >
             <ShoppingCart size={22} color="#2C5F7C" />
             <span className={styles.drawerMenuText}>Cart</span>
           </div>
+
+           {/* <div
+  className={styles.iconItem}
+ 
+>
+  <ShoppingCart size={24} />
+  <span className={styles.iconText}>Cart</span>
+
+  {cartCount > 0 && (
+    <span className={styles.badge}>{cartCount}</span>
+  )}
+</div> */}
 
           {/* COUPONS */}
           <div
@@ -511,12 +586,6 @@ const handleSearchChange = (e) => {
           </div>
 
           {/* LOGIN – only when NOT logged in */}
-          {!token && (
-            <div className={styles.drawerMenuItem} onClick={handleLogin}>
-              <User size={22} color="#2C5F7C" />
-              <span className={styles.drawerMenuText}>Login</span>
-            </div>
-          )}
 
           {/* LOGOUT – only when logged in */}
           {token && (

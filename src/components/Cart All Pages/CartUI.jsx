@@ -74,11 +74,11 @@ const OrderSummary = () => {
         orderDetails: {
           // 🧁 Product details
           productId: product._id,
-          productName: product.cakeName,
+          cakeName: product.cakeName,
           price: finalTotal,
           quantity,
           cakePrice:cakesTotal,
-
+          weight:product.weight,
           // ➕ Add-ons full details
           addons: selectedAddons.map((a) => ({
             addonId: a._id,
