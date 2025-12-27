@@ -31,10 +31,10 @@ const OrderSummary = () => {
   const navigate = useNavigate();
   const { state } = useLocation();
   const product = state?.product;
-  console.log("product ",product.variants)
+  console.log("product ", product.variants)
   const { token } = useSelector((state) => state.auth);
 
-  
+
 
 
   const [addons, setAddons] = useState(
@@ -68,49 +68,48 @@ const OrderSummary = () => {
   };
 
   const handlePlaceOrder = () => {
-  if (token) {
-    navigate("/details", {
-      state: {
-        orderDetails: {
-          // 🧁 Product details
-          productId: product._id,
-          cakeName: product.cakeName,
-          price: finalTotal,
-          quantity,
-          cakePrice:cakesTotal,
-          weight:product.weight,
-          // ➕ Add-ons full details
-          addons: selectedAddons.map((a) => ({
-            addonId: a._id,
-            name: a.name,
-            price: a.price,
-            qty: a.qty,
-            total: a.price * a.qty,
-          })),
+    if (token) {
+      navigate("/details", {
+        state: {
+          orderDetails: {
+            // 🧁 Product details
+            productId: product._id,
+            cakeName: product.cakeName,
+            price: finalTotal,
+            quantity,
+            cakePrice: cakesTotal,
+            weight: product.weight,
+            // ➕ Add-ons full details
+            addons: selectedAddons.map((a) => ({
+              addonId: a._id,
+              name: a.name,
+              price: a.price,
+              qty: a.qty,
+              total: a.price * a.qty,
+            })),
 
-          // 💰 Amounts
-          productTotal:finalTotal,
-          addonsTotal,
-          grandTotal: finalTotal,
+            // 💰 Amounts
+            productTotal: finalTotal,
+            addonsTotal,
+            grandTotal: finalTotal,
+          },
         },
-      },
-    });
-  } else {
-    setShowModal(true);
-  }
-};
+      });
+    } else {
+      setShowModal(true);
+    }
+  };
 
   const handleIncrement = () => {
     setQuantity(prev => prev + 1);
-    
+
     // Toast outside the setter to avoid double fire in Strict Mode
     toast.custom(
       (t) => (
         <div
-          className={`re-bk-toast-wrapper ${
-           t.visible ? "slide-in" : "slide-out"
+          className={`re-bk-toast-wrapper ${t.visible ? "slide-in" : "slide-out"
 
-          }`}
+            }`}
           style={{ zIndex: 99999999 }}
         >
           <div className="re-bk-toast">
@@ -141,11 +140,10 @@ const OrderSummary = () => {
       toast.custom(
         (t) => (
           <div
-          
-            className={`re-bk-toast-wrapper ${
-             t.visible ? "slide-in" : "slide-out"
 
-            }`}
+            className={`re-bk-toast-wrapper ${t.visible ? "slide-in" : "slide-out"
+
+              }`}
             style={{ zIndex: 99999999, }}
           >
             <div className="re-bk-toast">
@@ -165,8 +163,8 @@ const OrderSummary = () => {
         {
           duration: 2000,
           position: "top-right",
-          
-          
+
+
         }
       );
     }
@@ -178,37 +176,31 @@ const OrderSummary = () => {
 
   const selectedAddons = addons.filter((a) => a.qty > 0);
 
-// ✅ Addons total
-const addonsTotal = selectedAddons.reduce(
-  (sum, a) => sum + a.price * a.qty,
-  0
-);
+  // ✅ Addons total
+  const addonsTotal = selectedAddons.reduce(
+    (sum, a) => sum + a.price * a.qty,
+    0
+  );
 
-const weightInKg = product?.weight
-  ? parseFloat(product.weight)   // "0.5 Kg" → 0.5
-  : 0.5;
+  const weightInKg = product?.weight
+    ? parseFloat(product.weight)   // "0.5 Kg" → 0.5
+    : 0.5;
 
-// const singleCakePrice = itemPrice * weightInKg;
+  // const singleCakePrice = itemPrice * weightInKg;
 
-// const cakesTotal = singleCakePrice * quantity;
-const cakesTotal = itemPrice;
-
-
+  // const cakesTotal = singleCakePrice * quantity;
+  const cakesTotal = itemPrice;
 
 
-// ✅ Final total
-const finalTotal = cakesTotal + addonsTotal;
+
+
+  // ✅ Final total
+  const finalTotal = cakesTotal + addonsTotal;
 
   return (
     <div>
       <style>{globalStyles}</style>
-      <Toaster
-        containerStyle={{
-          zIndex: 99999999,
-          top: 80,
-          right: 30
-        }}
-      />
+
       <Topbar />
       <div className={`${styles.container}  my-5`}>
         <div className={styles.mainLayout}>
@@ -317,124 +309,124 @@ const finalTotal = cakesTotal + addonsTotal;
               </div>
             </div>
 
-      {addons.length > 0 && (
+            {addons.length > 0 && (
               <div className={`${styles.productCard2} mt-3`}>
-        <div className={styles.addonsSection}>
-          <p className={styles.addonsTitle}>Add-ons</p>
+                <div className={styles.addonsSection}>
+                  <p className={styles.addonsTitle}>Add-ons</p>
 
-          {addons.map((v, i) => (
-            <div key={i} className={styles.addonItem}>
-              <div className={styles.addonControls}>
+                  {addons.map((v, i) => (
+                    <div key={i} className={styles.addonItem}>
+                      <div className={styles.addonControls}>
 
-              <img src={v.image} alt={v.name} />
+                        <img src={v.image} alt={v.name} />
 
-              <div className={styles.addonInfo}>
-                <span className={styles.addonName}>{v.name}</span>
-                <span className={styles.addonPrice}>₹ {v.price}</span>
+                        <div className={styles.addonInfo}>
+                          <span className={styles.addonName}>{v.name}</span>
+                          <span className={styles.addonPrice}>₹ {v.price}</span>
+                        </div>
+                      </div>
+
+                      <div className={styles.addonControls}>
+
+                        <div className={styles.quantityControl}>
+                          <button
+                            className={styles.quantityButton}
+                            onClick={() => decreaseQty(i)}
+                          >
+                            −
+                          </button>
+                          <div className={styles.quantityDisplay}>{v.qty}</div>
+                          <button
+                            className={styles.quantityButton}
+                            onClick={() => increaseQty(i)}
+                          >
+                            +
+                          </button>
+                        </div>
+                        <button
+                          className={styles.deleteButton}
+                          onClick={() => removeAddon(i)}
+                        >
+                          <svg
+                            width="20"
+                            height="20"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="#0b4b62"
+                            strokeWidth="2"
+                          >
+                            <polyline points="3 6 5 6 21 6"></polyline>
+                            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                          </svg>
+                        </button>
+                      </div>
+
+
+                    </div>
+                  ))}
+                </div>
               </div>
-              </div>
-
-              <div className={styles.addonControls}>
-
-              <div className={styles.quantityControl}>
-                    <button
-                      className={styles.quantityButton}
-                      onClick={()=>decreaseQty(i)}
-                    >
-                      −
-                    </button>
-                    <div className={styles.quantityDisplay}>{v.qty}</div>
-                    <button
-                      className={styles.quantityButton}
-                      onClick={()=>increaseQty(i)}
-                    >
-                      +
-                    </button>
-                  </div>
-              <button
-                    className={styles.deleteButton}
-                     onClick={()=>removeAddon(i)}
-                  >
-                    <svg
-                      width="20"
-                      height="20"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="#0b4b62"
-                      strokeWidth="2"
-                    >
-                      <polyline points="3 6 5 6 21 6"></polyline>
-                      <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
-                    </svg>
-                  </button>
-              </div>
+            )}
 
 
-            </div>
-          ))}
-        </div>
-    </div>
-      )}
 
-
-          
 
           </div>
 
           {/* Bill Summary Section */}
           <div className={styles.billSection}>
-  <div className={styles.billHeader}>
-    <h2 className={styles.billTitle}>Bill Summary</h2>
-    <span className={styles.itemCount}>{quantity} Item</span>
-  </div>
+            <div className={styles.billHeader}>
+              <h2 className={styles.billTitle}>Bill Summary</h2>
+              <span className={styles.itemCount}>{quantity} Item</span>
+            </div>
 
-  {/* 🧾 Order Total */}
-  <div className={styles.billDetails}>
-    <div className={styles.billRow}>
-      <span className={styles.billLabel}>
-        <HiDocumentCurrencyRupee className={styles.billIcon} />
-        Cake Price
-      </span>
-      <span className={styles.billAmount}>₹ {cakesTotal}</span>
-    </div>
+            {/* 🧾 Order Total */}
+            <div className={styles.billDetails}>
+              <div className={styles.billRow}>
+                <span className={styles.billLabel}>
+                  <HiDocumentCurrencyRupee className={styles.billIcon} />
+                  Cake Price
+                </span>
+                <span className={styles.billAmount}>₹ {cakesTotal}</span>
+              </div>
 
-    {/* ➕ Add-ons Section */}
-    {selectedAddons.length > 0 && (
-      <>
-        <p className={styles.addonTitle}>Add-ons</p>
+              {/* ➕ Add-ons Section */}
+              {selectedAddons.length > 0 && (
+                <>
+                  <p className={styles.addonTitle}>Add-ons</p>
 
-        {selectedAddons.map((addon, index) => (
-          <div key={index} className={styles.billRow}>
-            <span className={styles.billLabel}>
-              {addon.name} × {addon.qty}
-            </span>
-            <span className={styles.billAmount}>
-              ₹ {addon.price * addon.qty}
-            </span>
+                  {selectedAddons.map((addon, index) => (
+                    <div key={index} className={styles.billRow}>
+                      <span className={styles.billLabel}>
+                        {addon.name} × {addon.qty}
+                      </span>
+                      <span className={styles.billAmount}>
+                        ₹ {addon.price * addon.qty}
+                      </span>
+                    </div>
+                  ))}
+
+                  <div className={`${styles.billRow} ${styles.addonTotal}`}>
+                    <span className={styles.billLabel}>Add-ons Total</span>
+                    <span className={styles.billAmount}>₹ {addonsTotal}</span>
+                  </div>
+                </>
+              )}
+            </div>
+
+            {/* 💰 Grand Total */}
+            <div className={styles.grandTotal}>
+              <h3 className={styles.grandTotalLabel}>Grand Total</h3>
+              <span className={styles.grandTotalAmount}>₹ {finalTotal}</span>
+            </div>
+
+            <button
+              className={`btn-buy ${styles.placeOrderButton}`}
+              onClick={handlePlaceOrder}
+            >
+              PLACE ORDER
+            </button>
           </div>
-        ))}
-
-        <div className={`${styles.billRow} ${styles.addonTotal}`}>
-          <span className={styles.billLabel}>Add-ons Total</span>
-          <span className={styles.billAmount}>₹ {addonsTotal}</span>
-        </div>
-      </>
-    )}
-  </div>
-
-  {/* 💰 Grand Total */}
-  <div className={styles.grandTotal}>
-    <h3 className={styles.grandTotalLabel}>Grand Total</h3>
-    <span className={styles.grandTotalAmount}>₹ {finalTotal}</span>
-  </div>
-
-  <button
-    className={`btn-buy ${styles.placeOrderButton}`}
-    onClick={handlePlaceOrder}
-  >
-    PLACE ORDER
-  </button>
-</div>
 
 
           {/* Login Modal */}
