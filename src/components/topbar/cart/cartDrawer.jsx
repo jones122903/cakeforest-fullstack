@@ -130,6 +130,8 @@ const handlePlaceOrder = () => {
         addons: item.addons.map((a) => ({
           name: a.name,
           price: a.price,
+          total:a.price,
+          quantity:a.quantity
         })),
         addonsTotal,
         itemTotal:

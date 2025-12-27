@@ -224,11 +224,13 @@ useEffect(() => {
        addons: selectedVariants.map((v) => ({
         name: v.name,
         price: v.price,
+        quantity:v.quantity,
+        total:v.price
       })),
      price: currentPrice +variantsTotal,
     };
 
-    console.log(cartPayload,"cartpayload")
+     
 
     const res = await axios.post(
       `${import.meta.env.VITE_API_URL}/cart`, // ✅ correct route
