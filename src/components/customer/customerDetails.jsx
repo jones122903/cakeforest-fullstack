@@ -91,7 +91,7 @@ const CustomerDetails = () => {
         0,
     };
 
-    console.log(orderDetails,"orderdetail")
+    console.log(incomingOrderDetails,"orderdetail")
   
   
   // const orderDetails = {
@@ -199,13 +199,13 @@ const totalAmount =
     }))
   : [
       {
-        productId: orderDetails._id,
-        cakeName: orderDetails.cakeName,
-        weight: orderDetails.weight,
-        quantity: orderDetails.quantity,
-        cakePrice: orderDetails.cakePrice,
-        price: orderDetails.price,
-        addons: orderDetails.addons || [],
+        productId: incomingOrderDetails._id,
+        cakeName: incomingOrderDetails.cakeName,
+        weight: incomingOrderDetails.weight,
+        quantity: incomingOrderDetails.quantity,
+        cakePrice: incomingOrderDetails.cakePrice,
+        price: incomingOrderDetails.price,
+        addons: incomingOrderDetails.addons || [],
         nameOnCake: formData.wishesOnCake,
       },
     ];
