@@ -118,7 +118,7 @@ const CakePrice = () => {
   return (
     <>
       {/* Add Toaster component to render toasts */}
-      <Toaster position="top-right" />
+
 
       <div className={styles.cakeContainer}>
         <div className={styles.headerSection}>
@@ -138,7 +138,7 @@ const CakePrice = () => {
             // Only render cake card if images exist for this cake
             if (!cake.images || cake.images.length === 0) return null;
 
-            const isInWishlist = wishlistItems.some((item) => {
+            const isInWishlist = wishlistItems?.some((item) => {
               const id = typeof item === "string" ? item : item._id;
               return id === cake._id;
             });

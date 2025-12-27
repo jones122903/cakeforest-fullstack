@@ -71,9 +71,12 @@ import AboutPage from "../pages/AboutPage.jsx";
 function App() {
   return (
     <>
-      <Toaster containerStyle={{ zIndex: 99999999 }} position="top-center" />
       <AuthProvider>
         <AppProvider>
+          <Toaster
+            containerStyle={{ zIndex: 99999999, top: 20, right: 20 }}
+            position="top-right"
+          />
           <Router>
             <PWAInstallPrompt />
 

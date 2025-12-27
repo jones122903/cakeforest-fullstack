@@ -1,12 +1,13 @@
 import React from "react";
 import toast from "react-hot-toast";
-import "../../admin/utils/showToast.css";
+import "./showToast.css";
 
 export const showHotToast = (type = "success", message = "") => {
   const isSuccess = type === "success";
 
-  // Dismiss all existing toasts first to prevent duplicates
-  toast.dismiss();
+  // Dismiss existing toasts to avoid stacking if desired, 
+  // but keep it commented if it causes flickering
+  // toast.dismiss();
 
   toast.custom(
     (t) => (
@@ -15,7 +16,9 @@ export const showHotToast = (type = "success", message = "") => {
           }`}
         style={{
           zIndex: 99999999,
-          backgroundColor: isSuccess ? "#0e4d65" : "#dc2626", // ✅ HERE
+          backgroundColor: isSuccess ? "#0e4d65" : "#dc2626",
+          opacity: t.visible ? 1 : 0,
+          transition: "opacity 0.2s ease-in-out",
         }}
       >
         <div className="re-bk-toast">
@@ -33,7 +36,7 @@ export const showHotToast = (type = "success", message = "") => {
                 strokeWidth="4"
                 strokeLinecap="round"
                 strokeLinejoin="round"
-                style={{ width: '12px', height: '12px' }}
+                style={{ width: "12px", height: "12px" }}
               >
                 <line x1="18" y1="6" x2="6" y2="18"></line>
                 <line x1="6" y1="6" x2="18" y2="18"></line>
@@ -46,12 +49,12 @@ export const showHotToast = (type = "success", message = "") => {
 
         <div
           className="re-bk-progress"
-          style={{ backgroundColor: "#ffffff" }} // ✅ white progress
+          style={{ backgroundColor: "#ffffff" }}
         />
       </div>
     ),
     {
-      duration: 2000,
+      duration: 3000,
       position: "top-right",
     }
   );
