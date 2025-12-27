@@ -188,9 +188,10 @@ const weightInKg = product?.weight
   ? parseFloat(product.weight)   // "0.5 Kg" → 0.5
   : 0.5;
 
-const singleCakePrice = itemPrice * weightInKg;
+// const singleCakePrice = itemPrice * weightInKg;
 
-const cakesTotal = singleCakePrice * quantity;
+// const cakesTotal = singleCakePrice * quantity;
+const cakesTotal = itemPrice;
 
 
 

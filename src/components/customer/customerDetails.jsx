@@ -163,9 +163,9 @@ const totalAmount =
     } else if (!/^\d{6}$/.test(formData.pincode)) {
       newErrors.pincode = "Enter a valid 6-digit pincode";
     }
-    if (!formData.wishesOnCake.trim()) {
-      newErrors.wishesOnCake = "Wishes is required";
-    }
+    // if (!formData.wishesOnCake.trim()) {
+    //   newErrors.wishesOnCake = "Wishes is required";
+    // }
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -573,7 +573,7 @@ const totalAmount =
                     maxLength={50}
                   />
                 </div>
-                {errors.wishesOnCake && <p className={styles.errorMsg}>{errors.wishesOnCake}</p>}
+                {/* {errors.wishesOnCake && <p className={styles.errorMsg}>{errors.wishesOnCake}</p>} */}
                 <p className={styles.helperText}>
                   {formData.wishesOnCake.length}/50 characters
                 </p>

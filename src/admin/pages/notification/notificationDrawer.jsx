@@ -12,29 +12,69 @@ const NotificationDrawer = ({ open, setOpen }) => {
 
   const audioRef = useRef(null);
   const prevPendingCount = useRef(0); // 🔑 IMPORTANT
+  const isAudioUnlocked = useRef(false);
 
   const pendingOrders = orders.filter((o) => o.status === "pending");
   const acceptedOrders = orders.filter((o) => o.status === "accepted");
 
   const api_url_sound = import.meta.env.VITE_API_URL_SOUND;
 
-  // 🔊 Init audio ONE TIME
+  // 🔊 Initialize audio from backend MP3 file
   useEffect(() => {
+    // Create audio element with backend sound file
     audioRef.current = new Audio(`${api_url_sound}/public/sounds/notification.mp3`);
-    audioRef.current.loop = true;
-  }, [api_url]);
+    audioRef.current.loop = true; // Loop until accepted
+    audioRef.current.volume = 1.0; // Full volume
 
-  // 🔔 PLAY SOUND ONLY WHEN NEW ORDER ARRIVES
+    // Unlock audio on first user interaction
+    const unlockAudio = () => {
+      if (!isAudioUnlocked.current) {
+        audioRef.current?.play().then(() => {
+          audioRef.current.pause();
+          audioRef.current.currentTime = 0;
+          console.log("🔓 Audio unlocked - ready to play notifications");
+          isAudioUnlocked.current = true;
+        }).catch((err) => {
+          console.log("⚠️ Audio unlock failed:", err.message);
+        });
+      }
+    };
+
+    // Unlock on first click anywhere
+    document.addEventListener('click', unlockAudio, { once: true });
+
+    return () => {
+      document.removeEventListener('click', unlockAudio);
+      if (audioRef.current) {
+        audioRef.current.pause();
+        audioRef.current = null;
+      }
+    };
+  }, [api_url_sound]);
+
+  // 🔔 PLAY SOUND WHEN NEW ORDER ARRIVES, STOP WHEN ALL ACCEPTED
   useEffect(() => {
-    if (pendingOrders.length > prevPendingCount.current) {
-      audioRef.current
-        .play()
-        .catch(() => console.log("🔇 Autoplay blocked"));
+    // New order arrived - start sound loop
+    if (pendingOrders.length > prevPendingCount.current && pendingOrders.length > 0) {
+      console.log("🎵 New order detected! Playing notification sound in loop...");
+
+      if (audioRef.current) {
+        audioRef.current.currentTime = 0;
+        audioRef.current.play()
+          .then(() => {
+            console.log("✅ Notification sound playing (will loop until accepted)");
+          })
+          .catch((err) => {
+            console.log("🔇 Autoplay blocked. Click anywhere to enable sound.", err.message);
+          });
+      }
     }
 
-    if (pendingOrders.length === 0) {
+    // All orders accepted - stop sound
+    if (pendingOrders.length === 0 && audioRef.current) {
       audioRef.current.pause();
       audioRef.current.currentTime = 0;
+      console.log("🔕 All orders processed, sound stopped");
     }
 
     prevPendingCount.current = pendingOrders.length;
@@ -88,7 +128,7 @@ const NotificationDrawer = ({ open, setOpen }) => {
     // Set up polling interval
     const interval = setInterval(() => {
       getNotification();
-    }, 50000); // Check every 5 seconds
+    }, 5000); // Check every 5 seconds
 
     // Cleanup interval on unmount
     return () => clearInterval(interval);
@@ -104,8 +144,6 @@ const NotificationDrawer = ({ open, setOpen }) => {
   // ✅ Accept
   const handleAccept = async (id) => {
     await axios.put(`${api_url}/notifications/${id}/accept`);
-    audioRef.current.pause();
-    audioRef.current.currentTime = 0;
     handleDeleteNotification(id)
     setOrders(prev =>
       prev.filter(o => o.notificationId !== id)
@@ -120,8 +158,6 @@ const NotificationDrawer = ({ open, setOpen }) => {
 
   const handleReject = async (id) => {
     await axios.put(`${api_url}/notifications/${id}/reject`);
-    audioRef.current.pause();
-    audioRef.current.currentTime = 0;
     handleDeleteNotification(id)
     setOrders(prev =>
       prev.filter(o => o.notificationId !== id)
