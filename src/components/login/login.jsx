@@ -52,11 +52,12 @@ const Login = () => {
         if (response.data.success) {
           dispatch(setToken({
             token: response.data.token,
-            // user: response.data.user
+             
             user: {
               id: response.data.user._id,
               name: response.data.user.name,
-              email: response.data.user.email
+              email: response.data.user.email,
+              role:response.data.user.role,
             }
           }));
           showHotToast("success", "Google Login Successful");
