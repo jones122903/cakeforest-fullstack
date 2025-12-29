@@ -21,10 +21,11 @@ import {
   Star,
 } from "lucide-react";
 import { IndianRupee } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import styles from "./topbar.module.css";
 import { useSelector, useDispatch } from "react-redux";
 import { clearToken } from "../../redux/slice/authSlice";
-import { useNavigate } from "react-router-dom";
+// import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import OrderDrawer from "./OrderDrawer";
 import CartDrawer from "./cart/cartDrawer.jsx";
@@ -240,7 +241,7 @@ const handleSearchChange = (e) => {
         <div className={styles.container}>
           <nav className={`${styles.navbar} navbar navbar-expand-lg`}>
             {/* LOGO */}
-            <div className="navbar-brand d-flex align-items-center">
+            <div className="navbar-brand d-flex align-items-center" onClick={() => navigate("/")} style={{cursor: "pointer"}}>
               <svg
                 className={styles.logo}
                 viewBox="0 0 350 80"
