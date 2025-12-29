@@ -8,6 +8,7 @@ import { Provider } from "react-redux";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import { PersistGate } from "redux-persist/integration/react";
 import { persistor } from "./redux/store";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 
 // Register service worker with auto-update
@@ -22,6 +23,9 @@ const updateSW = registerSW({
   },
 });
 
+
+const queryClient = new QueryClient();
+
 createRoot(document.getElementById("root")).render(
   <Provider store={store}>
     <PersistGate loading={null} persistor={persistor}>
@@ -29,7 +33,9 @@ createRoot(document.getElementById("root")).render(
 
       <StrictMode>
         <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}>
-          <App />
+          <QueryClientProvider client={queryClient}>
+      <App />
+    </QueryClientProvider>
         </GoogleOAuthProvider>
       </StrictMode>
     </PersistGate>

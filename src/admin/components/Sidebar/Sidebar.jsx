@@ -13,6 +13,7 @@ import {
   LogOut,
   ChevronLeft,
   ChevronRight,
+   Sparkles,
 } from "lucide-react";
 import { useAuth } from "../../context/AuthContext";
 import { useApp } from "../../context/AppContext";
@@ -26,9 +27,9 @@ const Sidebar = ({ setSideWidth, sideWidth }) => {
   const menuItems = [
     // { path: "/admin/dashboard", icon: LayoutDashboard, label: "Dashboard" },
     { path: "/admin/products", icon: ShoppingBag, label: "Products" },
+    { path: "/admin/banners", icon: Sparkles, label: "Banners" },
     { path: "/admin/orders", icon: ShoppingCart, label: "Orders" },
     { path: "/admin/customers", icon: Users, label: "Customers" },
-    // { path: "/admin/expenses", icon: Receipt, label: "Expenses" },
     { path: "/admin/coupons", icon: Tag, label: "Coupons" },
     { path: "/admin/prize-pools", icon: Gift, label: "Prize Pools" },
     // { path: "/admin/reports", icon: BarChart3, label: "Reports" },

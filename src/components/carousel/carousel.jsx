@@ -1,15 +1,33 @@
 import React from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
-
-// Swiper modules
 import { Pagination, Navigation, Autoplay } from "swiper/modules";
-
-// Swiper CSS
 import "swiper/css";
 import "swiper/css/pagination";
 import "swiper/css/navigation";
+import { useQuery } from "@tanstack/react-query";
+import axios from "axios";
+
+
 
 export default function Carousel() {
+const api_url = import.meta.env.VITE_API_URL;
+
+  /* ================= FETCH BANNERS ================= */
+  const fetchBanners = async () => {
+    const res = await axios.get(`${api_url}/banner`);
+    return res.data.data;
+  };
+
+  const {
+    data: banners = [],
+    isLoading,
+    isError,
+  } = useQuery({
+    queryKey: ["banners"],
+    queryFn: fetchBanners,
+  });
+   
+  console.log(banners,"b")
 
   const isMobile = window.innerWidth <= 700;
   return (
@@ -35,45 +53,22 @@ export default function Carousel() {
         }}
       >
 
-        <SwiperSlide>
-          <img
-            src="https://imgcdn.floweraura.com/Christmas_cake-banner_Web_1583x426.jpg?tr=w-1280,dpr-1.5,q-70"
-            alt="Nature 1"
-            style={{ width: "100%", height: "350px", objectFit: "fill" }}
-          />
-        </SwiperSlide>
-
-         
-
-        <SwiperSlide>
-          <img
-            src="https://imgcdn.floweraura.com/banner_Web_1583x426_4.jpg?tr=w-1280,dpr-1.5,q-70"
-            alt="Nature 2"
-            style={{ width: "100%", height: "350px", objectFit: "cover" }}
-          />
-        </SwiperSlide>
-        <SwiperSlide>
-          <img
-            src="https://imgcdn.floweraura.com/Christmas-banner_international_Web_1583x426.jpg?tr=w-1280,dpr-1.5,q-70"
-            alt="Nature 3"
-            style={{ width: "100%", height: "350px", objectFit: "cover" }}
-          />
-        </SwiperSlide>
-
-        <SwiperSlide>
-          <img
-            src="https://imgcdn.floweraura.com/chocolate-cake-landingpage-fa-desktop.jpg?tr=w-1280,dpr-1.5,q-70"
-            alt="Nature 4"
-            style={{ width: "100%", height: "350px", objectFit: "fill" }}
-          />
-        </SwiperSlide>
-        {/* <SwiperSlide>
-          <img
-            src="https://imgcdn.floweraura.com/chocolate-cake-landingpage-fa-desktop.jpg?tr=w-1280,dpr-1.5,q-70"
-            alt="Nature 5"
-            style={{ width: "100%", height: "350px", objectFit: "fill" }}
-          />
-        </SwiperSlide> */}
+        {banners.map((banner) => (
+          <SwiperSlide key={banner._id}>
+            <img
+              src={banner.image}
+              alt={banner.bannerName}
+              style={{
+                width: "100%",
+                height: isMobile ? "250px" : "300px",
+                objectFit: "cover",
+              }}
+              />
+ </SwiperSlide>
+        ))}
+    
+ 
+        
       </Swiper>
       <div className="custom-swiper-pagination" style={{ display: "flex", justifyContent: "center", marginTop: "15px" }}></div>
     </div>
