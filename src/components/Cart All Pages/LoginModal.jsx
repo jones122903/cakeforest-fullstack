@@ -94,7 +94,7 @@ const LoginModal = ({ isOpen, onClose }) => {
 
         showToast("success", "Login successful!");
         onClose();
-        navigate("/details");
+        // navigate("/details");
       } catch (error) {
         console.error(error);
         showToast("error", "Google Login Failed");
@@ -155,7 +155,7 @@ const LoginModal = ({ isOpen, onClose }) => {
         : { email, password };
 
       const response = await axios.post(`${API_URL}${endpoint}`, payload);
-      console.log("ghjkl;lkjhghjkjhghjk", response)
+       
 
       // Success response
       if (response.data.success) {
@@ -165,7 +165,8 @@ const LoginModal = ({ isOpen, onClose }) => {
           user: {
             id: response.data.user._id,
             name: response.data.user.name,
-            email: response.data.user.email
+            email: response.data.user.email,
+            role:response.data.user.role,
           }
         }));
 
@@ -194,7 +195,7 @@ const LoginModal = ({ isOpen, onClose }) => {
 
           // Close modal and navigate for login
           onClose();
-          navigate("/details");
+          // navigate("/details");
         }
       }
     } catch (error) {
