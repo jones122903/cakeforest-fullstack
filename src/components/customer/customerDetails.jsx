@@ -415,7 +415,7 @@ const totalAmount =
 
       <header className={styles.header}>
         <div className={styles.checkoutHeaderContent}>
-          <div className={styles.checkoutLogo}>
+          <div className={styles.checkoutLogo} onClick={()=>{navigate("/")}}>
             <svg viewBox="0 0 500 80" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" style={{ height: "50px", width: "auto" }}>
               <path d="M30 20 L40 35 L50 20 L40 28 L30 20 Z" fill="#244B64" />
               <path d="M22 28 L40 45 L58 28 L40 36 L22 28 Z" fill="#2C5F7C" />

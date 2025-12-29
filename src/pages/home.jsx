@@ -14,9 +14,14 @@ import BlogSection from "../components/Blogs/Blogs.jsx";
 import ReviewsSection from "../components/reviewsection/reviewsection.jsx";
 import Footer from "../components/footer/footer.jsx";
 import Topbar from "../components/topbar/topbar.jsx";
+import { useSelector } from "react-redux";
 
 function Home() {
   const navigate = useNavigate();
+
+  const role =  useSelector((state)=>state?.auth?.user?.role)
+
+  console.log(role)
 
   return (
     <div>
@@ -26,6 +31,8 @@ function Home() {
 
       <div className="homeContainer">
         {/* Admin Panel Access Button */}
+
+        {role === "admin" &&
         <motion.button
           onClick={() => navigate('/admin/products')}
           initial={{ opacity: 0, scale: 0 }}
@@ -57,6 +64,7 @@ function Home() {
         >
           <Settings size={28} color="white" />
         </motion.button>
+}
 
         <div className="mb-4 mt-4">
           

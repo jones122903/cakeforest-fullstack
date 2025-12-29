@@ -19,15 +19,16 @@ import {
   Gift,
   Package,
   Star,
+  House,
 } from "lucide-react";
 import { IndianRupee } from "lucide-react";
 import styles from "./topbar.module.css";
 import { useSelector, useDispatch } from "react-redux";
 import { clearToken } from "../../redux/slice/authSlice";
-import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import OrderDrawer from "./OrderDrawer";
 import CartDrawer from "./cart/cartDrawer.jsx";
+import { useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { showHotToast } from "../../admin/utils/showToast.jsx";
 
@@ -47,7 +48,8 @@ const [cartCount, setCartCount] = useState(0);
 
 
   const dispatch = useDispatch();
-  const navigate = useNavigate();
+const location = useLocation();
+const navigate = useNavigate();
   const { token, user } = useSelector((state) => state.auth);
   const api_url = import.meta.env.VITE_API_URL;
 
@@ -246,6 +248,7 @@ const handleSearchChange = (e) => {
                 viewBox="0 0 350 80"
                 preserveAspectRatio="xMidYMid meet"
                 xmlns="http://www.w3.org/2000/svg"
+                onClick={()=>{navigate("/")}}
               >
                 <path d="M30 20 L40 35 L50 20 L40 28 L30 20 Z" fill="#244B64" />
                 <path d="M22 28 L40 45 L58 28 L40 36 L22 28 Z" fill="#2C5F7C" />
@@ -491,6 +494,16 @@ const handleSearchChange = (e) => {
               </div>
             )}
             
+          {location.pathname !== "/" && (
+  <div
+    className={styles.drawerMenuItem}
+    onClick={() => navigate("/")}
+  >
+    <House size={21} color="#2C5F7C" />
+    <span className={styles.drawerMenuText}>Home</span>
+  </div>
+)}
+
           {/* ORDERS */}
           <div className={styles.drawerMenuItem} onClick={handleOrderClick}>
             <Package size={22} color="#2C5F7C" />
