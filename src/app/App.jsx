@@ -16,6 +16,7 @@ import Settings from "../admin/pages/Settings/Settings.jsx";
 import PrizePoolList from "../admin/pages/PrizePool/PrizePoolList.jsx";
 import PrizePoolStats from "../admin/pages/PrizePool/PrizePoolStats.jsx";
 import CreatePrizePool from "../admin/pages/PrizePool/CreatePrizePool.jsx";
+import Banner from "../admin/pages/banner/banner.jsx";
 import "./App.css";
 import CartUI from "../components/Cart All Pages/CartUI.jsx";
 import OrderSummary from "../components/Cart All Pages/CartUI.jsx";
@@ -36,36 +37,8 @@ import ReviewsPage from "../components/Review_page/ReviewsPage.jsx";
 import RewardsPage from "../pages/RewardsPage.jsx";
 import ContactPage from "../pages/ContactPage.jsx";
 import AboutPage from "../pages/AboutPage.jsx";
-
-
-
-
-
-// import CakeGallery from "../components/cake_gallery/CakeGallery.jsx";
-
-{/* <Route path="/cake_category" element={<CakeCategory/>} />
-// import CakeGallery from "../components/cake_gallery/CakeGallery.jsx";
-
-{
-  /* <Route path="/cake_category" element={<CakeCategory/>} />
-
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
  
-
-
-
-
-
-      <Routes>
-        <Route path="/" element={<Home/>} />
-        <Route path="/topbar" element={<Topbar />} />
-        <Route path="/footer" element={<Footer />} />
-        <Route path="/cart" element={<OrderSummary/>} />
-        {/* <Route path="/blog" element={<BlogSection/>} /> */}
-{/* <Route path="/category" element={<Category />} />
-        <Route path="/cake_category" element={<CakeCategory/>} />
-
-        <Route path="/carousel" element={<Carousel/>} />
-        <Route path="/cake_flovor" element={<Cakeflovour/>} /> */}
 
 
 function App() {
@@ -108,6 +81,7 @@ function App() {
                 <Route path="products/edit/:id" element={<AddProduct />} />
                 <Route path="orders" element={<Orders />} />
                 <Route path="customers" element={<Customers />} />
+                <Route path="banners" element={<Banner />} />
                 <Route path="expenses" element={<Expenses />} />
                 <Route path="coupons" element={<Coupons />} />
                 <Route path="prize-pools" element={<PrizePoolList />} />
