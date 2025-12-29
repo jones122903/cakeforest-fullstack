@@ -53,7 +53,15 @@ const api_url = import.meta.env.VITE_API_URL;
         }}
       >
 
-        {banners.map((banner) => (
+        <SwiperSlide>
+          <img
+            src="https://imgcdn.floweraura.com/chocolate-cake-landingpage-fa-desktop.jpg?tr=w-1280,dpr-1.5,q-70"
+            alt="Nature 4"
+            style={{ width: "100%", height: "350px", objectFit: "fill" }}
+          />
+        </SwiperSlide>
+
+        {banners.length >= 0 && banners.map((banner) => (
           <SwiperSlide key={banner._id}>
             <img
               src={banner.image}
