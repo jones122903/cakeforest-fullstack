@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useSelector } from "react-redux";
 import { motion, AnimatePresence } from "framer-motion";
-import { Gift, Clock, CheckCircle, AlertCircle, Sparkles, User } from "lucide-react";
+import { Gift, Clock, CheckCircle, AlertCircle, Sparkles, User, ShoppingCart } from "lucide-react";
 import Topbar from "../components/topbar/topbar";
 import ScratchCard from "../components/ScratchCard/ScratchCard";
 import toast from "react-hot-toast";
@@ -244,8 +244,11 @@ const RewardsPage = () => {
   return (
     <div style={{ background: "#fdf8f5", minHeight: "100vh" }}>
       <Topbar />
+      
       <div style={{ maxWidth: "1200px", margin: "0 auto", padding: "20px 20px" }}>
+        {cards.length > 0
         
+        && (
         <header style={{ textAlign: "center", marginBottom: "30px" }}>
           <motion.div
                            animate={{ 
@@ -269,6 +272,7 @@ const RewardsPage = () => {
           }}>My Rewards</h1>
           <p style={{ color: "#666", marginTop: "10px" }}>Scratch, Reveal & Claim your exclusive gifts!</p>
         </header>
+       )}
 
         {/* Filters and Sort */}
         {!loading && cards.length > 0 && (
@@ -354,11 +358,97 @@ const RewardsPage = () => {
             <p style={{ color: "#999" }}>Try selecting a different filter</p>
           </div>
         ) : cards.length === 0 ? (
-          <div style={{ textAlign: "center", padding: "50px", background: "white", borderRadius: "20px", boxShadow: "0 10px 30px rgba(0,0,0,0.05)" }}>
-            <AlertCircle size={48} color="#ccc" style={{ marginBottom: "15px" }} />
-            <h3 style={{ color: "#888" }}>No Rewards Yet</h3>
-            <p style={{ color: "#999" }}>Place an order to win exciting scratch cards!</p>
-          </div>
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            style={{ 
+              textAlign: "center", 
+              padding: "80px 20px", 
+              background: "white", 
+              borderRadius: "32px", 
+              boxShadow: "0 20px 60px rgba(0,0,0,0.05)",
+              border: "1px solid #f0f0f0",
+              maxWidth: "600px",
+              margin: "40px auto"
+            }}
+          >
+            <motion.div
+              animate={{ 
+                y: [0, -15, 0],
+              }}
+              transition={{ 
+                duration: 3, 
+                repeat: Infinity,
+                ease: "easeInOut" 
+              }}
+              style={{ 
+                width: "120px",
+                height: "120px",
+                background: "#fdf8f5",
+                borderRadius: "50%",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                margin: "0 auto 30px"
+              }}
+            >
+              <div style={{ position: "relative" }}>
+                <Gift size={60} color="#0e4d65" strokeWidth={1.5} />
+                <motion.div
+                  animate={{ scale: [1, 1.2, 1], opacity: [0.5, 1, 0.5] }}
+                  transition={{ duration: 2, repeat: Infinity }}
+                  style={{
+                    position: "absolute",
+                    top: -10,
+                    right: -10,
+                    color: "#0e4d65"
+                  }}
+                >
+                  <Sparkles size={24} />
+                </motion.div>
+              </div>
+            </motion.div>
+
+            <h3 style={{ 
+              fontSize: "24px", 
+              fontWeight: "800", 
+              color: "#0e4d65",
+              marginBottom: "15px" 
+            }}>Your Treasure Chest is Empty!</h3>
+            
+            <p style={{ 
+              color: "#666", 
+              fontSize: "16px", 
+              maxWidth: "400px", 
+              margin: "0 auto 35px",
+              lineHeight: "1.6"
+            }}>
+              Don't miss out on the magic! Place your first order today and win guaranteed scratch cards with surprise rewards.
+            </p>
+
+            <motion.button
+              whileHover={{ scale: 1.05, boxShadow: "0 10px 25px rgba(14, 77, 101, 0.3)" }}
+              whileTap={{ scale: 0.95 }}
+              onClick={() => navigate("/")}
+              style={{
+                padding: "16px 35px",
+                background: "#0e4d65",
+                color: "white",
+                border: "none",
+                borderRadius: "16px",
+                fontSize: "16px",
+                fontWeight: "700",
+                cursor: "pointer",
+                display: "inline-flex",
+                alignItems: "center",
+                gap: "10px",
+                boxShadow: "0 8px 20px rgba(14, 77, 101, 0.2)"
+              }}
+            >
+              <ShoppingCart size={18} />
+              Start Shopping Now
+            </motion.button>
+          </motion.div>
         ) : (
           <div style={{ 
             display: "grid", 
