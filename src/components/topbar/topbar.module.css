@@ -451,7 +451,7 @@
 /* Very small mobile */
 @media (max-width: 600px) {
   .logo {
-    height: 36px;
+    height: 40px;
     margin-right: 0;
   }
 
@@ -504,7 +504,7 @@
 /* Extra small mobile */
 @media (max-width: 480px) {
   .logo {
-    height: 32px;
+    height: 40px;
   }
 
   .navbar {
