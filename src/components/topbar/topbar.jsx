@@ -30,7 +30,7 @@ import { clearToken } from "../../redux/slice/authSlice";
 import Swal from "sweetalert2";
 import OrderDrawer from "./OrderDrawer";
 import CartDrawer from "./cart/cartDrawer.jsx";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import axios from "axios";
 import { showHotToast } from "../../admin/utils/showToast.jsx";
 
