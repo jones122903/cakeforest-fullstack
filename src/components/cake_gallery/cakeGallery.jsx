@@ -265,15 +265,21 @@ const CakeGallery = () => {
                           swiper.autoplay.stop();
                         }}
                       >
-                        {cake.images.map((image, idx) => (
-                          <SwiperSlide key={idx}>
-                            <img
-                              src={image}
-                              alt={`${cake.cakeName} - Image ${idx + 1}`}
-                              className={styles.cakeImage}
-                            />
-                          </SwiperSlide>
-                        ))}
+                        {cake.images.map((image, idx) => {
+                          const cleanImage = image.startsWith('undefined')
+                            ? image.replace('undefined', import.meta.env.VITE_API_URL_SOUND)
+                            : image;
+
+                          return (
+                            <SwiperSlide key={idx}>
+                              <img
+                                src={cleanImage}
+                                alt={`${cake.cakeName} - Image ${idx + 1}`}
+                                className={styles.cakeImage}
+                              />
+                            </SwiperSlide>
+                          );
+                        })}
                       </Swiper>
 
                       {cake.availability === "available" && (
@@ -349,13 +355,10 @@ const CakeGallery = () => {
                         {cake.discount > 0 && (
                           <>
                             <p className={styles.originalPrice}>
-                              ₹
-                              {Math.round(
-                                cake.price + (cake.price * cake.discount) / 100
-                              )}
+                              ₹{Math.round(cake.price + cake.discount)}
                             </p>
                             <span className={styles.discountBadge}>
-                              {cake.discount}% OFF
+                              ₹{cake.discount} OFF
                             </span>
                           </>
                         )}

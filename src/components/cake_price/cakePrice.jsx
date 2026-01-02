@@ -184,15 +184,22 @@ const CakePrice = () => {
                       swiper.autoplay.stop();
                     }}
                   >
-                    {cake.images.map((image, idx) => (
-                      <SwiperSlide key={idx}>
-                        <img
-                          src={image}
-                          alt={`${cake.cakeName} - Image ${idx + 1}`}
-                          className={styles.cakeImage}
-                        />
-                      </SwiperSlide>
-                    ))}
+                    {cake.images.map((image, idx) => {
+                      // Fix for broken URLs that might have 'undefined' from server
+                      const cleanImage = image.startsWith('undefined')
+                        ? image.replace('undefined', import.meta.env.VITE_API_URL_SOUND)
+                        : image;
+
+                      return (
+                        <SwiperSlide key={idx}>
+                          <img
+                            src={cleanImage}
+                            alt={`${cake.cakeName} - Image ${idx + 1}`}
+                            className={styles.cakeImage}
+                          />
+                        </SwiperSlide>
+                      );
+                    })}
                   </Swiper>
 
                   <button
@@ -253,7 +260,20 @@ const CakePrice = () => {
 
                 <div className={styles.cardBody}>
                   <h5 className={styles.cakeName}>{cake.cakeName}</h5>
-                  <p className={styles.cakePrice}>₹ {cake.price}</p>
+
+                  <div className={styles.priceContainer}>
+                    <p className={styles.cakePrice}>₹{cake.price}</p>
+                    {cake.discount > 0 && (
+                      <>
+                        <p className={styles.originalPrice}>
+                          ₹{Math.round(cake.price + cake.discount)}
+                        </p>
+                        <span className={styles.discountBadge}>
+                          ₹{cake.discount} OFF
+                        </span>
+                      </>
+                    )}
+                  </div>
 
                   {/* Static Rating as data isn't in API yet */}
                   <div className={styles.ratingSection}>
@@ -265,7 +285,7 @@ const CakePrice = () => {
                     <span className={styles.deliveryLabel}>
                       Earliest Delivery :
                     </span>
-                    <span className={styles.deliveryTime}> Tomorrow</span>
+                    <span className={styles.deliveryTime}>Tomorrow</span>
                   </div>
                 </div>
               </div>
