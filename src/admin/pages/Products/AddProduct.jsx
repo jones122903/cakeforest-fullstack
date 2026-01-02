@@ -25,6 +25,7 @@ import { CheckCircle, XCircle } from "lucide-react";
 import Swal from "sweetalert2";
 import { Popconfirm, Button } from "antd";
 import { showHotToast } from "../../utils/showToast.jsx";
+import { useSelector } from "react-redux";
 
 
 const AddProduct = () => {
@@ -42,11 +43,12 @@ const AddProduct = () => {
     images: [], // after upload → URL array
   });
 
-  const token =
-"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5NDRlMTEzMTI1MzlkNzQzMjdiMzhjMyIsImlhdCI6MTc2NjEyMTc1MywiZXhwIjoxNzY2NzI2NTUzfQ.S2ukDRkxUtWPU4TlLWXQEOhkr2JBqrquGG3FLFHjogI";
+  // Get token from Redux state instead of localStorage
+  const token = useSelector((state) => state.auth.token);
   const api_url = import.meta.env.VITE_API_URL;
   const id = useLocation().state?.id;
   console.log(id);
+
 
   const [imagePreview, setImagePreview] = useState([]);
   const [replaceTarget, setReplaceTarget] = useState(null);
@@ -57,8 +59,18 @@ const AddProduct = () => {
     "Kids",
     "Love",
     "Wedding",
-   
+
   ];
+
+  // Check if user is authenticated
+  useEffect(() => {
+    if (!token) {
+      showHotToast("error", "Please login to access this page");
+      setTimeout(() => {
+        navigate("/login");
+      }, 1500);
+    }
+  }, [token, navigate]);
 
   useEffect(() => {
     if (!id) return; // no id → it's add mode
@@ -81,10 +93,18 @@ const AddProduct = () => {
           weight: Array.isArray(p.weight) ? p.weight : (p.weight ? [p.weight] : []),
           availability: p.availability,
           stock: p.stock,
-          images: p.images.map((img) => ({ preview: img })), // preview only
+          images: p.images.map((img) => ({
+            preview: img.startsWith('undefined')
+              ? img.replace('undefined', import.meta.env.VITE_API_URL_SOUND || 'http://localhost:5000')
+              : img
+          })),
         });
 
-        setImagePreview(p.images); // optional
+        setImagePreview(p.images.map(img =>
+          img.startsWith('undefined')
+            ? img.replace('undefined', import.meta.env.VITE_API_URL_SOUND || 'http://localhost:5000')
+            : img
+        ));
       } catch (error) {
         showHotToast("error", "Failed to load product details");
       }
@@ -100,6 +120,7 @@ const AddProduct = () => {
 
   const handleImageUpload = async (e) => {
     const files = Array.from(e.target.files);
+    console.log("📸 Files selected:", files);
     const newFile = files[0];
 
     // 🔥 1️⃣ If replaceTarget is set → REPLACE MODE
@@ -123,16 +144,27 @@ const AddProduct = () => {
     }
 
     // 🔥 2️⃣ ADD MODE (normal upload)
-    const newImages = files.map((file) => ({
-      file,
-      preview: URL.createObjectURL(file),
-    }));
+    const newImages = files.map((file) => {
+      const preview = URL.createObjectURL(file);
+      console.log("🖼️ Created preview URL:", preview);
+      return {
+        file,
+        preview,
+      };
+    });
 
-    setFormData((prev) => ({
-      ...prev,
-      images: [...prev.images, ...newImages],
-    }));
+    console.log("✅ New images array:", newImages);
+
+    setFormData((prev) => {
+      const updated = {
+        ...prev,
+        images: [...prev.images, ...newImages],
+      };
+      console.log("📦 Updated formData.images:", updated.images);
+      return updated;
+    });
   };
+
 
   const handleRemoveImage = async (imgObj) => {
     // If it is an old image (existing in database)
@@ -259,7 +291,7 @@ const AddProduct = () => {
     e.preventDefault();
 
     const errorMessage = validateForm();
-    if (errorMessage) return  showHotToast("error", errorMessage);;
+    if (errorMessage) return showHotToast("error", errorMessage);;
 
     try {
       let imageUrls = [];
@@ -327,12 +359,26 @@ const AddProduct = () => {
 
       navigate("/admin/products");
     } catch (error) {
-      showHotToast(
-        "error",
-        error.response?.data?.message || "Something went wrong"
-      );
+      console.error("Error submitting product:", error);
+
+      // Check if it's a token-related error
+      if (error.response?.status === 401) {
+        const errorMessage = error.response?.data?.message || "Session expired";
+        showHotToast("error", errorMessage);
+
+        // Redirect to login after a short delay
+        setTimeout(() => {
+          navigate("/login");
+        }, 2000);
+      } else {
+        showHotToast(
+          "error",
+          error.response?.data?.message || "Something went wrong"
+        );
+      }
     }
   };
+
 
   return (
     <div className="add-product">
@@ -361,12 +407,14 @@ const AddProduct = () => {
                   />
                 </label>
 
+                {console.log("🎨 Rendering images. Count:", formData.images.length, "Images:", formData.images)}
+
                 <div className="image-preview-grid">
                   {formData.images.map((img, index) => (
                     <div key={index} className="image-preview">
                       <img src={img.preview} alt={`Preview ${index + 1}`} />
 
-                      {console.log(img.preview)}
+                      {console.log(`🖼️ Rendering image ${index}:`, img.preview)}
 
                       {/* REMOVE BUTTON */}
                       <button
@@ -550,17 +598,16 @@ const AddProduct = () => {
                     <div className={styles.floatingGroup}>
                       <TextField
                         type="tel"
-                        label="Discount (%)"
+                        label="Discount (₹)"
                         name="discount"
                         value={formData.discount}
                         onChange={handleInputChange}
                         variant="outlined"
                         fullWidth
-                        inputProps={{ min: 0, max: 100 }}
                         InputProps={{
                           startAdornment: (
                             <InputAdornment position="start">
-                              <Percent size={20} color="#2C5F7C" />
+                              <IndianRupee size={20} color="#2C5F7C" />
                             </InputAdornment>
                           ),
                         }}
@@ -581,13 +628,13 @@ const AddProduct = () => {
                         rows={2}
                         fullWidth
                         variant="outlined"
-                        // InputProps={{
-                        //   startAdornment: (
-                        //     <InputAdornment position="top">
-                        //       <FileText size={20} className="mb-4 " color="#2C5F7C" />
-                        //     </InputAdornment>
-                        //   ),
-                        // }}
+                      // InputProps={{
+                      //   startAdornment: (
+                      //     <InputAdornment position="top">
+                      //       <FileText size={20} className="mb-4 " color="#2C5F7C" />
+                      //     </InputAdornment>
+                      //   ),
+                      // }}
                       />
                     </div>
                   </div>
