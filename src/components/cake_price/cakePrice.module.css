@@ -171,7 +171,35 @@
   margin-bottom: 0.5rem;
   min-height: 1.8rem;
   font-weight: 600;
+  margin: 0;
 }
+
+.priceContainer {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.originalPrice {
+  font-size: 14px;
+  color: #999;
+  text-decoration: line-through;
+  margin: 0;
+  font-weight: 400;
+}
+
+.discountBadge {
+  background: #d63384;
+  color: white;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
 
 .ratingSection {
   display: flex;
@@ -397,6 +425,20 @@
   .cakePrice {
     font-size: 14px;
   }
+
+  .priceContainer {
+    gap: 0.4rem;
+  }
+
+  .originalPrice {
+    font-size: 12px;
+  }
+
+  .discountBadge {
+    font-size: 9px;
+    padding: 2px 4px;
+  }
+
 
   .ratingSection {
     gap: 0.35rem;
