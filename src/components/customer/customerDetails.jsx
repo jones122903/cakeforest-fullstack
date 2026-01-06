@@ -1,21 +1,35 @@
 import React, { useState } from "react";
 import styles from "./customerDetails.module.css";
 import {
-  User, Phone, Mail, MessageCircle, MapPin, Navigation, Building, Flag, CreditCard, CheckCircle, ShoppingBag, X, Calendar, Clock, Cake
+  User,
+  Phone,
+  Mail,
+  MessageCircle,
+  MapPin,
+  Navigation,
+  Building,
+  Flag,
+  CreditCard,
+  CheckCircle,
+  ShoppingBag,
+  X,
+  Calendar,
+  Clock,
+  Cake,
 } from "lucide-react";
 import { useSelector } from "react-redux";
 import { useNavigate, useLocation } from "react-router-dom";
 import axios from "axios";
 import { useEffect } from "react";
 import Swal from "sweetalert2";
-import { TimePicker } from 'antd';
-import dayjs from 'dayjs';
+import { TimePicker } from "antd";
+import dayjs from "dayjs";
 import { Popconfirm, Button } from "antd";
 import CouponSection from "../../admin/pages/Coupons/CouponSection";
 import ScratchCard from "../ScratchCard/ScratchCard";
 import { showHotToast } from "../../admin/utils/showToast";
 
- const format = "hh:mm A"; // ✅ 12-hour format with AM/PM
+const format = "hh:mm A"; // ✅ 12-hour format with AM/PM
 
 const CustomerDetails = () => {
   const [formData, setFormData] = useState({
@@ -24,7 +38,7 @@ const CustomerDetails = () => {
     email: "",
     whatsapp: "",
     deliveryDate: new Date().toISOString().split("T")[0],
-    deliveryTime:  "",
+    deliveryTime: "",
     wishesOnCake: "",
     flatNo: "",
     street: "",
@@ -49,7 +63,11 @@ const CustomerDetails = () => {
 
   useEffect(() => {
     if (!token) {
-      Swal.fire({ icon: "warning", title: "Please Login", text: "You need to login first to place an order" });
+      Swal.fire({
+        icon: "warning",
+        title: "Please Login",
+        text: "You need to login first to place an order",
+      });
       navigate("/");
     }
   }, [token, navigate]);
@@ -57,8 +75,17 @@ const CustomerDetails = () => {
   const incomingOrderDetails = location.state?.orderDetails;
   const isCartOrder = Array.isArray(incomingOrderDetails?.items);
 
+  const regex = {
+    name: /^[a-zA-Z\s]+$/,
+    phone: /^[0-9]{10}$/,
+    pincode: /^[0-9]{6}$/,
+    email: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+    numbersOnly: /^[0-9]*$/,
+  };
+
+
   const orderDetails = isCartOrder
-  ? {
+    ? {
       // 🛒 CART ORDER
       items: incomingOrderDetails.items.map((item) => ({
         cakeName: item.productName,
@@ -70,7 +97,7 @@ const CustomerDetails = () => {
       deliveryCharge: incomingOrderDetails.deliveryFee || 50,
       totalAmount: incomingOrderDetails.grandTotal,
     }
-  : {
+    : {
       // 🧁 SINGLE BUY NOW
       items: [
         {
@@ -91,9 +118,8 @@ const CustomerDetails = () => {
         0,
     };
 
-    console.log(incomingOrderDetails,"orderdetail")
-  
-  
+  console.log(incomingOrderDetails, "orderdetail");
+
   // const orderDetails = {
   //   _id: incomingOrderDetails?._id,
   //   cakeName: incomingOrderDetails?.cakeName || "Red Velvet Bliss",
@@ -106,33 +132,38 @@ const CustomerDetails = () => {
   //   quantity: incomingOrderDetails?.quantity || 1,
   // };
 
- const subtotal = orderDetails.items.reduce(
-  (sum, item) => sum + Number(item.price || 0),
-  0
-);
+  const subtotal = orderDetails.items.reduce(
+    (sum, item) => sum + Number(item.price || 0),
+    0
+  );
 
-const discount = appliedCoupon
-  ? Number(appliedCoupon.discountAmount || 0)
-  : 0;
+  const discount = appliedCoupon
+    ? Number(appliedCoupon.discountAmount || 0)
+    : 0;
 
-const totalAmount =
-  subtotal + Number(orderDetails.deliveryCharge || 0) - discount;
-
+  const totalAmount =
+    subtotal + Number(orderDetails.deliveryCharge || 0) - discount;
 
   useEffect(() => {
     const fetchUserDetails = async () => {
       const userId = user?._id || user?.id;
       if (!userId) return;
       try {
-        const response = await axios.get(`${import.meta.env.VITE_API_URL}/details/${userId}`, { headers: { Authorization: `Bearer ${token}` } });
+        const response = await axios.get(
+          `${import.meta.env.VITE_API_URL}/details/${userId}`,
+          { headers: { Authorization: `Bearer ${token}` } }
+        );
         if (response.data.success && response.data.details) {
           setFormData({
             fullName: response.data.details.fullName || "",
             phone: response.data.details.phone || "",
             email: response.data.details.email || user.email || "",
             whatsapp: response.data.details.whatsapp || "",
-            deliveryDate: response.data.details.deliveryDate || new Date().toISOString().split("T")[0],
-            deliveryTime: response.data.details.deliveryTime || dayjs().format(format),
+            deliveryDate:
+              response.data.details.deliveryDate ||
+              new Date().toISOString().split("T")[0],
+            deliveryTime:
+              response.data.details.deliveryTime || dayjs().format(format),
             wishesOnCake: response.data.details.wishesOnCake || "",
             flatNo: response.data.details.flatNo || "",
             street: response.data.details.street || "",
@@ -143,7 +174,9 @@ const totalAmount =
             paymentMethod: response.data.details.paymentMethod || "online",
           });
         }
-      } catch (error) { console.log("New user"); }
+      } catch (error) {
+        console.log("New user");
+      }
     };
     fetchUserDetails();
   }, [user, token]);
@@ -152,11 +185,16 @@ const totalAmount =
     const newErrors = {};
     if (!formData.fullName.trim()) newErrors.fullName = "Full Name is required";
     if (!formData.phone.trim()) newErrors.phone = "Phone Number is required";
-    else if (!/^\d{10}$/.test(formData.phone)) newErrors.phone = "Enter a valid 10-digit number";
-    if (!formData.deliveryDate.trim()) newErrors.deliveryDate = "Delivery Date is required";
-    if (!formData.deliveryTime.trim()) newErrors.deliveryTime = "Delivery Time is required";
-    if (!formData.flatNo.trim()) newErrors.flatNo = "Flat / Door No is required";
-    if (!formData.street.trim()) newErrors.street = "Street Address is required";
+    else if (!/^\d{10}$/.test(formData.phone))
+      newErrors.phone = "Enter a valid 10-digit number";
+    if (!formData.deliveryDate.trim())
+      newErrors.deliveryDate = "Delivery Date is required";
+    if (!formData.deliveryTime.trim())
+      newErrors.deliveryTime = "Delivery Time is required";
+    if (!formData.flatNo.trim())
+      newErrors.flatNo = "Flat / Door No is required";
+    if (!formData.street.trim())
+      newErrors.street = "Street Address is required";
     if (!formData.city.trim()) newErrors.city = "City is required";
     if (!formData.pincode.trim()) {
       newErrors.pincode = "Pincode is required";
@@ -173,9 +211,24 @@ const totalAmount =
 
   const handleChange = (e) => {
     const { name, value } = e.target;
+
+    // 🚫 Full Name – letters only
+    if (name === "fullName") {
+      if (value !== "" && !regex.name.test(value)) return;
+    }
+
+    // 🚫 Delivery / WhatsApp / Pincode – numbers only
+    if (["phone", "whatsapp", "pincode"].includes(name)) {
+      if (!regex.numbersOnly.test(value)) return;
+    }
+
     setFormData((prev) => ({ ...prev, [name]: value }));
-    if (errors[name]) setErrors((prev) => ({ ...prev, [name]: "" }));
+
+    if (errors[name]) {
+      setErrors((prev) => ({ ...prev, [name]: "" }));
+    }
   };
+
 
   const finishOrder = () => {
     setShowScratchModal(false);
@@ -187,33 +240,33 @@ const totalAmount =
       const userId = user?._id || user?.id;
 
       const cartItemsPayload = isCartOrder
-  ? orderDetails.items.map((item) => ({
-      productId: item.productId || null,
-      cakeName: item.cakeName,
-      weight: item.weight,
-      quantity: item.quantity,
-      cakePrice: item.cakePrice || item.price,
-      price: item.price,
-      addons: item.addons || [],
-      nameOnCake: formData.wishesOnCake,
-    }))
-  : [
-      {
-        productId: incomingOrderDetails._id,
-        cakeName: incomingOrderDetails.cakeName,
-        weight: incomingOrderDetails.weight,
-        quantity: incomingOrderDetails.quantity,
-        cakePrice: incomingOrderDetails.cakePrice,
-        price: incomingOrderDetails.price,
-        addons: incomingOrderDetails.addons || [],
-        nameOnCake: formData.wishesOnCake,
-      },
-    ];
+        ? orderDetails.items.map((item) => ({
+          productId: item.productId || null,
+          cakeName: item.cakeName,
+          weight: item.weight,
+          quantity: item.quantity,
+          cakePrice: item.cakePrice || item.price,
+          price: item.price,
+          addons: item.addons || [],
+          nameOnCake: formData.wishesOnCake,
+        }))
+        : [
+          {
+            productId: incomingOrderDetails._id,
+            cakeName: incomingOrderDetails.cakeName,
+            weight: incomingOrderDetails.weight,
+            quantity: incomingOrderDetails.quantity,
+            cakePrice: incomingOrderDetails.cakePrice,
+            price: incomingOrderDetails.price,
+            addons: incomingOrderDetails.addons || [],
+            nameOnCake: formData.wishesOnCake,
+          },
+        ];
 
-      
       // 1. Update/Save user profile details
-      await axios.post(`${import.meta.env.VITE_API_URL}/details`, 
-        { userId, ...formData }, 
+      await axios.post(
+        `${import.meta.env.VITE_API_URL}/details`,
+        { userId, ...formData },
         { headers: { Authorization: `Bearer ${token}` } }
       );
 
@@ -242,14 +295,17 @@ const totalAmount =
         totalAmount: totalAmount,
         finalAmount: totalAmount,
         deliveryCharge: orderDetails.deliveryCharge,
-        appliedCouponId: appliedCoupon ? appliedCoupon.coupon?._id || appliedCoupon._id : null,
+        appliedCouponId: appliedCoupon
+          ? appliedCoupon.coupon?._id || appliedCoupon._id
+          : null,
         discountAmount: discount,
-        isPaid: isPaid
+        isPaid: isPaid,
       };
 
       // 3. Place Order
-      const orderResponse = await axios.post(`${import.meta.env.VITE_API_URL}/orders`, 
-        orderPayload, 
+      const orderResponse = await axios.post(
+        `${import.meta.env.VITE_API_URL}/orders`,
+        orderPayload,
         { headers: { Authorization: `Bearer ${token}` } }
       );
 
@@ -260,35 +316,44 @@ const totalAmount =
 
         // 4. Generate Scratch Card
         try {
-          const scratchResponse = await axios.post(`${import.meta.env.VITE_API_URL}/scratchcards/generate`, {
-            userId,
-            orderId,
-            totalAmount
-          }, { headers: { Authorization: `Bearer ${token}` } });
+          const scratchResponse = await axios.post(
+            `${import.meta.env.VITE_API_URL}/scratchcards/generate`,
+            {
+              userId,
+              orderId,
+              totalAmount,
+            },
+            { headers: { Authorization: `Bearer ${token}` } }
+          );
 
           if (scratchResponse.data.success) {
             const card = scratchResponse.data.scratchCard;
             setScratchCard(card);
-            setIsRevealed(card.status !== 'CREATED');
-            setIsClaimed(card.status === 'CLAIMED');
+            setIsRevealed(card.status !== "CREATED");
+            setIsClaimed(card.status === "CLAIMED");
             setShowScratchModal(true);
           } else {
             // No card generated, but order is success, so redirect
             finishOrder();
           }
         } catch (err) {
-          console.error("Scratch card generation failed:", err.response?.data || err.message);
+          console.error(
+            "Scratch card generation failed:",
+            err.response?.data || err.message
+          );
           // Redirect even if scratch card fails, it shouldn't block the order completion
           finishOrder();
         }
       }
     } catch (error) {
       console.error("Order placement failed:", error);
-      Swal.fire({ 
-        icon: "error", 
-        title: "Order Failed", 
-        text: error.response?.data?.message || "Something went wrong while placing your order.", 
-        confirmButtonColor: "#0e4d65" 
+      Swal.fire({
+        icon: "error",
+        title: "Order Failed",
+        text:
+          error.response?.data?.message ||
+          "Something went wrong while placing your order.",
+        confirmButtonColor: "#0e4d65",
       });
     }
   };
@@ -296,9 +361,13 @@ const totalAmount =
   const handleClaim = async () => {
     if (!scratchCard?._id) return;
     try {
-      const response = await axios.patch(`${import.meta.env.VITE_API_URL}/scratchcards/${scratchCard._id}/claim`, {}, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+      const response = await axios.patch(
+        `${import.meta.env.VITE_API_URL}/scratchcards/${scratchCard._id}/claim`,
+        {},
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
       if (response.data.success) {
         setIsClaimed(true);
         // Swal.fire({
@@ -308,7 +377,10 @@ const totalAmount =
         //   timer: 2000,
         //   showConfirmButton: false
         // });
-        showHotToast("success", "Coupon Claimed! Your reward is now available for your next order.");
+        showHotToast(
+          "success",
+          "Coupon Claimed! Your reward is now available for your next order."
+        );
         setTimeout(finishOrder, 2000);
       }
     } catch (error) {
@@ -318,7 +390,10 @@ const totalAmount =
   };
 
   const payment = (num) => {
-    if (num === " ") { alert("no value"); return; }
+    if (num === " ") {
+      alert("no value");
+      return;
+    }
 
     const options = {
       key: "rzp_test_YOUR_KEY", // Replace with env variable in real app
@@ -331,7 +406,11 @@ const totalAmount =
         // For now assuming success
         handleOrderPlacement(true);
       },
-      prefill: { name: formData.fullName, email: formData.email, contact: formData.phone },
+      prefill: {
+        name: formData.fullName,
+        email: formData.email,
+        contact: formData.phone,
+      },
       theme: { color: "#0e4d65" },
     };
     const rzp1 = new window.Razorpay(options);
@@ -356,86 +435,230 @@ const totalAmount =
     }
   };
 
- 
-
   return (
     <div className={styles.container}>
       {/* Scratch Card Modal Overlay */}
       {showScratchModal && (
-        <div style={{ position: "fixed", top: 0, left: 0, right: 0, bottom: 0, background: "rgba(0,0,0,0.85)", zIndex: 9999, display: "flex", alignItems: "center", justifyContent: "center", backdropFilter: "blur(5px)" }}>
-            <div style={{ background: "white", padding: "30px", borderRadius: "20px", textAlign: "center", maxWidth: "400px", width: "90%", position:"relative", animation: "popIn 0.3s ease", boxShadow: "0 20px 50px rgba(0,0,0,0.3)" }}>
-                <button onClick={finishOrder} style={{position:"absolute", top:15, right:15, background:"#f5f5f5", border:"none", borderRadius:"50%", padding: 5, cursor:"pointer", display:"flex"}}><X size={20} color="#555" /></button>
-                
-                <h2 style={{color: "#0e4d65", marginBottom: 5, fontSize: "24px", fontWeight: "800"}}>YOU WON! 🎉</h2>
-                <p style={{marginBottom: 20, color: "#666", fontSize: "14px"}}>You've unlocked a mystery reward!</p>
-                
-                <div style={{ position: "relative", zIndex: 10 }}>
-                <ScratchCard 
-                    reward={scratchCard?.rewardText} 
-                    isScratched={scratchCard?.status !== 'CREATED'}
-                    onReveal={() => {
-                        setIsRevealed(true);
-                        // Save reveal status only after 50% scratch is complete
-                        if (scratchCard?.status === 'CREATED') {
-                            axios.patch(`${import.meta.env.VITE_API_URL}/scratchcards/${scratchCard?._id}/reveal`, {}, {
-                                headers: { Authorization: `Bearer ${token}` }
-                            }).then(res => {
-                                if (res.data.success) setScratchCard(res.data.card);
-                            }).catch(console.error);
+        <div
+          style={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            background: "rgba(0,0,0,0.85)",
+            zIndex: 9999,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            backdropFilter: "blur(5px)",
+          }}
+        >
+          <div
+            style={{
+              background: "white",
+              padding: "30px",
+              borderRadius: "20px",
+              textAlign: "center",
+              maxWidth: "400px",
+              width: "90%",
+              position: "relative",
+              animation: "popIn 0.3s ease",
+              boxShadow: "0 20px 50px rgba(0,0,0,0.3)",
+            }}
+          >
+            <button
+              onClick={finishOrder}
+              style={{
+                position: "absolute",
+                top: 15,
+                right: 15,
+                background: "#f5f5f5",
+                border: "none",
+                borderRadius: "50%",
+                padding: 5,
+                cursor: "pointer",
+                display: "flex",
+              }}
+            >
+              <X size={20} color="#555" />
+            </button>
+
+            <h2
+              style={{
+                color: "#0e4d65",
+                marginBottom: 5,
+                fontSize: "24px",
+                fontWeight: "800",
+              }}
+            >
+              YOU WON! 🎉
+            </h2>
+            <p style={{ marginBottom: 20, color: "#666", fontSize: "14px" }}>
+              You've unlocked a mystery reward!
+            </p>
+
+            <div style={{ position: "relative", zIndex: 10 }}>
+              <ScratchCard
+                reward={scratchCard?.rewardText}
+                isScratched={scratchCard?.status !== "CREATED"}
+                onReveal={() => {
+                  setIsRevealed(true);
+                  // Save reveal status only after 50% scratch is complete
+                  if (scratchCard?.status === "CREATED") {
+                    axios
+                      .patch(
+                        `${import.meta.env.VITE_API_URL}/scratchcards/${scratchCard?._id
+                        }/reveal`,
+                        {},
+                        {
+                          headers: { Authorization: `Bearer ${token}` },
                         }
-                    }} 
-                />
-                </div>
-
-                {isRevealed && !isClaimed && !scratchCard?.rewardText?.toLowerCase().includes("luck") && (
-                    <button onClick={handleClaim} style={{marginTop: 25, padding: "12px 30px", background: "#0e4d65", color: "white", border: "none", borderRadius: "10px", cursor: "pointer", fontSize: "16px", fontWeight: "600", width: "100%", boxShadow: "0 4px 15px rgba(14, 77, 101, 0.3)"}}>
-                        Claim Coupon
-                    </button>
-                )}
-
-                {isClaimed && (
-                   <button  style={{marginTop: 25, padding: "12px 30px", background: "#27ae60", color: "white", border: "none", borderRadius: "10px", cursor: "pointer", fontSize: "16px", fontWeight: "600", width: "100%", boxShadow: "0 4px 15px rgba(14, 77, 101, 0.3)"}}>
-                        ✓ Claimed Successfully!
-                    </button>
-                    // <div style={{marginTop: 20, color: "#27ae60", fontWeight: "700"}}>
-                    //     ✓ Claimed Successfully!
-                    // </div>
-                )}
-                
-                {!isRevealed && (
-                    <p style={{marginTop: 15, color: "#999", fontSize: "13px"}}>Scratch the card to reveal your reward!</p>
-                )}
-
-                <button onClick={finishOrder} style={{marginTop: 15, background: "none", border: "none", color: "#666", cursor: "pointer", fontSize: "14px", textDecoration: "underline"}}>
-                    Skip for now
-                </button>
+                      )
+                      .then((res) => {
+                        if (res.data.success) setScratchCard(res.data.card);
+                      })
+                      .catch(console.error);
+                  }
+                }}
+              />
             </div>
+
+            {isRevealed &&
+              !isClaimed &&
+              !scratchCard?.rewardText?.toLowerCase().includes("luck") && (
+                <button
+                  onClick={handleClaim}
+                  style={{
+                    marginTop: 25,
+                    padding: "12px 30px",
+                    background: "#0e4d65",
+                    color: "white",
+                    border: "none",
+                    borderRadius: "10px",
+                    cursor: "pointer",
+                    fontSize: "16px",
+                    fontWeight: "600",
+                    width: "100%",
+                    boxShadow: "0 4px 15px rgba(14, 77, 101, 0.3)",
+                  }}
+                >
+                  Claim Coupon
+                </button>
+              )}
+
+            {isClaimed && (
+              <button
+                style={{
+                  marginTop: 25,
+                  padding: "12px 30px",
+                  background: "#27ae60",
+                  color: "white",
+                  border: "none",
+                  borderRadius: "10px",
+                  cursor: "pointer",
+                  fontSize: "16px",
+                  fontWeight: "600",
+                  width: "100%",
+                  boxShadow: "0 4px 15px rgba(14, 77, 101, 0.3)",
+                }}
+              >
+                ✓ Claimed Successfully!
+              </button>
+              // <div style={{marginTop: 20, color: "#27ae60", fontWeight: "700"}}>
+              //     ✓ Claimed Successfully!
+              // </div>
+            )}
+
+            {!isRevealed && (
+              <p style={{ marginTop: 15, color: "#999", fontSize: "13px" }}>
+                Scratch the card to reveal your reward!
+              </p>
+            )}
+
+            <button
+              onClick={finishOrder}
+              style={{
+                marginTop: 15,
+                background: "none",
+                border: "none",
+                color: "#666",
+                cursor: "pointer",
+                fontSize: "14px",
+                textDecoration: "underline",
+              }}
+            >
+              Skip for now
+            </button>
+          </div>
         </div>
       )}
 
       <header className={styles.header}>
         <div className={styles.checkoutHeaderContent}>
-          <div className={styles.checkoutLogo} onClick={()=>{navigate("/")}}>
-            <svg viewBox="0 0 500 80" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" style={{ height: "50px", width: "auto" }}>
+          <div
+            className={styles.checkoutLogo}
+            onClick={() => {
+              navigate("/");
+            }}
+          >
+            <svg
+              viewBox="0 0 500 80"
+              preserveAspectRatio="xMidYMid meet"
+              xmlns="http://www.w3.org/2000/svg"
+              style={{ height: "50px", width: "auto" }}
+            >
               <path d="M30 20 L40 35 L50 20 L40 28 L30 20 Z" fill="#244B64" />
               <path d="M22 28 L40 45 L58 28 L40 36 L22 28 Z" fill="#2C5F7C" />
               <path d="M15 36 L40 57 L65 36 L40 46 L15 36 Z" fill="#387C9D" />
-              <text x="85" y="52" fill="#2C5F7C" fontSize="55" fontWeight="800" fontFamily="Poppins, sans-serif" letterSpacing="1px">Cake Forest</text>
+              <text
+                x="85"
+                y="52"
+                fill="#2C5F7C"
+                fontSize="55"
+                fontWeight="800"
+                fontFamily="Poppins, sans-serif"
+                letterSpacing="1px"
+              >
+                Cake Forest
+              </text>
             </svg>
           </div>
           <div className={styles.headerRight}>
             <div className={styles.trustBadges}>
               <div className={styles.badgeItem}>
-                <img src="https://bkassets.bakingo.com/bakingo-checkout-geo/static/media/payment.3d900b85.svg" alt="Payment" className={styles.badgeIcon} />
-                <span className={styles.badgeText}>100% Payment <br /> Protection</span>
+                <img
+                  src="https://bkassets.bakingo.com/bakingo-checkout-geo/static/media/payment.3d900b85.svg"
+                  alt="Payment"
+                  className={styles.badgeIcon}
+                />
+                <span className={styles.badgeText}>
+                  100% Payment <br /> Protection
+                </span>
               </div>
               <div className={styles.badgeItem}>
-                <img src="https://bkassets.bakingo.com/bakingo-checkout-geo/static/media/smiles.ba440372.svg" alt="Smiles" className={styles.badgeIcon} />
-                <span className={styles.badgeText}>2 Million Smiles <br /> Delivered</span>
+                <img
+                  src="https://bkassets.bakingo.com/bakingo-checkout-geo/static/media/smiles.ba440372.svg"
+                  alt="Smiles"
+                  className={styles.badgeIcon}
+                />
+                <span className={styles.badgeText}>
+                  2 Million Smiles <br /> Delivered
+                </span>
               </div>
-              <a href="tel:8882553333" className={styles.badgeItem} style={{ textDecoration: "none" }}>
-                <img src="https://bkassets.bakingo.com/bakingo-checkout-geo/static/media/need-assitance.dc31866a.svg" alt="Assistance" className={styles.badgeIcon} />
-                <span className={styles.badgeText}>Need Assistance <br /> +91 8882553333</span>
+              <a
+                href="tel:8882553333"
+                className={styles.badgeItem}
+                style={{ textDecoration: "none" }}
+              >
+                <img
+                  src="https://bkassets.bakingo.com/bakingo-checkout-geo/static/media/need-assitance.dc31866a.svg"
+                  alt="Assistance"
+                  className={styles.badgeIcon}
+                />
+                <span className={styles.badgeText}>
+                  Need Assistance <br /> +91 8882553333
+                </span>
               </a>
             </div>
           </div>
@@ -454,12 +677,23 @@ const totalAmount =
               <div className={styles.row}>
                 <div className={styles.col}>
                   <div className={styles.inputGroup}>
-                    <label className={styles.label}>Full Name <span style={{ color: "#ff6161" }}>*</span></label>
+                    <label className={styles.label}>
+                      Full Name <span style={{ color: "#ff6161" }}>*</span>
+                    </label>
                     <div className={styles.inputWrapper}>
                       <User size={16} className={styles.icon} />
-                      <input type="text" name="fullName" value={formData.fullName} onChange={handleChange} className={styles.input} placeholder="Enter your full name" />
+                      <input
+                        type="text"
+                        name="fullName"
+                        value={formData.fullName}
+                        onChange={handleChange}
+                        className={styles.input}
+                        placeholder="Enter your full name"
+                      />
                     </div>
-                    {errors.fullName && <p className={styles.errorMsg}>{errors.fullName}</p>}
+                    {errors.fullName && (
+                      <p className={styles.errorMsg}>{errors.fullName}</p>
+                    )}
                   </div>
                 </div>
                 <div className={styles.col}>
@@ -467,7 +701,14 @@ const totalAmount =
                     <label className={styles.label}>Email Address</label>
                     <div className={styles.inputWrapper}>
                       <Mail size={16} className={styles.icon} />
-                      <input type="email" name="email" value={formData.email} onChange={handleChange} className={styles.input} placeholder="example@email.com" />
+                      <input
+                        type="email"
+                        name="email"
+                        value={formData.email}
+                        onChange={handleChange}
+                        className={styles.input}
+                        placeholder="example@email.com"
+                      />
                     </div>
                   </div>
                 </div>
@@ -476,12 +717,25 @@ const totalAmount =
               <div className={styles.row}>
                 <div className={styles.col}>
                   <div className={styles.inputGroup}>
-                    <label className={styles.label}>Delivery Number <span style={{ color: "#ff6161" }}>*</span></label>
+                    <label className={styles.label}>
+                      Delivery Number{" "}
+                      <span style={{ color: "#ff6161" }}>*</span>
+                    </label>
                     <div className={styles.inputWrapper}>
                       <Phone size={16} className={styles.icon} />
-                      <input type="tel" name="phone" value={formData.phone} onChange={handleChange} className={styles.input} placeholder="10-digit mobile number" maxLength={10} />
+                      <input
+                        type="tel"
+                        name="phone"
+                        value={formData.phone}
+                        onChange={handleChange}
+                        className={styles.input}
+                        placeholder="10-digit mobile number"
+                        maxLength={10}
+                      />
                     </div>
-                    {errors.phone && <p className={styles.errorMsg}>{errors.phone}</p>}
+                    {errors.phone && (
+                      <p className={styles.errorMsg}>{errors.phone}</p>
+                    )}
                   </div>
                 </div>
                 <div className={styles.col}>
@@ -489,7 +743,14 @@ const totalAmount =
                     <label className={styles.label}>WhatsApp Number</label>
                     <div className={styles.inputWrapper}>
                       <MessageCircle size={16} className={styles.icon} />
-                      <input type="tel" name="whatsapp" value={formData.whatsapp} onChange={handleChange} className={styles.input} placeholder="Optional" />
+                      <input
+                        type="tel"
+                        name="whatsapp"
+                        value={formData.whatsapp}
+                        onChange={handleChange}
+                        className={styles.input}
+                        placeholder="Optional"
+                      />
                     </div>
                   </div>
                 </div>
@@ -520,7 +781,9 @@ const totalAmount =
                         min={new Date().toISOString().split("T")[0]}
                       />
                     </div>
-                    {errors.deliveryDate && <p className={styles.errorMsg}>{errors.deliveryDate}</p>}
+                    {errors.deliveryDate && (
+                      <p className={styles.errorMsg}>{errors.deliveryDate}</p>
+                    )}
                   </div>
                 </div>
                 <div className={styles.col}>
@@ -528,33 +791,75 @@ const totalAmount =
                     <label className={styles.label}>
                       Delivery Time <span style={{ color: "#ff6161" }}>*</span>
                     </label>
-                    <div className={styles.inputWrapper} style={{ border: 'none', padding: 0 }}>
-                      
+                    <div
+                      className={styles.inputWrapper}
+                      style={{ border: "none", padding: 0 }}
+                    >
+                      <TimePicker
+                        value={
+                          formData.deliveryTime
+                            ? dayjs(formData.deliveryTime, format)
+                            : null
+                        }
+                        format={format}
+                        use12Hours // ✅ IMPORTANT
+                        onChange={(time, timeString) => {
+                          setFormData((prev) => ({
+                            ...prev,
+                            deliveryTime: timeString, // eg: "02:30 PM"
+                          }));
+                          if (errors.deliveryTime) {
+                            setErrors((prev) => ({ ...prev, deliveryTime: "" }));
+                          }
+                        }}
+                        disabledTime={() => {
+                          const now = dayjs();
+                          const selectedDate = dayjs(formData.deliveryDate);
+                          const isToday = selectedDate.isSame(now, 'day');
 
-<TimePicker
-  value={
-    formData.deliveryTime
-      ? dayjs(formData.deliveryTime, format)
-      : null
-  }
-  format={format}
-  use12Hours   // ✅ IMPORTANT
-  onChange={(time, timeString) => {
-    setFormData((prev) => ({
-      ...prev,
-      deliveryTime: timeString, // eg: "02:30 PM"
-    }));
-  }}
-  className={styles.input}
-  style={{
-    width: "100%",
-    height: "45px",
-    borderRadius: "10px",
-  }}
-  allowClear={false}
-/>
+                          if (!isToday) return {};
+
+                          const minTime = now.add(3, 'hour');
+                          const minHour = minTime.hour();
+                          const minMinute = minTime.minute();
+
+                          return {
+                            disabledHours: () => {
+                              const hours = [];
+                              for (let i = 0; i < minHour; i++) {
+                                hours.push(i);
+                              }
+                              return hours;
+                            },
+                            disabledMinutes: (selectedHour) => {
+                              if (selectedHour === minHour) {
+                                const minutes = [];
+                                for (let i = 0; i < minMinute; i++) {
+                                  minutes.push(i);
+                                }
+                                return minutes;
+                              }
+                              return [];
+                            },
+                          };
+                        }}
+                        className={styles.timePicker}
+                        popupClassName={styles.timePickerPopup}
+                        style={{
+                          width: "100%",
+                          height: "45px",
+                          borderRadius: "10px",
+                          border: "1px solid #ddd",
+                          backgroundColor: "#fafafa",
+                        }}
+                        allowClear={false}
+                        placeholder="Select delivery time"
+                        suffixIcon={<Clock size={16} color="#0e4d65" />}
+                      />
                     </div>
-                    {errors.deliveryTime && <p className={styles.errorMsg}>{errors.deliveryTime}</p>}
+                    {errors.deliveryTime && (
+                      <p className={styles.errorMsg}>{errors.deliveryTime}</p>
+                    )}
                   </div>
                 </div>
               </div>
@@ -590,44 +895,89 @@ const totalAmount =
               <div className={styles.row}>
                 <div className={styles.col}>
                   <div className={styles.inputGroup}>
-                    <label className={styles.label}>Flat / Door No <span style={{ color: "#ff6161" }}>*</span></label>
+                    <label className={styles.label}>
+                      Flat / Door No <span style={{ color: "#ff6161" }}>*</span>
+                    </label>
                     <div className={styles.inputWrapper}>
                       <Building size={16} className={styles.icon} />
-                      <input type="text" name="flatNo" value={formData.flatNo} onChange={handleChange} className={styles.input} placeholder="House/Flat No." />
+                      <input
+                        type="text"
+                        name="flatNo"
+                        value={formData.flatNo}
+                        onChange={handleChange}
+                        className={styles.input}
+                        placeholder="House/Flat No."
+                      />
                     </div>
-                    {errors.flatNo && <p className={styles.errorMsg}>{errors.flatNo}</p>}
+                    {errors.flatNo && (
+                      <p className={styles.errorMsg}>{errors.flatNo}</p>
+                    )}
                   </div>
                 </div>
                 <div className={styles.col}>
                   <div className={styles.inputGroup}>
-                    <label className={styles.label}>Pincode <span style={{ color: "#ff6161" }}>*</span></label>
+                    <label className={styles.label}>
+                      Pincode <span style={{ color: "#ff6161" }}>*</span>
+                    </label>
                     <div className={styles.inputWrapper}>
                       <Flag size={16} className={styles.icon} />
-                      <input type="text" name="pincode" value={formData.pincode} onChange={handleChange} className={styles.input} placeholder="6-digit pincode" maxLength={6} />
+                      <input
+                        type="tel"
+                        name="pincode"
+                        value={formData.pincode}
+                        onChange={handleChange}
+                        className={styles.input}
+                        placeholder="6-digit pincode"
+                        maxLength={6}
+                      />
                     </div>
-                    {errors.pincode && <p className={styles.errorMsg}>{errors.pincode}</p>}
+                    {errors.pincode && (
+                      <p className={styles.errorMsg}>{errors.pincode}</p>
+                    )}
                   </div>
                 </div>
               </div>
 
               <div className={styles.inputGroup}>
-                <label className={styles.label}>Street Address <span style={{ color: "#ff6161" }}>*</span></label>
+                <label className={styles.label}>
+                  Street Address <span style={{ color: "#ff6161" }}>*</span>
+                </label>
                 <div className={styles.inputWrapper}>
                   <Navigation size={16} className={styles.icon} />
-                  <input type="text" name="street" value={formData.street} onChange={handleChange} className={styles.input} placeholder="Street, Area, Colony" />
+                  <input
+                    type="text"
+                    name="street"
+                    value={formData.street}
+                    onChange={handleChange}
+                    className={styles.input}
+                    placeholder="Street, Area, Colony"
+                  />
                 </div>
-                {errors.street && <p className={styles.errorMsg}>{errors.street}</p>}
+                {errors.street && (
+                  <p className={styles.errorMsg}>{errors.street}</p>
+                )}
               </div>
 
               <div className={styles.row}>
                 <div className={styles.col}>
                   <div className={styles.inputGroup}>
-                    <label className={styles.label}>City <span style={{ color: "#ff6161" }}>*</span></label>
+                    <label className={styles.label}>
+                      City <span style={{ color: "#ff6161" }}>*</span>
+                    </label>
                     <div className={styles.inputWrapper}>
                       <MapPin size={16} className={styles.icon} />
-                      <input type="text" name="city" value={formData.city} onChange={handleChange} className={styles.input} placeholder="City/Town" />
+                      <input
+                        type="text"
+                        name="city"
+                        value={formData.city}
+                        onChange={handleChange}
+                        className={styles.input}
+                        placeholder="City/Town"
+                      />
                     </div>
-                    {errors.city && <p className={styles.errorMsg}>{errors.city}</p>}
+                    {errors.city && (
+                      <p className={styles.errorMsg}>{errors.city}</p>
+                    )}
                   </div>
                 </div>
                 <div className={styles.col}>
@@ -635,7 +985,14 @@ const totalAmount =
                     <label className={styles.label}>Landmark</label>
                     <div className={styles.inputWrapper}>
                       <MapPin size={16} className={styles.icon} />
-                      <input type="text" name="landmark" value={formData.landmark} onChange={handleChange} className={styles.input} placeholder="Nearby landmark" />
+                      <input
+                        type="text"
+                        name="landmark"
+                        value={formData.landmark}
+                        onChange={handleChange}
+                        className={styles.input}
+                        placeholder="Nearby landmark"
+                      />
                     </div>
                   </div>
                 </div>
@@ -643,7 +1000,14 @@ const totalAmount =
 
               <div className={styles.inputGroup}>
                 <label className={styles.label}>Delivery Instructions</label>
-                <textarea name="instructions" value={formData.instructions} onChange={handleChange} className={`${styles.input} ${styles.textarea}`} placeholder="Any special delivery instructions..." style={{ paddingLeft: "12px" }} />
+                <textarea
+                  name="instructions"
+                  value={formData.instructions}
+                  onChange={handleChange}
+                  className={`${styles.input} ${styles.textarea}`}
+                  placeholder="Any special delivery instructions..."
+                  style={{ paddingLeft: "12px" }}
+                />
               </div>
             </section>
 
@@ -652,12 +1016,24 @@ const totalAmount =
                 <CreditCard size={18} color="#0e4d65" />
                 <span>Payment Method</span>
               </div>
- 
 
-              <label className={`${styles.paymentOption} ${formData.paymentMethod === "cod" ? styles.selected : ""}`}>
-                <input type="radio" name="paymentMethod" value="cod" checked={formData.paymentMethod === "cod"} onChange={handleChange} className={styles.radio} />
+              <label
+                className={`${styles.paymentOption} ${formData.paymentMethod === "cod" ? styles.selected : ""
+                  }`}
+              >
+                <input
+                  type="radio"
+                  name="paymentMethod"
+                  value="cod"
+                  checked={formData.paymentMethod === "cod"}
+                  onChange={handleChange}
+                  className={styles.radio}
+                />
                 <span className={styles.paymentLabel}>Cash on Delivery</span>
-                <CheckCircle size={18} color={formData.paymentMethod === "cod" ? "#0e4d65" : "#aaa"} />
+                <CheckCircle
+                  size={18}
+                  color={formData.paymentMethod === "cod" ? "#0e4d65" : "#aaa"}
+                />
               </label>
             </section>
           </form>
@@ -672,116 +1048,108 @@ const totalAmount =
               </div>
 
               <div>
-       
-
                 <div className={styles.orderCard}>
-  {orderDetails.items.map((item, index) => (
-    <div key={index} style={{ marginBottom: "12px" }}>
-      
-      <div className={styles.orderItem}>
-        <span className={styles.orderLabel}>Cake Name</span>
-        <span className={styles.orderValue}>{item.cakeName}</span>
-      </div>
+                  {orderDetails.items.map((item, index) => (
+                    <div key={index} style={{ marginBottom: "12px" }}>
+                      <div className={styles.orderItem}>
+                        <span className={styles.orderLabel}>Cake Name</span>
+                        <span className={styles.orderValue}>
+                          {item.cakeName}
+                        </span>
+                      </div>
 
-      <div className={styles.orderItem}>
-        <span className={styles.orderLabel}>Weight</span>
-        <span className={styles.orderValue}>{item.weight}</span>
-      </div>
+                      <div className={styles.orderItem}>
+                        <span className={styles.orderLabel}>Weight</span>
+                        <span className={styles.orderValue}>{item.weight}</span>
+                      </div>
 
-      <div className={styles.orderItem}>
-        <span className={styles.orderLabel}>Quantity</span>
-        <span className={styles.orderValue}>{item.quantity}</span>
-      </div>
+                      <div className={styles.orderItem}>
+                        <span className={styles.orderLabel}>Quantity</span>
+                        <span className={styles.orderValue}>
+                          {item.quantity}
+                        </span>
+                      </div>
 
-      <div className={styles.orderItem}>
-        <span className={styles.orderLabel}>Add-ons</span>
-        <span className={styles.orderValue}>
-          {item.addons?.length || 0}
-        </span>
-      </div>
+                      <div className={styles.orderItem}>
+                        <span className={styles.orderLabel}>Add-ons</span>
+                        <span className={styles.orderValue}>
+                          {item.addons?.length || 0}
+                        </span>
+                      </div>
 
- <hr />
-      <div className={styles.orderItem}>
-        <span className={styles.orderLabel}>Item Price</span>
-        <span className={styles.orderValue}>₹{item.price}</span>
-      </div>
+                      <hr />
+                      <div className={styles.orderItem}>
+                        <span className={styles.orderLabel}>Item Price</span>
+                        <span className={styles.orderValue}>₹{item.price}</span>
+                      </div>
+                    </div>
+                  ))}
 
-     
-    </div>
-  ))}
+                  {/* DELIVERY */}
+                  <div className={styles.orderItem}>
+                    <span className={styles.orderLabel}>Delivery Charges</span>
+                    <span className={styles.orderValue}>
+                      ₹{orderDetails.deliveryCharge}
+                    </span>
+                  </div>
 
-  {/* DELIVERY */}
-  <div className={styles.orderItem}>
-    <span className={styles.orderLabel}>Delivery Charges</span>
-    <span className={styles.orderValue}>
-      ₹{orderDetails.deliveryCharge}
-    </span>
-  </div>
+                  <CouponSection
+                    subtotal={subtotal}
+                    onCouponApplied={(data) => setAppliedCoupon(data)}
+                  />
 
-  <CouponSection
-    subtotal={subtotal}
-    onCouponApplied={(data) => setAppliedCoupon(data)}
-  />
-
-  <div className={styles.totalRow}>
-    <div className={styles.totalAmount}>
-      <span>Total Amount</span>
-      <span>₹{totalAmount}</span>
-    </div>
-  </div>
-</div>
-
-
-                 
+                  <div className={styles.totalRow}>
+                    <div className={styles.totalAmount}>
+                      <span>Total Amount</span>
+                      <span>₹{totalAmount}</span>
+                    </div>
+                  </div>
+                </div>
               </div>
             </section>
           </div>
         </div>
-
-
       </div>
 
       <footer className={styles.footer}>
-        
-
         <Popconfirm
-                        description={ "Are you sure order this cake?"}
-                        onConfirm={handleSubmit}
-                        // onCancel={() => showToast("error", "Save cancelled")}
-                        okText="Yes"
-                        cancelText="No"
-                        icon={null}
-                        placement="top"
-                        okButtonProps={{
-                          style: {
-                            backgroundColor: "#2C5F7C", // Dark Blue (your form icons color)
-                            color: "white",
-                            borderRadius: "6px",
-                            padding: "4px 15px",
-        
-                            border: "none",
-                          },
-                        }}
-                        descriptionProps={{
-                          style: {
-                            fontSize: "16px",
-                          },
-                        }}
-                        cancelButtonProps={{
-                          style: {
-                            backgroundColor: "#e0e0e0",
-                            color: "#444",
-                            borderRadius: "6px",
-                            padding: "4px 15px",
-        
-                            border: "none",
-                          },
-                        }}
-                      >
-                      <button type="button"  className={styles.submitBtn} disabled={loading}>
-          {loading ? "Placing Order..." : "Place Order"}
-        </button>
-                      </Popconfirm>
+          description={"Are you sure order this cake?"}
+          onConfirm={handleSubmit}
+          // onCancel={() => showToast("error", "Save cancelled")}
+          okText="Yes"
+          cancelText="No"
+          icon={null}
+          placement="top"
+          okButtonProps={{
+            style: {
+              backgroundColor: "#2C5F7C", // Dark Blue (your form icons color)
+              color: "white",
+              borderRadius: "6px",
+              padding: "4px 15px",
+
+              border: "none",
+            },
+          }}
+          descriptionProps={{
+            style: {
+              fontSize: "16px",
+            },
+          }}
+          cancelButtonProps={{
+            style: {
+              backgroundColor: "#e0e0e0",
+              color: "#444",
+              borderRadius: "6px",
+              padding: "4px 15px",
+
+              border: "none",
+            },
+          }}
+        >
+          <button type="button" className={styles.submitBtn} disabled={loading}>
+            {loading ? "Placing Order..." : "Place Order"}
+          </button>
+        </Popconfirm>
       </footer>
     </div>
   );

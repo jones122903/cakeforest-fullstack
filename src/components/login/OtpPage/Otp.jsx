@@ -5,6 +5,7 @@ import { MdOutlineKeyboardBackspace } from "react-icons/md";
 import { useNavigate, useLocation } from "react-router-dom";
 import Swal from "sweetalert2";
 import axios from "axios"
+import { showHotToast } from "../../../admin/utils/showToast";
 
 const Otp = () => {
   const navigate = useNavigate();
@@ -22,20 +23,7 @@ const Otp = () => {
     email: emailFromState,
     otp: ["", "", "", ""],
   });
-
-  const showToast = async (icon, title) => {
-      const Toast = Swal.mixin({
-        toast: true,
-        position: "top-right",
-        iconColor: icon === "success" ? "green" : "red",
-        customClass: {
-          popup: icon === "success" ? "colored-toast" : "colored-toast-error",
-        },
-        showConfirmButton: false,
-        timer: 1500,
-      });
-      await Toast.fire({ icon, title });
-    };
+ 
 
   // ===========================
   // OTP Input Change
@@ -64,7 +52,7 @@ const Otp = () => {
     const otpValue = formData.otp.join("");
 
     if (otpValue.length < 4) {
-      await showToast("error","Enter your 4-digit OTP");
+      await showHotToast("error","Enter your 4-digit OTP");
       return;
     }
  try {
@@ -73,7 +61,7 @@ const Otp = () => {
       otp: otpValue,
     });
 
-    await showToast("success","OTP Verified Successfully");
+    await showHotToast("success","OTP Verified Successfully");
 
     navigate("/comfirm", {
       state: {
@@ -83,7 +71,7 @@ const Otp = () => {
     });
 
   } catch (error) {
-    await showToast("error",error.response?.data?.message || "Invalid OTP");
+    await showHotToast("error",error.response?.data?.message || "Invalid OTP");
   }
   };
 
@@ -96,7 +84,7 @@ const handleResendClick = async () => {
       email: formData.email,
     });
 
-    await showToast("success",res.data.message || "OTP resent!");
+    await showHotToast("success",res.data.message || "OTP resent!");
 
     const newExpire = Date.now() + 60000;
     localStorage.setItem("otp_timer_end", newExpire);
@@ -105,7 +93,7 @@ const handleResendClick = async () => {
     setCanResend(false);
 
   } catch (error) {
-    await showToast("error",error.response?.data?.message || "Failed to resend OTP");
+    await showHotToast("error",error.response?.data?.message || "Failed to resend OTP");
   }
 };
 

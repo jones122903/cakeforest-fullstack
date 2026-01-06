@@ -6,21 +6,43 @@ const PWAInstallPrompt = () => {
     const [showPrompt, setShowPrompt] = useState(false);
 
     useEffect(() => {
-        const handler = (e) => {
-            // Prevent the mini-infobar from appearing on mobile
-            e.preventDefault();
-            // Stash the event so it can be triggered later
-            setDeferredPrompt(e);
-            // Show the install prompt
-            setShowPrompt(true);
-        };
+    const handler = (e) => {
+        const alreadyShown = localStorage.getItem('pwaPromptShown');
+        if (alreadyShown) return;
 
-        window.addEventListener('beforeinstallprompt', handler);
+        e.preventDefault();
+        setDeferredPrompt(e);
+        setShowPrompt(true);
 
-        return () => {
-            window.removeEventListener('beforeinstallprompt', handler);
-        };
-    }, []);
+        // ⏱️ Auto hide after 5 seconds
+        setTimeout(() => {
+            setShowPrompt(false);
+            localStorage.setItem('pwaPromptShown', 'true');
+        }, 5000);
+    };
+
+    window.addEventListener('beforeinstallprompt', handler);
+
+    return () => {
+        window.removeEventListener('beforeinstallprompt', handler);
+    };
+}, []);
+
+    //     const handler = (e) => {
+    //         // Prevent the mini-infobar from appearing on mobile
+    //         e.preventDefault();
+    //         // Stash the event so it can be triggered later
+    //         setDeferredPrompt(e);
+    //         // Show the install prompt
+    //         setShowPrompt(true);
+    //     };
+
+    //     window.addEventListener('beforeinstallprompt', handler);
+
+    //     return () => {
+    //         window.removeEventListener('beforeinstallprompt', handler);
+    //     };
+    // }, []);
 
     const handleInstallClick = async () => {
         if (!deferredPrompt) {
@@ -39,6 +61,30 @@ const PWAInstallPrompt = () => {
         setDeferredPrompt(null);
         setShowPrompt(false);
     };
+
+    useEffect(() => {
+    const handler = (e) => {
+        const alreadyShown = localStorage.getItem('pwaPromptShown');
+        if (alreadyShown) return;
+
+        e.preventDefault();
+        setDeferredPrompt(e);
+        setShowPrompt(true);
+
+        // ⏱️ Auto hide after 5 seconds
+        setTimeout(() => {
+            setShowPrompt(false);
+            localStorage.setItem('pwaPromptShown', 'true');
+        }, 5000);
+    };
+
+    window.addEventListener('beforeinstallprompt', handler);
+
+    return () => {
+        window.removeEventListener('beforeinstallprompt', handler);
+    };
+}, []);
+
 
     const handleDismiss = () => {
         setShowPrompt(false);
