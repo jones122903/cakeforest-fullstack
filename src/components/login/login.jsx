@@ -13,6 +13,11 @@ import { useGoogleLogin } from "@react-oauth/google";
 import { showHotToast } from "../../admin/utils/showToast.jsx";
 import "./login.css";
 
+// PASSWORD VALIDATION – minimum 6 characters
+const validatePassword = (password) => {
+  return password.length >= 6;
+};
+
 const Login = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -24,13 +29,13 @@ const Login = () => {
     email: "",
     password: "",
     loginType: "EMAIL",
-    picture: ""
+    picture: "",
   });
 
   // Sign In Form State
   const [signInData, setSignInData] = useState({
     email: "",
-    password: ""
+    password: "",
   });
 
   // Loading states
@@ -45,21 +50,26 @@ const Login = () => {
   const handleGoogleLogin = useGoogleLogin({
     onSuccess: async (tokenResponse) => {
       try {
-        const response = await axios.post(`${import.meta.env.VITE_API_URL}/auth/google`, {
-          access_token: tokenResponse.access_token,
-        });
+        const response = await axios.post(
+          `${import.meta.env.VITE_API_URL}/auth/google`,
+          {
+            access_token: tokenResponse.access_token,
+          }
+        );
 
         if (response.data.success) {
-          dispatch(setToken({
-            token: response.data.token,
-             
-            user: {
-              id: response.data.user._id,
-              name: response.data.user.name,
-              email: response.data.user.email,
-              role:response.data.user.role,
-            }
-          }));
+          dispatch(
+            setToken({
+              token: response.data.token,
+
+              user: {
+                id: response.data.user._id,
+                name: response.data.user.name,
+                email: response.data.user.email,
+                role: response.data.user.role,
+              },
+            })
+          );
           showHotToast("success", "Google Login Successful");
           setTimeout(() => {
             navigate("/");
@@ -75,12 +85,11 @@ const Login = () => {
 
   // Show Toast Notification (same as AddProduct.jsx)
 
-
   // Handle Sign Up form changes
   const handleSignUpChange = (e) => {
     setSignUpData({
       ...signUpData,
-      [e.target.name]: e.target.value
+      [e.target.name]: e.target.value,
     });
   };
 
@@ -88,11 +97,9 @@ const Login = () => {
   const handleSignInChange = (e) => {
     setSignInData({
       ...signInData,
-      [e.target.name]: e.target.value
+      [e.target.name]: e.target.value,
     });
   };
-
-
 
   // Handle Sign Up submission
   const handleSignUp = async (e) => {
@@ -121,25 +128,40 @@ const Login = () => {
       return;
     }
 
-    if (signUpData.password.length < 6) {
-      showHotToast("error", "Password must be at least 6 characters long");
+    if (!validatePassword(signUpData.password)) {
+      showHotToast("error", "Password must be at least 6 characters");
       return;
     }
 
     setSignUpLoading(true);
 
     try {
-      const response = await axios.post(`${import.meta.env.VITE_API_URL}/register`, signUpData);
+      const response = await axios.post(
+        `${import.meta.env.VITE_API_URL}/register`,
+        signUpData
+      );
 
       if (response.data.success) {
-        showHotToast("success", response.data.message || "Account created successfully. Continue by signing in");
+        showHotToast(
+          "success",
+          response.data.message ||
+            "Account created successfully. Continue by signing in"
+        );
         // Clear form
-        setSignUpData({ name: "", email: "", password: "", loginType: "EMAIL", picture: "" });
+        setSignUpData({
+          name: "",
+          email: "",
+          password: "",
+          loginType: "EMAIL",
+          picture: "",
+        });
         // Switch to sign in after toast
         setTimeout(() => setActive(false), 3000);
       }
     } catch (error) {
-      const errorMessage = error.response?.data?.message || "Unable to create account. Try again."; showHotToast("error", errorMessage);
+      const errorMessage =
+        error.response?.data?.message || "Unable to create account. Try again.";
+      showHotToast("error", errorMessage);
     } finally {
       setSignUpLoading(false);
     }
@@ -170,26 +192,36 @@ const Login = () => {
     setSignInLoading(true);
 
     try {
-      const response = await axios.post(`${import.meta.env.VITE_API_URL}/login`, signInData);
+      const response = await axios.post(
+        `${import.meta.env.VITE_API_URL}/login`,
+        signInData
+      );
 
       if (response.data.success) {
         // Store token and user in Redux
-        dispatch(setToken({
-          token: response.data.token,
-          user: response.data.user
-        }));
+        dispatch(
+          setToken({
+            token: response.data.token,
+            user: response.data.user,
+          })
+        );
 
         // Clear form
         setSignInData({ email: "", password: "" });
 
         // Show success toast first, then navigate after toast completes
-        showHotToast("success", response.data.message || "Welcome back! Redirecting...");
+        showHotToast(
+          "success",
+          response.data.message || "Welcome back! Redirecting..."
+        );
         setTimeout(() => {
           navigate("/");
         }, 1600);
       }
     } catch (error) {
-      const errorMessage = error.response?.data?.message || "Unable to sign in. Check your credentials and try again.";
+      const errorMessage =
+        error.response?.data?.message ||
+        "Unable to sign in. Check your credentials and try again.";
       showHotToast("error", errorMessage);
     } finally {
       setSignInLoading(false);
@@ -198,18 +230,50 @@ const Login = () => {
 
   return (
     <div className="login-1">
-      <div className={`container-login ${active ? "active" : ""}`} id="container">
-
+      <div
+        className={`container-login ${active ? "active" : ""}`}
+        id="container"
+      >
         {/* SIGN UP FORM */}
         <div className="form-container sign-up">
           <form onSubmit={handleSignUp} autoComplete="off">
             <h1>Create Account</h1>
 
             <div className="social-icons">
-              <a href="#" onClick={(e) => { e.preventDefault(); handleGoogleLogin() }} className="icon"><FaGoogle /></a>
-              <a href="https://www.facebook.com/login" target="_blank" rel="noopener noreferrer" className="icon"><FaFacebookF /></a>
-              <a href="https://github.com/login" target="_blank" rel="noopener noreferrer" className="icon"><FaGithub /></a>
-              <a href="https://www.linkedin.com/login" target="_blank" rel="noopener noreferrer" className="icon"><FaLinkedinIn /></a>
+              <a
+                href="#"
+                onClick={(e) => {
+                  e.preventDefault();
+                  handleGoogleLogin();
+                }}
+                className="icon"
+              >
+                <FaGoogle />
+              </a>
+              <a
+                href="https://www.facebook.com/login"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="icon"
+              >
+                <FaFacebookF />
+              </a>
+              <a
+                href="https://github.com/login"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="icon"
+              >
+                <FaGithub />
+              </a>
+              <a
+                href="https://www.linkedin.com/login"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="icon"
+              >
+                <FaLinkedinIn />
+              </a>
             </div>
 
             <span>or use your email for registration</span>
@@ -224,7 +288,7 @@ const Login = () => {
               value={signUpData.name}
               onChange={handleSignUpChange}
               autoComplete="off"
-              inputProps={{ autoComplete: 'off' }}
+              inputProps={{ autoComplete: "off" }}
               InputProps={{
                 startAdornment: (
                   <InputAdornment position="start">
@@ -245,7 +309,7 @@ const Login = () => {
               value={signUpData.email}
               onChange={handleSignUpChange}
               autoComplete="off"
-              inputProps={{ autoComplete: 'off' }}
+              inputProps={{ autoComplete: "off" }}
               InputProps={{
                 startAdornment: (
                   <InputAdornment position="start">
@@ -266,7 +330,7 @@ const Login = () => {
               value={signUpData.password}
               onChange={handleSignUpChange}
               autoComplete="new-password"
-              inputProps={{ autoComplete: 'new-password' }}
+              inputProps={{ autoComplete: "new-password" }}
               InputProps={{
                 startAdornment: (
                   <InputAdornment position="start">
@@ -277,9 +341,17 @@ const Login = () => {
                   <InputAdornment position="end">
                     <div
                       onClick={() => setShowSignUpPassword(!showSignUpPassword)}
-                      style={{ cursor: 'pointer', display: 'flex', alignItems: 'center' }}
+                      style={{
+                        cursor: "pointer",
+                        display: "flex",
+                        alignItems: "center",
+                      }}
                     >
-                      {showSignUpPassword ? <IoEyeOff size={20} color="#0e4d65" /> : <IoEye size={20} color="#0e4d65" />}
+                      {showSignUpPassword ? (
+                        <IoEye size={20} color="#0e4d65" />
+                      ) : (
+                        <IoEyeOff size={20} color="#0e4d65" />
+                      )}
                     </div>
                   </InputAdornment>
                 ),
@@ -292,7 +364,9 @@ const Login = () => {
                   <span className="spinner"></span>
                   Signing Up...
                 </>
-              ) : "Sign Up"}
+              ) : (
+                "Sign Up"
+              )}
             </button>
           </form>
         </div>
@@ -303,10 +377,40 @@ const Login = () => {
             <h1>Sign In</h1>
 
             <div className="social-icons">
-              <a href="#" onClick={(e) => { e.preventDefault(); handleGoogleLogin() }} className="icon"><FaGoogle /></a>
-              <a href="https://www.facebook.com/login" target="_blank" rel="noopener noreferrer" className="icon"><FaFacebookF /></a>
-              <a href="https://github.com/login" target="_blank" rel="noopener noreferrer" className="icon"><FaGithub /></a>
-              <a href="https://www.linkedin.com/login" target="_blank" rel="noopener noreferrer" className="icon"><FaLinkedinIn /></a>
+              <a
+                href="#"
+                onClick={(e) => {
+                  e.preventDefault();
+                  handleGoogleLogin();
+                }}
+                className="icon"
+              >
+                <FaGoogle />
+              </a>
+              <a
+                href="https://www.facebook.com/login"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="icon"
+              >
+                <FaFacebookF />
+              </a>
+              <a
+                href="https://github.com/login"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="icon"
+              >
+                <FaGithub />
+              </a>
+              <a
+                href="https://www.linkedin.com/login"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="icon"
+              >
+                <FaLinkedinIn />
+              </a>
             </div>
 
             <span>or use your email password</span>
@@ -323,9 +427,9 @@ const Login = () => {
               onChange={handleSignInChange}
               autoComplete="off"
               inputProps={{
-                autoComplete: 'off',
+                autoComplete: "off",
                 readOnly: true,
-                onFocus: (e) => e.target.removeAttribute('readonly')
+                onFocus: (e) => e.target.removeAttribute("readonly"),
               }}
               InputProps={{
                 startAdornment: (
@@ -348,9 +452,9 @@ const Login = () => {
               onChange={handleSignInChange}
               autoComplete="off"
               inputProps={{
-                autoComplete: 'off',
+                autoComplete: "off",
                 readOnly: true,
-                onFocus: (e) => e.target.removeAttribute('readonly')
+                onFocus: (e) => e.target.removeAttribute("readonly"),
               }}
               InputProps={{
                 startAdornment: (
@@ -362,16 +466,33 @@ const Login = () => {
                   <InputAdornment position="end">
                     <div
                       onClick={() => setShowSignInPassword(!showSignInPassword)}
-                      style={{ cursor: 'pointer', display: 'flex', alignItems: 'center' }}
+                      style={{
+                        cursor: "pointer",
+                        display: "flex",
+                        alignItems: "center",
+                      }}
                     >
-                      {showSignInPassword ? <IoEyeOff size={20} color="#0e4d65" /> : <IoEye size={20} color="#0e4d65" />}
+                      {showSignInPassword ? (
+                        <IoEye size={20} color="#0e4d65" />
+                      ) : (
+                        <IoEyeOff size={20} color="#0e4d65" />
+                      )}
                     </div>
                   </InputAdornment>
                 ),
               }}
             />
 
-            <a href="#" onClick={(e) => { e.preventDefault(); navigate("/forget"); }} style={{ cursor: 'pointer' }}>Forgot Password?</a>
+            <a
+              href="#"
+              onClick={(e) => {
+                e.preventDefault();
+                navigate("/forget");
+              }}
+              style={{ cursor: "pointer" }}
+            >
+              Forgot Password?
+            </a>
 
             <button type="submit" disabled={signInLoading}>
               {signInLoading ? (
@@ -379,7 +500,9 @@ const Login = () => {
                   <span className="spinner"></span>
                   Signing In...
                 </>
-              ) : "Sign In"}
+              ) : (
+                "Sign In"
+              )}
             </button>
           </form>
         </div>
@@ -390,17 +513,22 @@ const Login = () => {
             <div className="toggle-panel toggle-left">
               <h1>Welcome Back</h1>
               <p>Sign in with your details to continue.</p>
-              <button className="hidden" onClick={() => setActive(false)}>Sign In</button>
+              <button className="hidden" onClick={() => setActive(false)}>
+                Sign In
+              </button>
             </div>
 
             <div className="toggle-panel toggle-right">
               <h1>Join Us</h1>
-              <p>Register to create your account and start using all features.</p>
-              <button className="hidden" onClick={() => setActive(true)}>Sign Up</button>
+              <p>
+                Register to create your account and start using all features.
+              </p>
+              <button className="hidden" onClick={() => setActive(true)}>
+                Sign Up
+              </button>
             </div>
           </div>
         </div>
-
       </div>
     </div>
   );

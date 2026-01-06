@@ -34,22 +34,16 @@ const CakeGallery = () => {
 
   console.log("Location State:", location.state);
 
-
   // Redux
   const dispatch = useDispatch();
   const { user } = useSelector((state) => state.auth);
   const wishlistItems = useSelector((state) => state.wishlist.items);
   const filters = ["All", "Birthday", "Anniversary", "Kids", "Love", "Wedding"];
 
-
-
   // Try multiple possible paths to get userId
   const userId = user?._id || user?.user?._id || user?.id;
 
   // const activeFilter = filters.includes(selectedFilter) ? selectedFilter : "All";
-
-
-
 
   useEffect(() => {
     if (location.state?.selectedFilter) {
@@ -62,9 +56,6 @@ const CakeGallery = () => {
   //     setSelectedFilter("All");
   //   }
   // }, [selectedFilter]);
-
-
-
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -139,8 +130,8 @@ const CakeGallery = () => {
     selectedFilter === "All"
       ? products
       : products.filter(
-        (cake) => cake.category.toLowerCase() === selectedFilter.toLowerCase()
-      );
+          (cake) => cake.category.toLowerCase() === selectedFilter.toLowerCase()
+        );
 
   // Sort cakes based on selected sort option
   const sortedCakes = [...filteredCakes].sort((a, b) => {
@@ -164,8 +155,6 @@ const CakeGallery = () => {
 
   return (
     <>
-
-
       <div>
         <div className="">
           <FlowerAuraNavbar />
@@ -178,7 +167,9 @@ const CakeGallery = () => {
                 <button
                   key={filter}
                   // className={`${styles.filterChip} ${ activeFilter === filter ? styles.activeFilter : ""}`}
-                  className={`${styles.filterChip} ${selectedFilter === filter ? styles.activeFilter : ""}`}
+                  className={`${styles.filterChip} ${
+                    selectedFilter === filter ? styles.activeFilter : ""
+                  }`}
                   onClick={() => setSelectedFilter(filter)}
                 >
                   {filter}
@@ -266,8 +257,11 @@ const CakeGallery = () => {
                         }}
                       >
                         {cake.images.map((image, idx) => {
-                          const cleanImage = image.startsWith('undefined')
-                            ? image.replace('undefined', import.meta.env.VITE_API_URL_SOUND)
+                          const cleanImage = image.startsWith("undefined")
+                            ? image.replace(
+                                "undefined",
+                                import.meta.env.VITE_API_URL_SOUND
+                              )
                             : image;
 
                           return (
@@ -351,16 +345,28 @@ const CakeGallery = () => {
                       <h3 className={styles.cakeName}>{cake.cakeName}</h3>
 
                       <div className={styles.priceContainer}>
-                        <p className={styles.cakePrice}>₹{cake.price}</p>
-                        {cake.discount > 0 && (
+                        {cake.discount > 0 ? (
                           <>
-                            <p className={styles.originalPrice}>
-                              ₹{Math.round(cake.price + cake.discount)}
+                            {/* Final discounted price */}
+                            <p className={styles.cakePrice}>
+                              ₹
+                              {Math.round(
+                                cake.price - (cake.price * cake.discount) / 100
+                              )}
                             </p>
+
+                            {/* Original price */}
+                            <p className={styles.originalPrice}>
+                              ₹{cake.price}
+                            </p>
+
+                            {/* Discount badge */}
                             <span className={styles.discountBadge}>
-                              ₹{cake.discount} OFF
+                              {cake.discount}% OFF
                             </span>
                           </>
+                        ) : (
+                          <p className={styles.cakePrice}>₹{cake.price}</p>
                         )}
                       </div>
 

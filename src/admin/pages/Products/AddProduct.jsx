@@ -27,7 +27,6 @@ import { Popconfirm, Button } from "antd";
 import { showHotToast } from "../../utils/showToast.jsx";
 import { useSelector } from "react-redux";
 
-
 const AddProduct = () => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
@@ -49,18 +48,10 @@ const AddProduct = () => {
   const id = useLocation().state?.id;
   console.log(id);
 
-
   const [imagePreview, setImagePreview] = useState([]);
   const [replaceTarget, setReplaceTarget] = useState(null);
 
-  const categories = [
-    "Birthday",
-    "Anniversary",
-    "Kids",
-    "Love",
-    "Wedding",
-
-  ];
+  const categories = ["Birthday", "Anniversary", "Kids", "Love", "Wedding"];
 
   // Check if user is authenticated
   useEffect(() => {
@@ -90,21 +81,33 @@ const AddProduct = () => {
           description: p.description,
           price: p.price,
           discount: p.discount,
-          weight: Array.isArray(p.weight) ? p.weight : (p.weight ? [p.weight] : []),
+          weight: Array.isArray(p.weight)
+            ? p.weight
+            : p.weight
+            ? [p.weight]
+            : [],
           availability: p.availability,
           stock: p.stock,
           images: p.images.map((img) => ({
-            preview: img.startsWith('undefined')
-              ? img.replace('undefined', import.meta.env.VITE_API_URL_SOUND || 'http://localhost:5000')
-              : img
+            preview: img.startsWith("undefined")
+              ? img.replace(
+                  "undefined",
+                  import.meta.env.VITE_API_URL_SOUND || "http://localhost:5000"
+                )
+              : img,
           })),
         });
 
-        setImagePreview(p.images.map(img =>
-          img.startsWith('undefined')
-            ? img.replace('undefined', import.meta.env.VITE_API_URL_SOUND || 'http://localhost:5000')
-            : img
-        ));
+        setImagePreview(
+          p.images.map((img) =>
+            img.startsWith("undefined")
+              ? img.replace(
+                  "undefined",
+                  import.meta.env.VITE_API_URL_SOUND || "http://localhost:5000"
+                )
+              : img
+          )
+        );
       } catch (error) {
         showHotToast("error", "Failed to load product details");
       }
@@ -165,7 +168,6 @@ const AddProduct = () => {
     });
   };
 
-
   const handleRemoveImage = async (imgObj) => {
     // If it is an old image (existing in database)
     if (!imgObj.file) {
@@ -199,6 +201,8 @@ const AddProduct = () => {
     if (formData.weight.length === 0) return "Select at least one Weight";
     if (!formData.price) return "Price is required";
     if (formData.price <= 0) return "Price must be greater than 0";
+    if (formData.discount < 0 || formData.discount > 100)
+    return "Discount must be between 0 and 100";
     if (formData.images.length === 0) return "Please upload at least one image";
 
     return null; // Everything correct
@@ -291,7 +295,7 @@ const AddProduct = () => {
     e.preventDefault();
 
     const errorMessage = validateForm();
-    if (errorMessage) return showHotToast("error", errorMessage);;
+    if (errorMessage) return showHotToast("error", errorMessage);
 
     try {
       let imageUrls = [];
@@ -379,14 +383,13 @@ const AddProduct = () => {
     }
   };
 
-
   return (
     <div className="add-product">
       <div className="page-header">
         <h1>{id ? "Edit Cake" : "Add New Cake"}</h1>
       </div>
 
-      <div className="product-form"  >
+      <div className="product-form">
         <div className="form-section">
           <div className="row mt-3 ">
             {/* LEFT: IMAGE UPLOAD */}
@@ -407,7 +410,12 @@ const AddProduct = () => {
                   />
                 </label>
 
-                {console.log("🎨 Rendering images. Count:", formData.images.length, "Images:", formData.images)}
+                {console.log(
+                  "🎨 Rendering images. Count:",
+                  formData.images.length,
+                  "Images:",
+                  formData.images
+                )}
 
                 <div className="image-preview-grid">
                   {formData.images.map((img, index) => (
@@ -538,14 +546,18 @@ const AddProduct = () => {
                           const value = e.target.value;
                           setFormData({
                             ...formData,
-                            weight: typeof value === 'string' ? value.split(',') : value,
+                            weight:
+                              typeof value === "string"
+                                ? value.split(",")
+                                : value,
                           });
                         }}
                         fullWidth
                         variant="outlined"
                         SelectProps={{
                           multiple: true,
-                          renderValue: (selected) => selected.join(', ') + " Kg"
+                          renderValue: (selected) =>
+                            selected.join(", ") + " Kg",
                         }}
                         InputProps={{
                           startAdornment: (
@@ -597,17 +609,31 @@ const AddProduct = () => {
                   <div className={styles.formBox}>
                     <div className={styles.floatingGroup}>
                       <TextField
-                        type="tel"
-                        label="Discount (₹)"
+                        type="number"
+                        label="Discount (%)"
                         name="discount"
                         value={formData.discount}
-                        onChange={handleInputChange}
+                        onChange={(e) => {
+                          let value = e.target.value;
+
+                          // Allow only 0–100
+                          if (value === "") {
+                            setFormData({ ...formData, discount: "" });
+                            return;
+                          }
+
+                          value = Number(value);
+
+                          if (value < 0 || value > 100) return;
+
+                          setFormData({ ...formData, discount: value });
+                        }}
                         variant="outlined"
                         fullWidth
                         InputProps={{
                           startAdornment: (
                             <InputAdornment position="start">
-                              <IndianRupee size={20} color="#2C5F7C" />
+                              <Percent size={20} color="#2C5F7C" />
                             </InputAdornment>
                           ),
                         }}
@@ -628,13 +654,13 @@ const AddProduct = () => {
                         rows={2}
                         fullWidth
                         variant="outlined"
-                      // InputProps={{
-                      //   startAdornment: (
-                      //     <InputAdornment position="top">
-                      //       <FileText size={20} className="mb-4 " color="#2C5F7C" />
-                      //     </InputAdornment>
-                      //   ),
-                      // }}
+                        // InputProps={{
+                        //   startAdornment: (
+                        //     <InputAdornment position="top">
+                        //       <FileText size={20} className="mb-4 " color="#2C5F7C" />
+                        //     </InputAdornment>
+                        //   ),
+                        // }}
                       />
                     </div>
                   </div>
