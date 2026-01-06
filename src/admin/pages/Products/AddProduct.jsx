@@ -32,7 +32,7 @@ const AddProduct = () => {
   const [formData, setFormData] = useState({
     cakeName: "",
     flavor: "",
-    category: "",
+    category: [], // Changed to array for multiple selection
     description: "",
     price: "",
     discount: "",
@@ -77,23 +77,27 @@ const AddProduct = () => {
         setFormData({
           cakeName: p.cakeName,
           flavor: p.flavor,
-          category: p.category,
+          category: Array.isArray(p.category)
+            ? p.category
+            : p.category
+              ? [p.category]
+              : [],
           description: p.description,
           price: p.price,
           discount: p.discount,
           weight: Array.isArray(p.weight)
             ? p.weight
             : p.weight
-            ? [p.weight]
-            : [],
+              ? [p.weight]
+              : [],
           availability: p.availability,
           stock: p.stock,
           images: p.images.map((img) => ({
             preview: img.startsWith("undefined")
               ? img.replace(
-                  "undefined",
-                  import.meta.env.VITE_API_URL_SOUND || "http://localhost:5000"
-                )
+                "undefined",
+                import.meta.env.VITE_API_URL_SOUND || "http://localhost:5000"
+              )
               : img,
           })),
         });
@@ -102,9 +106,9 @@ const AddProduct = () => {
           p.images.map((img) =>
             img.startsWith("undefined")
               ? img.replace(
-                  "undefined",
-                  import.meta.env.VITE_API_URL_SOUND || "http://localhost:5000"
-                )
+                "undefined",
+                import.meta.env.VITE_API_URL_SOUND || "http://localhost:5000"
+              )
               : img
           )
         );
@@ -197,12 +201,12 @@ const AddProduct = () => {
   const validateForm = () => {
     if (!formData.cakeName.trim()) return "Cake Name is required";
     if (!formData.flavor) return " Select a Flavor";
-    if (!formData.category) return "Select a Category";
+    if (formData.category.length === 0) return "Select at least one Category";
     if (formData.weight.length === 0) return "Select at least one Weight";
     if (!formData.price) return "Price is required";
     if (formData.price <= 0) return "Price must be greater than 0";
     if (formData.discount < 0 || formData.discount > 100)
-    return "Discount must be between 0 and 100";
+      return "Discount must be between 0 and 100";
     if (formData.images.length === 0) return "Please upload at least one image";
 
     return null; // Everything correct
@@ -504,12 +508,62 @@ const AddProduct = () => {
                     <div className={styles.floatingGroup}>
                       <TextField
                         select
-                        label="Category"
+                        label="Category (Select Multiple)"
                         name="category"
                         value={formData.category}
-                        onChange={handleInputChange}
+                        onChange={(e) => {
+                          const value = e.target.value;
+                          setFormData({
+                            ...formData,
+                            category:
+                              typeof value === "string"
+                                ? value.split(",")
+                                : value,
+                          });
+                        }}
                         fullWidth
                         variant="outlined"
+                        SelectProps={{
+                          multiple: true,
+                          renderValue: (selected) => (
+                            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '4px' }}>
+                              {selected.map((value) => (
+                                <span
+                                  key={value}
+                                  style={{
+                                    display: 'inline-flex',
+                                    alignItems: 'center',
+                                    backgroundColor: '#e8f4f8',
+                                    color: '#0e4d65',
+                                    padding: '2px 8px',
+                                    borderRadius: '12px',
+                                    fontSize: '0.8rem',
+                                    fontWeight: '500',
+                                  }}
+                                >
+                                  {value.charAt(0).toUpperCase() + value.slice(1)}
+                                  <span
+                                    style={{
+                                      marginLeft: '6px',
+                                      cursor: 'pointer',
+                                      fontWeight: 'bold',
+                                      color: '#dc3545',
+                                    }}
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      setFormData({
+                                        ...formData,
+                                        category: formData.category.filter((cat) => cat !== value),
+                                      });
+                                    }}
+                                  >
+                                    ×
+                                  </span>
+                                </span>
+                              ))}
+                            </div>
+                          ),
+                        }}
                         InputProps={{
                           startAdornment: (
                             <InputAdornment position="start">
@@ -518,16 +572,11 @@ const AddProduct = () => {
                           ),
                         }}
                       >
-                        <MenuItem value="">Select Category</MenuItem>
                         <MenuItem value="birthday">Birthday Cake</MenuItem>
-                        <MenuItem value="wedding"> Wedding Cake</MenuItem>
-                        <MenuItem value="anniversary">
-                          {" "}
-                          Anniversary Cake
-                        </MenuItem>
-                        <MenuItem value="kids"> Kids Special</MenuItem>
-                        <MenuItem value="love"> love Collection</MenuItem>
-                        {/* <MenuItem value="celebration"> Celebration</MenuItem> */}
+                        <MenuItem value="wedding">Wedding Cake</MenuItem>
+                        <MenuItem value="anniversary">Anniversary Cake</MenuItem>
+                        <MenuItem value="kids">Kids Special</MenuItem>
+                        <MenuItem value="love">Love Collection</MenuItem>
                       </TextField>
                     </div>
                   </div>
@@ -654,13 +703,13 @@ const AddProduct = () => {
                         rows={2}
                         fullWidth
                         variant="outlined"
-                        // InputProps={{
-                        //   startAdornment: (
-                        //     <InputAdornment position="top">
-                        //       <FileText size={20} className="mb-4 " color="#2C5F7C" />
-                        //     </InputAdornment>
-                        //   ),
-                        // }}
+                      // InputProps={{
+                      //   startAdornment: (
+                      //     <InputAdornment position="top">
+                      //       <FileText size={20} className="mb-4 " color="#2C5F7C" />
+                      //     </InputAdornment>
+                      //   ),
+                      // }}
                       />
                     </div>
                   </div>
