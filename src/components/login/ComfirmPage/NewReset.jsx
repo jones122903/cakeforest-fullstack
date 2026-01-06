@@ -6,19 +6,23 @@ import style from "./NewReset.module.css";
 import { useNavigate, useLocation } from "react-router-dom";
 import Swal from "sweetalert2";
 import { TextField, InputAdornment, IconButton } from "@mui/material";
+import axios from "axios";
+import { showHotToast } from "../../../admin/utils/showToast";
 
 const NewReset = () => {
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate();
   const location = useLocation();
 
-  // Get email/otp from previous page (already frontend simulation)
+  const api_url = import.meta.env.VITE_API_URL;
+
+  // Get email from previous page
   const emailFromState = location.state?.email || "";
-  const otpFromState = location.state?.otp || "";
 
   // Password rules check
   const rules = {
@@ -34,24 +38,43 @@ const NewReset = () => {
   const passwordsMatch =
     password && confirmPassword && password === confirmPassword;
 
-  const canSubmit = allRulesValid && passwordsMatch;
+  const canSubmit = allRulesValid && passwordsMatch && !loading;
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (!canSubmit) return;
 
-    // 🔥 FRONTEND-ONLY (NO API CALL)
-    await Swal.fire({
-      icon: "success",
-      title: "Your password has been changed successfully.",
-      timer: 1200,
-      showConfirmButton: false,
-      timerProgressBar: true,
-    });
+    if (!emailFromState) {
+      showHotToast("error", "Email not found. Please restart the reset process.");
+      navigate("/forget-password");
+      return;
+    }
 
-    // Navigate back to login page
-    navigate("/login");
+    setLoading(true);
+
+    try {
+      const response = await axios.post(`${api_url}/reset-password`, {
+        email: emailFromState,
+        password: password,
+      });
+
+      if (response.data.success) {
+
+        await showHotToast("success","Your password has been changed successfully.")
+      
+        // Navigate back to login page
+        navigate("/login");
+      } else {
+        showHotToast("error", response.data.message || "Failed to reset password");
+      }
+    } catch (error) {
+      console.error("Reset password error:", error);
+      const errorMessage = error.response?.data?.message || "Something went wrong. Please try again.";
+      showHotToast("error", errorMessage);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -233,9 +256,10 @@ const NewReset = () => {
                 className={`text-center mt-2 violet-color-bg ${style.submitButton}`}
                 style={{
                   cursor: canSubmit ? "pointer" : "not-allowed",
+                  opacity: loading ? 0.7 : 1,
                 }}
               >
-                Reset Password
+                {loading ? "Resetting Password..." : "Reset Password"}
               </button>
             </form>
           </div>

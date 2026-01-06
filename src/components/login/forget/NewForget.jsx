@@ -6,6 +6,7 @@ import { TextField } from "@mui/material";
 import Swal from "sweetalert2";
 import { MdOutlineKeyboardBackspace } from "react-icons/md";
 import axios from "axios";
+import { showHotToast } from "../../../admin/utils/showToast";
 
 const NewForget = () => {
   const navigate = useNavigate();
@@ -37,45 +38,7 @@ const NewForget = () => {
     }));
   };
 
-  // Sweetalert Toast
-  const showToast = async (icon, title) => {
-    let timerInterval;
-
-    const Toast = Swal.mixin({
-      toast: true,
-      position: "top-right",
-      showConfirmButton: false,
-      timer: 2500,
-      timerProgressBar: true,
-
-      // Progress bar color change based on success / error
-      didOpen: (toast) => {
-        // change progress bar color
-        const progressBar = toast.querySelector(".swal2-timer-progress-bar");
-        progressBar.style.background =
-          icon === "success" ? "green" : "red";
-
-        // Pause on hover
-        toast.addEventListener("mouseenter", () => {
-          Swal.stopTimer();
-        });
-
-        // Resume on mouse leave
-        toast.addEventListener("mouseleave", () => {
-          Swal.resumeTimer();
-        });
-      },
-
-      // Custom popup color classes
-      customClass: {
-        popup: icon === "success" ? "colored-toast" : "colored-toast-error",
-      },
-
-      iconColor: icon === "success" ? "green" : "red",
-    });
-
-    await Toast.fire({ icon, title });
-  };
+  
 
   // Handle "Confirm" Without Integration
   const handleConfirmClick = async (e) => {
@@ -87,13 +50,13 @@ const NewForget = () => {
 
     // Basic validation
     if (!value) {
-      await showToast("error", "Email ID is required.");
+      await showHotToast("error", "Email ID is required.");
       setLoading(false);
       return;
     }
 
     if (!emailRegex.test(value)) {
-      await showToast("error", "Enter your valid Email ID.");
+      await showHotToast("error", "Enter your valid Email ID.");
       setLoading(false);
       return;
     }
@@ -105,7 +68,7 @@ const NewForget = () => {
         email: value,
       });
 
-      await showToast("success", res.data.message || "OTP sent successfully");
+      await showHotToast("success", res.data.message || "OTP sent successfully");
 
 
       navigate("/otp", {
@@ -116,7 +79,7 @@ const NewForget = () => {
       });
 
     } catch (error) {
-      await showToast(
+      await showHotToast(
         "error",
         error.response?.data?.message || "Something went wrong"
       );
@@ -126,7 +89,7 @@ const NewForget = () => {
   };
 
   const goToLogin = () => {
-    navigate("/");
+    navigate("/login");
   };
 
   return (
