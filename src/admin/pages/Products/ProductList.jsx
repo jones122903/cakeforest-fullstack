@@ -4,6 +4,7 @@ import { Plus, Search, Edit, Trash2, Eye } from "lucide-react";
 import "./ProductList.css";
 import axios from "axios";
 import { Popconfirm, Button } from "antd";
+import { Pagination } from "@mui/material";
 import Swal from "sweetalert2";
 import { showHotToast } from "../../utils/showToast.jsx";
 import { useSelector } from "react-redux";
@@ -23,7 +24,10 @@ const ProductList = () => {
     "anniversary",
     "kids",
     "love",
-    "wedding",
+    "designer",
+    "fruits",
+    "photo",
+    "bento",
   ];
 
   // Get token from Redux state
@@ -34,14 +38,22 @@ const ProductList = () => {
       ?.toLowerCase()
       .includes(searchTerm.toLowerCase());
 
+    // Normalize category comparison - convert both to lowercase for matching
+    const productCategories = Array.isArray(p.category)
+      ? p.category.map(cat => cat?.toLowerCase?.() || cat)
+      : [p.category?.toLowerCase?.() || p.category];
+
     const matchesCategory =
       selectedCategory === "all" ||
-      (Array.isArray(p.category)
-        ? p.category.includes(selectedCategory)
-        : p.category === selectedCategory);
+      productCategories.includes(selectedCategory.toLowerCase());
 
     return matchesSearch && matchesCategory;
   });
+
+  // Reset to page 1 when filter or search changes
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchTerm, selectedCategory]);
 
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
@@ -86,11 +98,11 @@ const ProductList = () => {
   };
   // 🔍 Filter Section
 
-  // 📝 Convert for table view
-  const currentProduct = filteredProducts.map((p) => ({
+  // 📝 Convert PAGINATED products for table view (use currentProducts, not filteredProducts)
+  const currentProduct = currentProducts.map((p) => ({
     id: p._id,
     weight: p.weight,
-    image: `${p.images[0].trim()}`,
+    image: `${p.images[0]?.trim() || ''}`,
     name: p.cakeName,
     category: Array.isArray(p.category) ? p.category[0] : p.category,
     price: p.price,
@@ -261,37 +273,17 @@ const ProductList = () => {
 
       {/* Pagination */}
       {totalPages > 1 && (
-        <div className="pagination">
-          <button
-            className="pagination-btn"
-            onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
-            disabled={currentPage === 1}
-          >
-            Previous
-          </button>
-
-          <div className="pagination-numbers">
-            {[...Array(totalPages)].map((_, index) => (
-              <button
-                key={index + 1}
-                className={`pagination-number ${currentPage === index + 1 ? "active" : ""
-                  }`}
-                onClick={() => setCurrentPage(index + 1)}
-              >
-                {index + 1}
-              </button>
-            ))}
-          </div>
-
-          <button
-            className="pagination-btn"
-            onClick={() =>
-              setCurrentPage((prev) => Math.min(prev + 1, totalPages))
-            }
-            disabled={currentPage === totalPages}
-          >
-            Next
-          </button>
+        <div className="pagination" style={{ display: 'flex', justifyContent: 'center', marginTop: '20px', marginBottom: '20px' }}>
+          <Pagination
+            count={totalPages}
+            page={currentPage}
+            onChange={(event, value) => setCurrentPage(value)}
+            variant="outlined"
+            color="primary"
+            showFirstButton
+            showLastButton
+            size="medium"
+          />
         </div>
       )}
     </div>
