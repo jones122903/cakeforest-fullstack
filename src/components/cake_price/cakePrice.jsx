@@ -100,9 +100,7 @@ const CakePrice = () => {
 
     if (isInWishlist) {
       // Remove
-      dispatch(
-        removeFromWishlistAsync({ userId: userId, productId: cakeId })
-      );
+      dispatch(removeFromWishlistAsync({ userId: userId, productId: cakeId }));
 
       showHotToast("error", "Removed from Favourites");
     } else {
@@ -118,7 +116,6 @@ const CakePrice = () => {
   return (
     <>
       {/* Add Toaster component to render toasts */}
-
 
       <div className={styles.cakeContainer}>
         <div className={styles.headerSection}>
@@ -186,8 +183,11 @@ const CakePrice = () => {
                   >
                     {cake.images.map((image, idx) => {
                       // Fix for broken URLs that might have 'undefined' from server
-                      const cleanImage = image.startsWith('undefined')
-                        ? image.replace('undefined', import.meta.env.VITE_API_URL_SOUND)
+                      const cleanImage = image.startsWith("undefined")
+                        ? image.replace(
+                            "undefined",
+                            import.meta.env.VITE_API_URL_SOUND
+                          )
                         : image;
 
                       return (
@@ -262,16 +262,26 @@ const CakePrice = () => {
                   <h5 className={styles.cakeName}>{cake.cakeName}</h5>
 
                   <div className={styles.priceContainer}>
-                    <p className={styles.cakePrice}>₹{cake.price}</p>
-                    {cake.discount > 0 && (
+                    {cake.discount > 0 ? (
                       <>
-                        <p className={styles.originalPrice}>
-                          ₹{Math.round(cake.price + cake.discount)}
+                        {/* Final discounted price */}
+                        <p className={styles.cakePrice}>
+                          ₹
+                          {Math.round(
+                            cake.price - (cake.price * cake.discount) / 100
+                          )}
                         </p>
+
+                        {/* Original price */}
+                        <p className={styles.originalPrice}>₹{cake.price}</p>
+
+                        {/* Discount badge */}
                         <span className={styles.discountBadge}>
-                          ₹{cake.discount} OFF
+                          {cake.discount}% OFF
                         </span>
                       </>
+                    ) : (
+                      <p className={styles.cakePrice}>₹{cake.price}</p>
                     )}
                   </div>
 

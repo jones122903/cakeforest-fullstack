@@ -176,9 +176,19 @@ useEffect(() => {
 }, []);
 
 const handleSearchChange = (e) => {
-  setSearchText(e.target.value);
+  const value = e.target.value;
+
+  // Allow ONLY letters and spaces
+  const lettersOnlyRegex = /^[A-Za-z\s]*$/;
+
+  if (!lettersOnlyRegex.test(value)) {
+    return; // numbers & symbols block pannum
+  }
+
+  setSearchText(value);
   setShowDropdown(true);
 };
+
 
 
   useEffect(() => {
