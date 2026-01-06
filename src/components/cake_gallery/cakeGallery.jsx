@@ -129,9 +129,16 @@ const CakeGallery = () => {
   const filteredCakes =
     selectedFilter === "All"
       ? products
-      : products.filter(
-          (cake) => cake.category.toLowerCase() === selectedFilter.toLowerCase()
-        );
+      : products.filter((cake) => {
+        if (!cake.category) return false;
+        const filterLower = selectedFilter.toLowerCase();
+        if (Array.isArray(cake.category)) {
+          return cake.category.some(
+            (cat) => cat.toLowerCase() === filterLower
+          );
+        }
+        return cake.category.toLowerCase() === filterLower;
+      });
 
   // Sort cakes based on selected sort option
   const sortedCakes = [...filteredCakes].sort((a, b) => {
@@ -167,9 +174,8 @@ const CakeGallery = () => {
                 <button
                   key={filter}
                   // className={`${styles.filterChip} ${ activeFilter === filter ? styles.activeFilter : ""}`}
-                  className={`${styles.filterChip} ${
-                    selectedFilter === filter ? styles.activeFilter : ""
-                  }`}
+                  className={`${styles.filterChip} ${selectedFilter === filter ? styles.activeFilter : ""
+                    }`}
                   onClick={() => setSelectedFilter(filter)}
                 >
                   {filter}
@@ -259,9 +265,9 @@ const CakeGallery = () => {
                         {cake.images.map((image, idx) => {
                           const cleanImage = image.startsWith("undefined")
                             ? image.replace(
-                                "undefined",
-                                import.meta.env.VITE_API_URL_SOUND
-                              )
+                              "undefined",
+                              import.meta.env.VITE_API_URL_SOUND
+                            )
                             : image;
 
                           return (

@@ -35,7 +35,10 @@ const ProductList = () => {
       .includes(searchTerm.toLowerCase());
 
     const matchesCategory =
-      selectedCategory === "all" || p.category === selectedCategory;
+      selectedCategory === "all" ||
+      (Array.isArray(p.category)
+        ? p.category.includes(selectedCategory)
+        : p.category === selectedCategory);
 
     return matchesSearch && matchesCategory;
   });
@@ -89,7 +92,7 @@ const ProductList = () => {
     weight: p.weight,
     image: `${p.images[0].trim()}`,
     name: p.cakeName,
-    category: p.category,
+    category: Array.isArray(p.category) ? p.category[0] : p.category,
     price: p.price,
     stock: p.stock,
     status: p.availability,
