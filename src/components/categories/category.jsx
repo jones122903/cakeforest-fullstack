@@ -12,7 +12,7 @@ const Category = () => {
   const cakeCategories = [
     { id: 1, name: "All", image: "https://imgcdn.floweraura.com/be-mine-love-chocolate-cake-9749190ca-A.jpg?tr=w-315,dpr-1.5" },
     { id: 2, name: "Birthday", image: "https://imgcdn.floweraura.com/black-forest-birthday-drip-cake-9728120ca-A_1.jpg?tr=w-315,dpr-1.5" },
-    { id: 3, name: "Designer", image: "https://imgcdn.floweraura.com/layers-of-love-red-velvet-fruit-cake-9751337ca-A.jpg?tr=w-315,dpr-1.5" },
+    { id: 3, name: "Designer", image: "https://bkmedia.bakingo.com/beautiful-butterfly-theme-cake-bg-theme3975flav-A_0.jpg?tr=w-665,h-665,dpr-1.5&q=50" },
     { id: 4, name: "Anniversary", image: "https://imgcdn.floweraura.com/photo-anniversary-red-cake-9831550ca-A_0.jpg?tr=w-315,dpr-1.5" },
     { id: 5, name: "Photo", image: "https://imgcdn.floweraura.com/iron-man-bday-poster-cake-9935580ca-aaaa.jpg?tr=w-315,dpr-1.5" },
     { id: 6, name: "Bento", image: "https://imgcdn.floweraura.com/bento4887flav-A_0.jpg?tr=w-315,dpr-1.5" },

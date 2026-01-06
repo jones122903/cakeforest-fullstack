@@ -17,8 +17,9 @@ import butterscotchCake from "../../assets/images/cakes/butterscotch_cake.png";
 import pineappleCake from "../../assets/images/cakes/pineapple_cake.png";
 import "./cakeProductPage.css";
 import { showHotToast } from "../../admin/utils/showToast";
+import styles from "../cake_gallery/cakeGallery.module.css"
 
-  const CakeProductPage = ({ products }) => {
+const CakeProductPage = ({ products }) => {
   const navigate = useNavigate();
   const [selectedWeight, setSelectedWeight] = useState("");
   const [selectedVariants, setSelectedVariants] = useState([]);
@@ -27,10 +28,12 @@ import { showHotToast } from "../../admin/utils/showToast";
   const standardWeights = ["0.5 Kg", "1 Kg", "1.5 Kg", "2 Kg", "2.5 Kg", "3 Kg"];
   const { token } = useSelector((state) => state.auth);
 
+  console.log(products)
+
   // Normalize weights from backend (handle both array and string cases)
-    //  const productAvailableWeights = Array.isArray(products?.weight) 
-    // ? products.weight.map(w => w.toString().includes("Kg") ? w : `${w} Kg`)
-    // : (products?.weight ? [products.weight.toString().includes("Kg") ? products.weight : `${products.weight} Kg`] : []);
+  //  const productAvailableWeights = Array.isArray(products?.weight) 
+  // ? products.weight.map(w => w.toString().includes("Kg") ? w : `${w} Kg`)
+  // : (products?.weight ? [products.weight.toString().includes("Kg") ? products.weight : `${products.weight} Kg`] : []);
 
   // Set initial weight to the first available one
   // useEffect(() => {
@@ -40,58 +43,62 @@ import { showHotToast } from "../../admin/utils/showToast";
   // }, [products]);
 
   const toggleVariant = (variant) => {
-  setSelectedVariants((prev) => {
-    const exists = prev.find(v => v.name === variant.name);
+    setSelectedVariants((prev) => {
+      const exists = prev.find(v => v.name === variant.name);
 
-    if (exists) {
-      
-      return prev.filter(v => v.name !== variant.name);
-    } else {
-      // not selected → add
-      return [...prev, variant];
+      if (exists) {
+
+        return prev.filter(v => v.name !== variant.name);
+      } else {
+        // not selected → add
+        return [...prev, variant];
+      }
+    });
+  };
+
+  // 🔢 Get the base weight from backend (the weight for which price is stored)
+  const backendBaseWeight = parseFloat(products?.weight?.[0] || products?.weight || "1");
+
+  // 🔢 Calculate price multiplier based on selected weight vs base weight
+  const getWeightMultiplier = (selectedWeight, baseWeight) => {
+    if (!selectedWeight || !baseWeight) return 1;
+
+    const selectedKg = parseFloat(selectedWeight); // "1 Kg" → 1
+    // Price is for baseWeight kg, so multiply/divide proportionally
+    return selectedKg / baseWeight;
+  };
+
+  // Check if weight should be disabled (below minimum available weight)
+  const isWeightDisabled = (weightLabel) => {
+    const weightValue = parseFloat(weightLabel); // "1 Kg" → 1
+    return weightValue < backendBaseWeight;
+  };
+
+  // Base price from backend (this is the price for backendBaseWeight kg)
+  const basePrice = products?.price || 500;
+
+  // Calculate multiplier based on selected weight vs backend base weight
+  const weightMultiplier = getWeightMultiplier(selectedWeight, backendBaseWeight);
+
+  // Calculate final price: (basePrice / baseWeight) * selectedWeight
+  const cakePriceByWeight = Math.round(basePrice * weightMultiplier);
+
+  const discountPrice = Math.round(cakePriceByWeight-(cakePriceByWeight*products.discount)/100) 
+
+  const currentPrice = discountPrice;
+
+  // ➕ Selected variants total price
+  const variantsTotal = selectedVariants.reduce(
+    (sum, v) => sum + v.price,
+    0
+  );
+
+
+  useEffect(() => {
+    if (products?.weight) {
+      setSelectedWeight(`${products.weight} Kg`);
     }
-  });
-};
-
-// 🔢 Convert weight string to multiplier
-const getWeightMultiplier = (weight) => {
-  if (!weight) return 1;
-
-  const kg = parseFloat(weight); // "1 Kg" → 1
-  return kg / 0.5; // base is 0.5 Kg
-};
-
-
-// backend weight (example: "1.5")
-const backendMinWeight = parseFloat(products?.weight || "0.5");
-
-const isWeightDisabled = (weightLabel) => {
-  const weightValue = parseFloat(weightLabel); // "1 Kg" → 1
-  return weightValue < backendMinWeight;
-};
-
-
-
-const basePrice = products?.price || 500; // 0.5 Kg price
-
-const weightMultiplier = getWeightMultiplier(selectedWeight);
-
-const cakePriceByWeight = basePrice * weightMultiplier;
-
-const currentPrice = cakePriceByWeight;
-
-// ➕ Selected variants total price
-const variantsTotal = selectedVariants.reduce(
-  (sum, v) => sum + v.price,
-  0
-);
- 
-
-useEffect(() => {
-  if (products?.weight) {
-    setSelectedWeight(`${products.weight} Kg`);
-  }
-}, [products]);
+  }, [products]);
 
 
 
@@ -145,15 +152,15 @@ useEffect(() => {
     products?.images && products.images.length > 0
       ? products.images
       : [
-          redVelvetMain,
-          chocolateCake,
-          strawberryCake,
-          birthdayCake,
-          blackforestCake,
-          butterscotchCake,
-          pineappleCake,
-        ];
- 
+        redVelvetMain,
+        chocolateCake,
+        strawberryCake,
+        birthdayCake,
+        blackforestCake,
+        butterscotchCake,
+        pineappleCake,
+      ];
+
 
   // Helper to get current image
   const getCurrentImage = () => {
@@ -180,80 +187,80 @@ useEffect(() => {
 
 
   const fetchcartItems = async () => {
-  if (!user || !token) return;
-  setLoading(true);
+    if (!user || !token) return;
+    setLoading(true);
 
-  try { 
+    try {
 
-    const res = await axios.get(`${api_url}/cart`, {
-      headers: { Authorization: `Bearer ${token}` },
-    });
+      const res = await axios.get(`${api_url}/cart`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
 
-    console.log("FULL RESPONSE:", res.data);
+      console.log("FULL RESPONSE:", res.data);
 
-    if (res.data.success && res.data.cart) {
-      console.log("ITEMS:", res.data.cart.items);
-      setcartItems(res.data.cart.items || []);
+      if (res.data.success && res.data.cart) {
+        console.log("ITEMS:", res.data.cart.items);
+        setcartItems(res.data.cart.items || []);
+      }
+    } catch (err) {
+      console.error("FETCH CART ERROR:", err);
+    } finally {
+      setLoading(false);
     }
-  } catch (err) {
-    console.error("FETCH CART ERROR:", err);
-  } finally {
-    setLoading(false);
-  }
-};
+  };
 
 
   const handleAddToCart = async () => {
-  if (!token) {
-    showHotToast("success","Please login to add items to cart");
-    navigate("/login");
-    return;
-  }
+    if (!token) {
+      showHotToast("success", "Please login to add items to cart");
+      navigate("/login");
+      return;
+    }
 
-  const normalizeWeight = (weight) => {
-  if (!weight) return "";
-  return weight.replace(" Kg", ""); // "0.5 Kg" → "0.5"
-};
-
-
-  try {
-    const cartPayload = {
-      productId: products._id,
-      quantity: 1,
-       weight: normalizeWeight(selectedWeight),
-       addons: selectedVariants.map((v) => ({
-        name: v.name,
-        price: v.price,
-        quantity:v.quantity,
-        total:v.price
-      })),
-     price: currentPrice +variantsTotal,
+    const normalizeWeight = (weight) => {
+      if (!weight) return "";
+      return weight.replace(" Kg", ""); // "0.5 Kg" → "0.5"
     };
 
-     
 
-    const res = await axios.post(
-      `${import.meta.env.VITE_API_URL}/cart`, // ✅ correct route
-      cartPayload,
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,       // ✅ REQUIRED
-          "Content-Type": "application/json",
-        },
-      }
-    );
+    try {
+      const cartPayload = {
+        productId: products._id,
+        quantity: 1,
+        weight: normalizeWeight(selectedWeight),
+        addons: selectedVariants.map((v) => ({
+          name: v.name,
+          price: v.price,
+          quantity: v.quantity,
+          total: v.price
+        })),
+        price: currentPrice + variantsTotal,
+      };
 
-    
-      showHotToast("success",res.data.message || "Cart added successful!")
-       fetchcartItems() // or open cart drawer
-   
-  } catch (error) {
-    console.error("Error adding to cart:", error);
-    showHotToast("error",
-      error.response?.data?.message || "Failed to add to cart"
-    );
-  }
-};
+
+
+      const res = await axios.post(
+        `${import.meta.env.VITE_API_URL}/cart`, // ✅ correct route
+        cartPayload,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,       // ✅ REQUIRED
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+
+      showHotToast("success", res.data.message || "Cart added successful!")
+      fetchcartItems() // or open cart drawer
+
+    } catch (error) {
+      console.error("Error adding to cart:", error);
+      showHotToast("error",
+        error.response?.data?.message || "Failed to add to cart"
+      );
+    }
+  };
 
   return (
     <div>
@@ -265,9 +272,8 @@ useEffect(() => {
               {cakeImages.map((img, index) => (
                 <div
                   key={index}
-                  className={`thumbnail ${
-                    selectedImageIndex === index ? "active" : ""
-                  }`}
+                  className={`thumbnail ${selectedImageIndex === index ? "active" : ""
+                    }`}
                   onClick={() => setSelectedImageIndex(index)}
                 >
                   <img src={img} alt={`Cake ${index + 1}`} />
@@ -307,11 +313,28 @@ useEffect(() => {
               <span style={{ color: "#666" }}>319 Reviews</span>
             </div>
 
-            <h3
-              style={{ fontSize: "32px", fontWeight: "700", color: "#ff4444" }}
-            >
-              ₹ {currentPrice}
-            </h3>
+             <div className={styles.priceContainer}>
+                        {products.discount > 0 ? (
+                          <>
+                            {/* Final discounted price */}
+                            <p className={styles.cakePrice} style={{fontSize:"24px",color:"red"}}>
+                              ₹ {currentPrice}
+                            </p>
+
+                            {/* Original price */}
+                            <p className={styles.originalPrice}>
+                              ₹{cakePriceByWeight}
+                            </p>
+
+                            {/* Discount badge */}
+                            <span className={styles.discountBadge}>
+                              {products.discount}% OFF
+                            </span>
+                          </>
+                        ) : (
+                          <p className={styles.cakePrice}>₹{currentPrice}</p>
+                        )}
+                      </div>
             {/* Discount/Strike-through if needed, based on props? */}
 
             {/* Variants */}
@@ -319,33 +342,33 @@ useEffect(() => {
               <strong className="d-block mb-2">
                 Make this gift extra special
               </strong>
-             <div className="variants-grid">
-  {variants.map((variant) => {
-    const isSelected = selectedVariants.some(
-      v => v.name === variant.name
-    );
+              <div className="variants-grid">
+                {variants.map((variant) => {
+                  const isSelected = selectedVariants.some(
+                    v => v.name === variant.name
+                  );
 
-    return (
-      <div
-        key={variant.name}
-        className={`variant-card ${isSelected ? "active" : ""}`}
-        onClick={() => toggleVariant(variant)}
-      >
-        <img src={variant.image} alt={variant.name} />
-        <div style={{ fontSize: "12px", fontWeight: "600" }}>
-          {variant.name}
-        </div>
-        <div style={{ fontSize: "14px", fontWeight: "700" }}>
-          ₹ {variant.price}
-        </div>
+                  return (
+                    <div
+                      key={variant.name}
+                      className={`variant-card ${isSelected ? "active" : ""}`}
+                      onClick={() => toggleVariant(variant)}
+                    >
+                      <img src={variant.image} alt={variant.name} />
+                      <div style={{ fontSize: "12px", fontWeight: "600" }}>
+                        {variant.name}
+                      </div>
+                      <div style={{ fontSize: "14px", fontWeight: "700" }}>
+                        ₹ {variant.price } 
+                      </div>
 
-        {/* {isSelected && (
+                      {/* {isSelected && (
           <div className="selected-badge">✓ Selected</div>
         )} */}
-      </div>
-    );
-  })}
-</div>
+                    </div>
+                  );
+                })}
+              </div>
 
             </div>
 
@@ -360,39 +383,39 @@ useEffect(() => {
                     cursor: "pointer",
                   }}
                 >
-                  Serving Info <BiInfoCircle size={20}/>
+                  Serving Info <BiInfoCircle size={20} />
                 </span>
               </div>
 
               <div className="weights-container">
-  {standardWeights.map((weight) => {
-    const disabled = isWeightDisabled(weight);
+                {standardWeights.map((weight) => {
+                  const disabled = isWeightDisabled(weight);
 
-    return (
-      <button
-        key={weight}
-        disabled={disabled}
-        className={`weight-btn 
+                  return (
+                    <button
+                      key={weight}
+                      disabled={disabled}
+                      className={`weight-btn 
           ${selectedWeight === weight ? "active" : ""} 
           ${disabled ? "disabled" : ""}
         `}
-        onClick={() => !disabled && setSelectedWeight(weight)}
-      >
-        {weight}
-        
-      </button>
-    );
-  })}
-</div>
+                      onClick={() => !disabled && setSelectedWeight(weight)}
+                    >
+                      {weight}
+
+                    </button>
+                  );
+                })}
+              </div>
 
 
             </div>
 
             {/* Buttons */}
             <div className="buttons-container">
-              <button className="btn-cart w-100 w-md-50" type="button" onClick={()=>handleAddToCart()} >GO TO CART</button>
+              <button className="btn-cart w-100 w-md-50" type="button" onClick={() => handleAddToCart()} >GO TO CART</button>
               <button className="btn-buy w-100 w-md-50" onClick={goToChapter}>
-                BUY NOW | ₹ {currentPrice+variantsTotal}
+                BUY NOW | ₹ {currentPrice + variantsTotal}
               </button>
             </div>
           </div>

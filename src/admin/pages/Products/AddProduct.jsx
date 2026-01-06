@@ -570,11 +570,15 @@ const AddProduct = () => {
                           ),
                         }}
                       >
+                        <MenuItem value="all">All</MenuItem>
                         <MenuItem value="birthday">Birthday Cake</MenuItem>
-                        <MenuItem value="wedding">Wedding Cake</MenuItem>
                         <MenuItem value="anniversary">Anniversary Cake</MenuItem>
-                        <MenuItem value="kids">Kids Special</MenuItem>
-                        <MenuItem value="love">Love Collection</MenuItem>
+                        <MenuItem value="kids">Kids Cake</MenuItem>
+                        <MenuItem value="love">Love Cake</MenuItem>
+                        <MenuItem value="Designer">Designer Cake</MenuItem>
+                        <MenuItem value="photo">Photo Cake</MenuItem>
+                        <MenuItem value="bento">Bento Cake</MenuItem>
+                        <MenuItem value="fruits">Fruits Cake</MenuItem>
                       </TextField>
                     </div>
                   </div>

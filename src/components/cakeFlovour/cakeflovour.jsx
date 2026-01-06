@@ -21,14 +21,14 @@ const gotoCakeAll = (categoryName) => {
 
   // 🔹 Your Cake List with Local Images
   const cakeCategories = [
-    { id: 1, name: "All", image: "https://imgcdn.floweraura.com/rosy-kiss-red-velvet-cake-9752700ca-AA.jpg?tr=w-315,dpr-1.5" },
-    { id: 2, name: "Birthday", image: "https://imgcdn.floweraura.com/love-you-more-red-velvet-cake-9748810ca-A_0.jpg?tr=w-315,dpr-1.5" },
-    { id: 3, name: "Designer", image: "https://imgcdn.floweraura.com/eggless-velvety-cake-9911230ca-AA.jpg?tr=w-315,dpr-1.5" },
-    { id: 4, name: "Anniversary", image: "https://imgcdn.floweraura.com/velvet-cake_b.jpg?tr=w-315,dpr-1.5" },
-    { id: 5, name: "Photo", image: "https://imgcdn.floweraura.com/cherry-n-red-velvet-valentine-cake-9748800ca-A_0.jpg?tr=w-315,dpr-1.5" },
-    { id: 6, name: "Bento", image: "https://imgcdn.floweraura.com/12_12.jpg?tr=w-315,dpr-1.5" },
-    { id: 7, name: "Photo", image: "https://imgcdn.floweraura.com/red-velvet-valentine-cake-9827310ca-AA.jpg?tr=w-315,dpr-1.5" },
-    { id: 8, name: "Bento", image: "https://imgcdn.floweraura.com/iron-man-bday-poster-cake-9935580ca-aaaa.jpg?tr=w-315,dpr-1.5" },
+    { id: 4, name: "All", image: "https://bkmedia.bakingo.com/choco-vanilla-cake0006chva-AAA.jpg?tr=w-665,h-665,dpr-1.5&q=50" },
+    { id: 2, name: "Birthday", image: "https://bkmedia.bakingo.com/black-forest-cake0001chbl-AAAA1.jpg?tr=w-665,h-665,dpr-1.5&q=50" },
+    { id: 3, name: "Designer", image: "https://bkmedia.bakingo.com/pokemon-pikachu-theme-cake-them4989flav-A.jpg?tr=w-665,h-665,dpr-1.5&q=50" },
+    { id: 1, name: "Anniversary", image: "https://imgcdn.floweraura.com/rosy-kiss-red-velvet-cake-9752700ca-AA.jpg?tr=w-315,dpr-1.5" },
+    { id: 5, name: "Bento", image: "https://bkmedia.bakingo.com/older-wiser-hotter-bento-cake-bento5521-A_0.jpg?tr=w-665,h-665,dpr-1.5&q=50" },
+    { id: 6, name: "Kids", image: "https://bkmedia.bakingo.com/little-panda-party-cake-them5464flav-A.JPG?tr=w-665,h-665,dpr-1.5&q=50" },
+    { id: 7, name: "Fruits", image: "https://bkmedia.bakingo.com/fresh-fruit-cake0014frui-AAAA.jpg?tr=w-665,h-665,dpr-1.5&q=50" },
+    { id: 8, name: "Phote", image: "https://bkmedia.bakingo.com/roblox-heroes-cake-phot4012flav-AA_0.jpg?tr=w-665,h-665,dpr-1.5&q=50" },
   ];
 
   return (
