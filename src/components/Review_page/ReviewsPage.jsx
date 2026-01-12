@@ -1,12 +1,16 @@
 import { useState } from "react";
+import { useSelector } from "react-redux";
 import { Star, X, Upload, AlertCircle, Loader, CheckCircle } from "lucide-react";
 import styles from "./reviews.module.css";
 import Footer from "../footer/footer.jsx";
 import FlowerAuraNavbar from "../topbar/topbar.jsx";
+import { useQuery } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
+import axios from "axios";
 
 const ReviewsPage = () => {
-  const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
+    cakeId: "",
     cakeName: "",
     description: "",
     rating: 5,
@@ -16,6 +20,7 @@ const ReviewsPage = () => {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
   const api_url = import.meta.env.VITE_API_URL;
+  const token = useSelector((state) => state.auth.token);
 
   const handleImageChange = (e) => {
     const files = Array.from(e.target.files || []);
@@ -52,45 +57,43 @@ const ReviewsPage = () => {
     setPreviews((prev) => prev.filter((_, i) => i !== index));
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setError("");
-    setSuccess(false);
+  const postReview = async (formData) => {
+    const data = new FormData();
 
-    if (!formData.cakeName.trim()) {
-      setError("Please enter cake name");
-      return;
-    }
-    if (!formData.description.trim()) {
-      setError("Please enter your review");
-      return;
-    }
-    if (formData.images.length === 0) {
-      setError("Please upload at least 1 image");
-      return;
-    }
+    data.append("product", formData.cakeId);
+    data.append("productId", formData.cakeId); // 🔥 safety
+    data.append("cakeName", formData.cakeName);
+    data.append("description", formData.description);
+    data.append("rating", String(formData.rating)); // ensure string
 
-    try {
-      setLoading(true);
-      const data = new FormData();
-      data.append("cakeName", formData.cakeName);
-      data.append("description", formData.description);
-      data.append("rating", formData.rating);
+    formData.images.forEach((image) => {
+      data.append("images", image);
+    });
 
-      formData.images.forEach((image) => {
-        data.append("images", image);
-      });
+    const response = await axios.post(
+      `${api_url}/review`,
+      data,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
 
-      const response = await fetch(`${api_url}/review`, {
-        method: "POST",
-        body: data,
-      });
+    return response.data;
+  };
 
-      const result = await response.json();
 
-      if (result.success) {
+  const {
+    mutate: submitReview,
+    isPending: loading,
+  } = useMutation({
+    mutationFn: postReview,
+    onSuccess: (data) => {
+      if (data.success) {
         setSuccess(true);
         setFormData({
+          cakeId: "",
           cakeName: "",
           description: "",
           rating: 5,
@@ -98,14 +101,67 @@ const ReviewsPage = () => {
         });
         setPreviews([]);
       } else {
-        setError(result.message || "Error posting review");
+        setError(data.message || "Error posting review");
       }
-    } catch (error) {
-      setError(error.message || "Error posting review");
-    } finally {
-      setLoading(false);
+    },
+    onError: (error) => {
+      setError(
+        error.response?.data?.message || "Error posting review"
+      );
+    },
+  });
+
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    setError("");
+    setSuccess(false);
+
+    if (!token) {
+      setError("Please login to submit review");
+      return;
     }
+
+    if (!formData.cakeId) {
+      setError("Please select a cake");
+      return;
+    }
+
+    if (!formData.description.trim()) {
+      setError("Please enter your review");
+      return;
+    }
+
+    if (formData.images.length === 0) {
+      setError("Please upload at least 1 image");
+      return;
+    }
+
+    submitReview(formData);
   };
+
+
+
+  const getProducts = async () => {
+    try {
+      const response = await axios.get(`${api_url}/products`)
+      console.log(response.data.products, "pr")
+      return response.data.products
+    } catch (error) {
+      console.error(error)
+    }
+  }
+
+  const {
+    data: products = [],
+    isLoading,
+    isError,
+  } = useQuery({
+    queryKey: ["products"],
+    queryFn: getProducts,
+  });
+
+  console.log(products, "p")
 
   return (
     <div className={styles.pageWrapper}>
@@ -145,14 +201,37 @@ const ReviewsPage = () => {
 
               <div className={styles.formGroup}>
                 <label>Which cake did you try? *</label>
-                <input
-                  type="text"
-                  placeholder="e.g., Belgian Chocolate Cake"
-                  value={formData.cakeName}
-                  onChange={(e) =>
-                    setFormData({ ...formData, cakeName: e.target.value })
-                  }
-                />
+                <select disabled={isLoading}
+                  value={formData.cakeId}
+                  onChange={(e) => {
+                    const selectedId = e.target.value;
+                    if (!selectedId) return;
+
+                    const selectedCake = products.find(
+                      (cake) => cake._id === selectedId
+                    );
+
+                    if (!selectedCake) return;
+
+                    setFormData({
+                      ...formData,
+                      cakeId: selectedCake._id,
+                      cakeName: selectedCake.cakeName,
+                    });
+                  }}>
+
+                  <option value="">
+                    {isLoading ? "Loading cakes..." : "Select Cake"}
+                  </option>
+
+                  {products.map((cake) => (
+                    <option key={cake._id} value={cake._id}>
+                      {cake.cakeName}
+                    </option>
+                  ))}
+                </select>
+
+
               </div>
 
               <div className={styles.formGroup}>

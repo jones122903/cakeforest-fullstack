@@ -19,7 +19,7 @@ import axios from "axios";
 
 function Buypage() {
 
-   const { id } = useParams();
+  const { id } = useParams();
   const [cake, setCake] = useState(null);
   const [loading, setLoading] = useState(true);
 

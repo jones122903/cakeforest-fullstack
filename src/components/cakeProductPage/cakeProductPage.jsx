@@ -261,7 +261,7 @@ const CakeProductPage = ({ products }) => {
       );
     }
   };
-
+a
   return (
     <div>
       <div className="product-container">
@@ -309,8 +309,8 @@ const CakeProductPage = ({ products }) => {
             </div>
 
             <div className="d-flex align-items-center gap-3 mb-3">
-              <span className="rating-badge">★ 4.9</span>
-              <span style={{ color: "#666" }}>319 Reviews</span>
+              <span className="rating-badge">★ {products.averageRating}</span>
+              <span style={{ color: "#666" }}>{products.totalReviews} Reviews</span>
             </div>
 
              <div className={styles.priceContainer}>
