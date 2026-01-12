@@ -8,10 +8,12 @@ import "swiper/css/pagination";
 import styles from "./reviewSection.module.css";
 import axios from "axios";
 
+
 export default function ReviewsSection() {
 
   const API_URL = import.meta.env.VITE_API_URL
   const [reviewData,setReviewData]= useState([])
+ 
 
 
   useEffect(()=>{
@@ -27,6 +29,8 @@ export default function ReviewsSection() {
       console.error(error)
     }
   }
+
+  
 
   return (
     <div className={styles.containera}>

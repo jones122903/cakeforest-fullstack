@@ -377,9 +377,9 @@ const CakeGallery = () => {
                       </div>
 
                       <div className={styles.ratingSection}>
-                        <span className={styles.ratingBadge}>★ 4.8</span>
+                        <span className={styles.ratingBadge}>★ {cake.averageRating}</span>
                         <span className={styles.reviewsText}>
-                          (50+ Reviews)
+                          ({cake.totalReviews} Reviews)
                         </span>
                       </div>
 
