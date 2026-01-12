@@ -86,11 +86,11 @@ const ReviewsPage = () => {
 
   const {
     mutate: submitReview,
-    isPending: loading,
+    status: mutationStatus,
   } = useMutation({
     mutationFn: postReview,
     onSuccess: (data) => {
-      if (data.success) {
+      if (data?.success) {
         setSuccess(true);
         setFormData({
           cakeId: "",
@@ -101,7 +101,7 @@ const ReviewsPage = () => {
         });
         setPreviews([]);
       } else {
-        setError(data.message || "Error posting review");
+        setError(data?.message || "Error posting review");
       }
     },
     onError: (error) => {
@@ -111,6 +111,7 @@ const ReviewsPage = () => {
     },
   });
 
+  const isSubmitting = mutationStatus === "pending";
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -145,17 +146,17 @@ const ReviewsPage = () => {
   const getProducts = async () => {
     try {
       const response = await axios.get(`${api_url}/products`)
-      console.log(response.data.products, "pr")
-      return response.data.products
+      console.log(response.data?.products, "pr")
+      return response.data?.products || []
     } catch (error) {
       console.error(error)
+      return []
     }
   }
 
   const {
     data: products = [],
-    isLoading,
-    isError,
+    isLoading: isProductsLoading,
   } = useQuery({
     queryKey: ["products"],
     queryFn: getProducts,
@@ -201,13 +202,14 @@ const ReviewsPage = () => {
 
               <div className={styles.formGroup}>
                 <label>Which cake did you try? *</label>
-                <select disabled={isLoading}
+                <select
+                  disabled={isProductsLoading}
                   value={formData.cakeId}
                   onChange={(e) => {
                     const selectedId = e.target.value;
                     if (!selectedId) return;
 
-                    const selectedCake = products.find(
+                    const selectedCake = (products || []).find(
                       (cake) => cake._id === selectedId
                     );
 
@@ -221,10 +223,10 @@ const ReviewsPage = () => {
                   }}>
 
                   <option value="">
-                    {isLoading ? "Loading cakes..." : "Select Cake"}
+                    {isProductsLoading ? "Loading cakes..." : "Select Cake"}
                   </option>
 
-                  {products.map((cake) => (
+                  {(products || []).map((cake) => (
                     <option key={cake._id} value={cake._id}>
                       {cake.cakeName}
                     </option>
@@ -262,7 +264,7 @@ const ReviewsPage = () => {
                   maxLength="500"
                 ></textarea>
                 <div className={styles.charCount}>
-                  {formData.description.length} / 500
+                  {(formData.description || "").length} / 500
                 </div>
               </div>
 
@@ -308,8 +310,8 @@ const ReviewsPage = () => {
                 </div>
               </div>
 
-              <button type="submit" className={styles.submitBtn} disabled={loading}>
-                {loading ? (
+              <button type="submit" className={styles.submitBtn} disabled={isSubmitting}>
+                {isSubmitting ? (
                   <>
                     <Loader size={18} className={styles.spinner} />
                     Posting...
