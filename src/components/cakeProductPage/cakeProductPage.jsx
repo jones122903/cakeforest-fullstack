@@ -261,7 +261,7 @@ const CakeProductPage = ({ products }) => {
       );
     }
   };
-a
+
   return (
     <div>
       <div className="product-container">
