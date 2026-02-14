@@ -1,7 +1,7 @@
 import React from "react";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
-import { Settings } from "lucide-react";
+import { Key, Settings } from "lucide-react";
 import Carousel from "../components/carousel/carousel.jsx";
 import CakePrice from "../components/cake_price/cakePrice.jsx";
 import Category from "../components/categories/category.jsx";
@@ -15,11 +15,22 @@ import ReviewsSection from "../components/reviewsection/reviewsection.jsx";
 import Footer from "../components/footer/footer.jsx";
 import Topbar from "../components/topbar/topbar.jsx";
 import { useSelector } from "react-redux";
+import { CiChat1 } from "react-icons/ci";
+import { useS } from "use-s-react";
+import ChatDrawer from "../components/ChatDrawer/ChatDrawer.jsx";
+
 
 function Home() {
   const navigate = useNavigate();
 
-  const role =  useSelector((state)=>state?.auth?.user?.role)
+  const role = useSelector((state) => state?.auth?.user?.role)
+
+  const [openChat, setOpenChat] = useS(
+    {
+      value: false,
+      key: "chat-open"
+    }
+  )
 
   console.log(role)
 
@@ -33,8 +44,41 @@ function Home() {
         {/* Admin Panel Access Button */}
 
         {role === "admin" &&
+          <motion.button
+            onClick={() => navigate('/admin/products')}
+            initial={{ opacity: 0, scale: 0 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ delay: 0.5 }}
+            style={{
+              position: 'fixed',
+              bottom: '30px',
+              left: '30px',
+              width: '60px',
+              height: '60px',
+              borderRadius: '50%',
+              background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+              border: 'none',
+              boxShadow: '0 8px 24px rgba(102, 126, 234, 0.4)',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              zIndex: 1000,
+              transition: 'all 0.3s ease',
+            }}
+            whileHover={{
+              scale: 1.1,
+              boxShadow: '0 12px 32px rgba(102, 126, 234, 0.6)',
+            }}
+            whileTap={{ scale: 0.95 }}
+            title="Admin Panel"
+          >
+            <Settings size={28} color="white" />
+          </motion.button>
+        }
+
         <motion.button
-          onClick={() => navigate('/admin/products')}
+          onClick={() => setOpenChat(true)}
           initial={{ opacity: 0, scale: 0 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ delay: 0.5 }}
@@ -45,7 +89,7 @@ function Home() {
             width: '60px',
             height: '60px',
             borderRadius: '50%',
-            background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+            background: "radial-gradient(circle,rgba(238, 174, 202, 1) 0%, rgba(148, 187, 233, 1) 100%)",
             border: 'none',
             boxShadow: '0 8px 24px rgba(102, 126, 234, 0.4)',
             cursor: 'pointer',
@@ -62,12 +106,11 @@ function Home() {
           whileTap={{ scale: 0.95 }}
           title="Admin Panel"
         >
-          <Settings size={28} color="white" />
+          <CiChat1 size={28} color="white" />
         </motion.button>
-}
 
         <div className="mb-4 mt-4">
-          
+
           <Carousel />
         </div>
 
@@ -102,11 +145,13 @@ function Home() {
         <div>
           <ReviewsSection />
         </div>
-      <div className="mt-5">
-        <Footer />
-      </div>
+        <div className="mt-5">
+          <Footer />
+        </div>
       </div>
 
+      {/* Chat Drawer */}
+      <ChatDrawer />
     </div>
   );
 }
