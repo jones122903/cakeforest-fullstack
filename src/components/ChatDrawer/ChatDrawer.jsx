@@ -2,71 +2,105 @@ import { Drawer, Input } from "antd";
 import { CloseOutlined, SendOutlined } from "@ant-design/icons";
 import { useS } from "use-s-react";
 import { useState } from "react";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const ChatDrawer = () => {
+
+  const navigate = useNavigate();
+
   const [openChat, setOpenChat] = useS({
     value: false,
     key: "chat-open"
   });
 
-  const [messages, setMessages] = useState([
+  const initialMessages = [
     {
       type: "ai",
       text: "Hi! 👋 Welcome to our CakeForest! I'm here to help you find the perfect cake. What are you looking for today?",
       time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
     }
-  ]);
+  ];
+
+
+  const [messages, setMessages] = useState(initialMessages);
 
   const [inputText, setInputText] = useState("");
 
-  const handleSend = () => {
+  const handleSend = async () => {
     if (!inputText.trim()) return;
 
-    // Add user message
     const userMessage = {
       type: "user",
       text: inputText,
       time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
     };
 
-    setMessages([...messages, userMessage]);
+    setMessages(prev => [...prev, userMessage]);
     setInputText("");
 
-    // Simulate AI response after a short delay
-    setTimeout(() => {
-      const aiResponse = {
-        type: "ai",
-        text: getAIResponse(inputText),
-        time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-      };
-      setMessages(prev => [...prev, aiResponse]);
-    }, 1000);
-  };
+    /* ADD thinking message */
+    const thinkingMessage = {
+      type: "ai",
+      text: "wait panu macha soldra...",
+      loading: true
+    };
 
-  // Simple AI response logic (you can replace this with actual API call)
-  const getAIResponse = (userInput) => {
-    const input = userInput.toLowerCase();
-    
-    if (input.includes("birthday") || input.includes("bday")) {
-      return "🎂 Great choice! We have amazing birthday cakes. Would you like chocolate, vanilla, or strawberry flavor? We can also customize it with your favorite design!";
-    } else if (input.includes("price") || input.includes("cost")) {
-      return "💰 Our cakes start from ₹500 for basic designs. Premium cakes range from ₹1000-₹3000 depending on size and customization. What's your budget?";
-    } else if (input.includes("delivery")) {
-      return "🚚 We offer same-day delivery within city limits! Just place your order before 2 PM. Which area are you located in?";
-    } else if (input.includes("chocolate")) {
-      return "🍫 Chocolate lovers unite! We have Dark Chocolate Truffle, Chocolate Fudge, and our special Chocolate Overload cake. Which one sounds good?";
-    } else if (input.includes("thank")) {
-      return "You're welcome! 😊 Feel free to ask if you need anything else. Happy to help!";
-    } else {
-      return "I'd love to help you with that! 🎂 You can browse our collection by flavor, price, or occasion. Would you like me to recommend something specific?";
+    setMessages(prev => [...prev, thinkingMessage]);
+
+    try {
+
+      const res = await axios.post("http://localhost:5000/api/chatbot", {
+        input: userMessage.text
+      });
+
+      const data = res.data;
+
+      let reply = data.message;
+
+      /* replace thinking message */
+      setMessages(prev =>
+        prev.map(msg =>
+          msg.loading
+            ? {
+              ...msg,
+              text: reply,
+              loading: false,
+              time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+              orderLink: data.orderLink || null,  // Store orderLink from backend
+              products: data.products || null      // Store products if needed
+            }
+            : msg
+        )
+      );
+
+    } catch (err) {
+      console.log(err);
+      setMessages(prev =>
+        prev.map(msg =>
+          msg.loading
+            ? {
+              ...msg,
+              text: "Sorry, something went wrong. Please try again.",
+              loading: false,
+              time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+            }
+            : msg
+        )
+      );
+
     }
   };
+
+
+
+
 
   return (
     <Drawer
       placement="right"
       open={openChat}
-      onClose={() => setOpenChat(false)}
+      onClose={() => { setOpenChat(false); setMessages(initialMessages); }}
       width={420}
       height="100vh"
       zIndex={10000}
@@ -130,7 +164,7 @@ const ChatDrawer = () => {
         </div>
 
         <button
-          onClick={() => setOpenChat(false)}
+          onClick={() => { setOpenChat(false); setMessages(initialMessages); }}
           style={{
             background: "rgba(255,255,255,0.3)",
             border: "none",
@@ -183,22 +217,43 @@ const ChatDrawer = () => {
             >
               <div
                 style={{
-                  background: msg.type === "user" 
+                  background: msg.type === "user"
                     ? "linear-gradient(135deg, rgba(238, 174, 202, 1) 0%, rgba(148, 187, 233, 1) 100%)"
                     : "white",
                   color: msg.type === "user" ? "white" : "#333",
                   padding: "12px 16px",
-                  borderRadius: msg.type === "user" 
+                  borderRadius: msg.type === "user"
                     ? "20px 20px 4px 20px"
                     : "20px 20px 20px 4px",
                   boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
                   fontSize: "14px",
                   lineHeight: "1.5",
-                  wordWrap: "break-word",
+                  whiteSpace: "pre-line"
                 }}
               >
-                {msg.text}
+                {msg.text.includes("BuyNow") && msg.orderLink ? (
+                  <>
+                    {msg.text.replace("BuyNow", "")}
+                    <a
+                      onClick={() => {
+                        // Extract ID from orderLink or use products array
+                        const cakeId = msg.products?.[0]?._id || msg.orderLink.split('/').pop();
+                        navigate(`/buypage/${cakeId}`);
+                        setOpenChat(false);
+                        setMessages(initialMessages);
+                      }}
+                      style={{ color: "#1890ff", fontWeight: 600, cursor: "pointer", textDecoration: "underline" }}
+                    >
+                      BuyNow
+                    </a>
+                  </>
+                ) : (
+                  msg.text
+                )}
               </div>
+
+
+
               <span
                 style={{
                   fontSize: "10px",
@@ -255,7 +310,7 @@ const ChatDrawer = () => {
             onClick={handleSend}
             disabled={!inputText.trim()}
             style={{
-              background: inputText.trim() 
+              background: inputText.trim()
                 ? "linear-gradient(135deg, rgba(238, 174, 202, 1) 0%, rgba(148, 187, 233, 1) 100%)"
                 : "#e0e0e0",
               border: "none",
@@ -274,9 +329,9 @@ const ChatDrawer = () => {
             <SendOutlined />
           </button>
         </div>
-        
+
         {/* Quick Suggestions */}
-        <div
+        {/* <div
           style={{
             display: "flex",
             gap: "8px",
@@ -310,7 +365,7 @@ const ChatDrawer = () => {
               {suggestion}
             </button>
           ))}
-        </div>
+        </div> */}
       </div>
 
       <style>
